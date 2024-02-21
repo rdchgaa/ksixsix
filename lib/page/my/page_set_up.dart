@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/dialog/dialog_logout.dart';
+import 'package:ima2_habeesjobs/page/my/page_deposit.dart';
 import 'package:ima2_habeesjobs/page/my/page_user_about_us.dart';
 import 'package:ima2_habeesjobs/page/page_init.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
@@ -105,7 +106,7 @@ class _PageSetUpState extends State<PageSetUp> {
                       child: Image.asset('assets/images/piao.png', width: 16, height: 16),
                     ),
                     onTap: () async{
-
+                      PageDeposit().push(context);
                     },
                   ),
                   if(checkLogin())const Divider(height: 1),
@@ -179,7 +180,7 @@ class _PageSetUpState extends State<PageSetUp> {
                     const PageInit().pushAndRemoveUntil(context, (router) => false);
                   },
                   child: DecoratedBox(
-                    decoration: backGroundDecoration,
+                    decoration: backGroundDecoration.copyWith(color: Color(0xffffffff)),
                     child: SizedBox(
                       width: double.infinity,
                       height: 50,
