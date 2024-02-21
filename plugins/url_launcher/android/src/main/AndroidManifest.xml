@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="io.flutter.plugins.urllauncher">
+  <application>
+    <activity android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+      android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+      android:exported="false"/>
+
+    <provider
+            android:name="io.flutter.plugins.urllauncher.UrlLauncherFileProvider"
+            android:authorities="${applicationId}.flutter.url_launcher_file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+      <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/flutter_url_launcher_file_provider"/>
+    </provider>
+  </application>
+</manifest>
