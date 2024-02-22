@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
@@ -50,6 +51,19 @@ class _PageGameMainState extends State<PageGameMain> {
   int homeowner = -1;
 
   bool selfReady = false;
+
+
+
+  /// 本地状态
+  bool readying = false;//准备阶段
+  bool qiangZhuanging = false;//抢庄阶段
+  bool betting = false;//投注阶段 -- 倒计时
+  bool looking = false;//看牌阶段 -- 倒计时
+  bool resulting = false;//结算阶段，调取结算接口 --倒计时
+
+  int round = 1; //当前轮次  --共10轮
+
+
 
   @override
   void initState() {
@@ -137,15 +151,31 @@ class _PageGameMainState extends State<PageGameMain> {
     selectZhuang();
   }
 
-  selectZhuang() {
+  setCurentState(int num){
+    /// 本地状态
 
+    readying = num==1;//准备阶段
+    qiangZhuanging = num==2;//抢庄阶段
+    betting = num==3;//投注阶段 -- 倒计时
+    looking = num==4;//看牌阶段 -- 倒计时
+    resulting = num==5;//结算阶段，调取结算接口 --倒计时
+
+    setState(() {
+
+    });
+  }
+
+  selectZhuang() {
+    setCurentState(2);
   }
 
   setZhuang() async{
+    setCurentState(3);
     Vibration.vibrate(duration: 200, amplitude: 50);
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.setZhuang(context, getUserId(), widget.roomId, true);
     }, isShowLoading: false);
+
     if (res != null && res != 1) {
       setState(() {
         selfReady = true;
@@ -282,15 +312,24 @@ class _PageGameMainState extends State<PageGameMain> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // !showCard1
+        //     ? getCardBackBuild(onTap: () {
+        //         setState(() {
+        //           showCard1 = true;
+        //         });
+        //       })
+        //     : getCardBuild(1, 1, onTap: () {
+        //         changeCard(1);
+        //       }),
         !showCard1
-            ? getCardBackBuild(onTap: () {
-                setState(() {
-                  showCard1 = true;
-                });
-              })
+            ? CardBackBuild(onTap: () {
+          setState(() {
+            showCard1 = true;
+          });
+        })
             : getCardBuild(1, 1, onTap: () {
-                changeCard(1);
-              }),
+          changeCard(1);
+        }),
         SizedBox(width: 10),
         !showCard2
             ? getCardBackBuild(onTap: () {
@@ -469,6 +508,9 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getButtonBuild() {
+    if(!readying){
+      return SizedBox();
+    }
     var user = context.watch<SerUser>();
 
     Widget readyButton = SizedBox(
@@ -734,9 +776,8 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayerInfoItemBuild(int index) {
-    var imageWidth = 40.0;
+    var imageWidth = 35.0;
     var peopleWidth = 100.0;
-    var peopleHeight = 65.0;
 
     var player = playerList[index];
     Widget readyButton = SizedBox(
@@ -769,9 +810,6 @@ class _PageGameMainState extends State<PageGameMain> {
           height: 16,
           child: MyButton.gradient(
               backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-              onPressed: () {
-                setZhuang();
-              },
               child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
     );
 
@@ -786,12 +824,16 @@ class _PageGameMainState extends State<PageGameMain> {
             width: imageWidth,
             height: imageWidth,
             decoration: BoxDecoration(
+              color: Color(0xffffffff),
+              borderRadius: BorderRadius.all(Radius.circular(imageWidth/2)),
               boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
             ),
-            child: HeadImage.network(
-              '',
-              width: imageWidth,
-              height: imageWidth,
+            child: Center(
+              child: HeadImage.network(
+                '',
+                width: imageWidth-1,
+                height: imageWidth-1,
+              ),
             ),
           ),
           Padding(
@@ -814,10 +856,11 @@ class _PageGameMainState extends State<PageGameMain> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              readyButton,
+              if(!(homeowner==player['user_id']))readyButton,
               zhuangBuild
             ],
-          )
+          ),
+          getJifenBuild(3000),
         ],
       ),
     );
@@ -841,12 +884,16 @@ class _PageGameMainState extends State<PageGameMain> {
                 width: imageWidth,
                 height: imageWidth,
                 decoration: BoxDecoration(
+                  color: Color(0xffffffff),
+                  borderRadius: BorderRadius.all(Radius.circular(imageWidth/2)),
                   boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
                 ),
-                child: HeadImage.network(
-                  '',
-                  width: imageWidth,
-                  height: imageWidth,
+                child: Center(
+                  child: HeadImage.network(
+                    '',
+                    width: imageWidth-2,
+                    height: imageWidth-2,
+                  ),
                 ),
               ),
 
@@ -874,9 +921,33 @@ class _PageGameMainState extends State<PageGameMain> {
                     ],
                   ),
                 ),
+                getJifenBuild(200100),
               ],
             ),
-          )
+          ),
+        ],
+      ),
+    );
+  }
+  getJifenBuild(int fen){
+    return Padding(
+      padding: EdgeInsets.only(top: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/images/jifen.png",
+            width: 14,
+            height: 14,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 2.0),
+            child: Text(
+              fen.toString(),
+              maxLines: 1,
+              style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+            ),
+          ),
         ],
       ),
     );
@@ -906,29 +977,39 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getCenterInfoBuild() {
-    Widget startButton = DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-      ),
-      child: SizedBox(
-          width: 100,
-          height: 100,
-          child: MyButton.gradient(
-              backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-              onPressed: () {
-                setZhuang();
-              },
-              child: Text('抢庄', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+    return Stack(
+      children: [
+        getQiangZhuangBuild(),
+      ],
     );
+  }
 
-    return Padding(
-      padding: EdgeInsets.only(top: 0),
-      child: startButton,
-    );
+  getQiangZhuangBuild(){
+    if(qiangZhuanging){
+      return Padding(
+        padding: EdgeInsets.only(top: 0),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+          ),
+          child: SizedBox(
+              width: 100,
+              height: 100,
+              child: MyButton.gradient(
+                  backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+                  onPressed: () {
+                    setZhuang();
+                  },
+                  child: Text('抢庄', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+        ),
+      );
+    }
+    return SizedBox();
   }
 
   Future<bool> _onInitLoading(BuildContext context) async {
     initData();
+    setCurentState(1);
     var user = context.read<SerUser>();
     if (user.isRoomMaster) {
       //房主默认准备
