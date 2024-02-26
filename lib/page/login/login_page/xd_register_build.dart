@@ -100,8 +100,7 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
       return await NetWork.toRegister(context,_unPhone.text,_unPassword.text,_unName.text);
     },isShowLoading: true);
     if (res!=null) {
-      setToken(res['token']);
-      setUserId(res['user_id']);
+      saveLoginInfo(res);
       goHome();
     } else {
       // showToast(context, '注册失败，请稍后再试');
@@ -116,10 +115,16 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
     // Navigator.pop(context);
     return;
   }
+  saveLoginInfo(var res){
+    setToken(res['token']);
+    setUserId(res['user_id']);
+    setUserName(_unPhone.text);
+    setPassword(_unPassword.text);
+  }
 
   goHome(){
     App.of(context).setTitle("baseFlutterDemo (${_unPhone.text})");
-    PageInit().pushAndRemoveUntil(context, (route) => true);
+    PageInit(needLogin: false,).pushAndRemoveUntil(context, (route) => true);
   }
 
   visibleBuild(bool isShow) {

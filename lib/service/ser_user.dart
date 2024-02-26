@@ -43,6 +43,15 @@ class SerUser extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _gameId = null;
+
+  int get gameId => _gameId;
+
+  set gameId(int value) {
+    _gameId = value;
+    notifyListeners();
+  }
+
 
   UserInfo _info = UserInfo();
 
@@ -208,9 +217,12 @@ class SerUser extends ChangeNotifier {
       showToast(context, '退出登录失败，请稍后再试');
     }
   }
+
   unLoginData(){
     setToken(null);
     setUserId(null);
+    setUserInfo(null);
+    setPassword(null);
 
     var user = {
       "user_id": null,

@@ -5,8 +5,11 @@ import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
+import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/alert_dialog_result_all.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
@@ -53,17 +56,24 @@ class _PageGameMainState extends State<PageGameMain> {
   bool selfReady = false;
 
 
-
+  bool isZhuang = false;
   /// 本地状态
-  bool readying = false;//准备阶段
-  bool qiangZhuanging = false;//抢庄阶段
-  bool betting = false;//投注阶段 -- 倒计时
-  bool looking = false;//看牌阶段 -- 倒计时
-  bool resulting = false;//结算阶段，调取结算接口 --倒计时
+  bool readying = false; //准备阶段
+  bool qiangZhuanging = false; //抢庄阶段
+  bool betting = false; //投注阶段 -- 倒计时
+  bool looking = false; //看牌阶段 -- 倒计时
+  bool resulting = false; //结算阶段，调取结算接口 --倒计时
+  bool waitPushPoker = false; //等待发牌阶段
 
   int round = 1; //当前轮次  --共10轮
 
+  int bettingCountdown = 10; //投注倒计时
+  int lookingCountdown = 10; //看牌倒计时
+  int singleResultCountdown = 10; //查看结果倒计时
 
+  Timer bettingTimer;
+  Timer lookingTimer;
+  Timer singleResultTimer;
 
   @override
   void initState() {
@@ -80,6 +90,14 @@ class _PageGameMainState extends State<PageGameMain> {
     super.dispose();
     roomTimer.cancel();
     roomTimer = null;
+    if (bettingTimer != null) {
+      bettingTimer.cancel();
+      bettingTimer = null;
+    }
+    if (lookingTimer != null) {
+      lookingTimer.cancel();
+      lookingTimer = null;
+    }
     // leaveRoom();
   }
 
@@ -91,6 +109,7 @@ class _PageGameMainState extends State<PageGameMain> {
   // }
 
   initData() async {
+    getRoomState();
     roomTimer = Timer.periodic(Duration(seconds: 2), (timer) {
       getRoomState();
 
@@ -99,10 +118,10 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getGameState() async {
-    var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.roomToGameStart(context, getUserId(), widget.roomId);
-    }, isShowLoading: false);
-    if (res == null || res == 1) {}
+    // var res = await LoadingCall.of(context).call((state, controller) async {
+    //   return await NetWork.roomToGameStart(context, getUserId(), widget.roomId);
+    // }, isShowLoading: false);
+    // if (res == null || res == 1) {}
   }
 
   getRoomState() async {
@@ -151,37 +170,164 @@ class _PageGameMainState extends State<PageGameMain> {
     selectZhuang();
   }
 
-  setCurentState(int num){
+
+  setCurentState(int num) async{
     /// 本地状态
 
-    readying = num==1;//准备阶段
-    qiangZhuanging = num==2;//抢庄阶段
-    betting = num==3;//投注阶段 -- 倒计时
-    looking = num==4;//看牌阶段 -- 倒计时
-    resulting = num==5;//结算阶段，调取结算接口 --倒计时
+    ///10轮为一局
+    // 1 准备阶段 2  抢庄阶段 3 投注阶段 4 看牌阶段 5 结算阶段 6 等待发牌阶段
+    // 10 结算阶段-> 等待发牌阶段(同时显示提示)
+    readying = num == 1; //准备阶段
+    qiangZhuanging = num == 2; //抢庄阶段
+    betting = num == 3; //投注阶段 -- 倒计时
+    looking = num == 4; //看牌阶段 -- 倒计时
+    resulting = (num == 5||num == 10); //结算阶段，调取结算接口 --倒计时
+    waitPushPoker = (num ==6||num ==10); //等待发牌阶段
 
+    setState(() {});
+
+    if((num ==6)){
+      //每轮开始  初始化扑克牌
+      initPoker();
+      //十轮一局，结束查看整局结果
+      if(round==1){
+        // initGame();
+        // await showAlertDialogResultAll(context);
+        // return;
+      }
+    }
+
+    //投注倒计时触发
+    if (num == 3) {
+      bettingTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+        if (bettingCountdown == 0) {
+          bettingTimer.cancel();
+          bettingTimer = null;
+          setCurentState(4);
+        }
+        bettingCountdown = bettingCountdown - 1;
+        setState(() {});
+      });
+    }
+
+    //看牌倒计时触发
+    if (num == 4) {
+      lookingTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+        if(lookingCountdown == 1){
+          showMyPoker(6);
+        }
+        if (lookingCountdown == 0) {
+          lookingTimer.cancel();
+          lookingTimer = null;
+          toLookResult();
+        }
+        lookingCountdown = lookingCountdown - 1;
+        setState(() {});
+      });
+    }
+
+    //结果倒计时触发
+    if (num == 5) {
+      singleResultTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+        if (singleResultCountdown == 0) {
+          singleResultTimer.cancel();
+          singleResultTimer = null;
+          setCurentState(10);
+        }
+        singleResultCountdown = singleResultCountdown - 1;
+        setState(() {});
+      });
+    }
+
+  }
+
+  initGame(){
+    isZhuang = false;
+    setCurentState(1);
+  }
+
+  initPoker(){
+    myBetting = [];
+
+    showCard1 = false;
+    showCard2 = false;
+    showCard3 = false;
+    showCard4 = false;
+    showCard5 = false;
+
+    bettingCountdown = 10; //投注倒计时
+    lookingCountdown = 10; //看牌倒计时
+    singleResultCountdown = 10; //查看结果倒计时
     setState(() {
 
     });
+  }
+
+  showMyPoker(int num){ //0: 全部盖住, 12345:翻开单张 , 6:全部翻开
+    if(!looking){
+      return;
+    }
+    if(num==0){
+      setState(() {
+        showCard1 = false;
+        showCard2 = false;
+        showCard3 = false;
+        showCard4 = false;
+        showCard5 = false;
+      });
+    }
+    if(num==1){
+      setState(() {
+        showCard1 = true;
+      });
+    }else if(num==2){
+      setState(() {
+        showCard2 = true;
+      });
+    }else if(num==3){
+      setState(() {
+        showCard3 = true;
+      });
+    }else if(num==4){
+      setState(() {
+        showCard4 = true;
+      });
+    }else if(num==5){
+      setState(() {
+        showCard5 = true;
+      });
+    }else if(num==6){
+      setState(() {
+        showCard1 = true;
+        showCard2 = true;
+        showCard3 = true;
+        showCard4 = true;
+        showCard5 = true;
+      });
+    }
+  }
+
+  toLookResult(){
+    setCurentState(5);
+
   }
 
   selectZhuang() {
     setCurentState(2);
   }
 
-  setZhuang() async{
-    setCurentState(3);
+  setZhuang() async {
+
+    // setState(() {
+    //   isZhuang = true;
+    // });
+
+    setCurentState(6);
     Vibration.vibrate(duration: 200, amplitude: 50);
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.setZhuang(context, getUserId(), widget.roomId, true);
     }, isShowLoading: false);
-
-    if (res != null && res != 1) {
-      setState(() {
-        selfReady = true;
-      });
-    }
-
+    if (res != null && res != 1) {}
   }
 
   readyGame() async {
@@ -195,19 +341,27 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-  endGame() async{
+  endGame() async {
     ///TODO 结束游戏  调取接口
+    var value = await showAlertDialog(
+      context,
+      title: '您确定要结束游戏吗?',
+      content: '游戏结束，所有玩家将退出房间',
+      buttonCancel: '否',
+      buttonOk: '结束',
+    );
+    if (true == value) {
+      var res = await LoadingCall.of(context).call((state, controller) async {
+        return await NetWork.dissolutionRoom(context, getUserId(), widget.roomId);
+      }, isShowLoading: false);
 
-    var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.dissolutionRoom(context, getUserId(), widget.roomId);
-    }, isShowLoading: false);
-
-    if (res != null && res != 1) {
-      //结束成功
-      roomTimer.cancel();
-      roomTimer = null;
-      Navigator.pop(context);
-    }
+      if (res != null && res != 1) {
+        //结束成功
+        roomTimer.cancel();
+        roomTimer = null;
+        Navigator.pop(context);
+      }
+    } else {}
   }
 
   @override
@@ -254,24 +408,24 @@ class _PageGameMainState extends State<PageGameMain> {
                                 child: Row(
                                   children: [
                                     SizedBox(
-                                      width: 150,
+                                      width: 180,
                                       child: getMethodBuild(),
                                     ),
                                     Expanded(child: SizedBox()),
                                     SizedBox(
-                                      width: 150,
+                                      width: 180,
                                       child: leaveGameBuild(),
                                     )
                                   ],
                                 ),
                               ),
                               Expanded(child: getPlayersBuild()),
-                              false?getBetBuild():SizedBox(height: 80,child: selfZhuangBuild(),)
+                              getBetBuild(),
                             ],
                           ),
-                          Positioned(bottom:5,left: 60, child: getSelfInfoItemBuild()),
+                          Positioned(bottom: 5, left: 60, child: getSelfInfoItemBuild()),
                           Positioned(top: 0, child: getMyCardBuild()),
-                          Positioned(bottom: 0, right: 0, child: getButtonBuild()),
+                          Positioned(bottom: 0, right: 0, child: getReadyBuild()),
                           Positioned(child: getCenterInfoBuild()),
                         ],
                       ),
@@ -284,24 +438,35 @@ class _PageGameMainState extends State<PageGameMain> {
     );
   }
 
-  selfZhuangBuild(){
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 5.0),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-          ),
-          child: SizedBox(
-              width: 35,
-              height: 35,
-              child: MyButton.gradient(
-                  backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-                  child: Text('庄', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+  selfZhuangBuild() {
+    if(isZhuang){
+      return SizedBox(
+        height: 80,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: ZhuangIconBuild(width: 35.0,),
         ),
-      ),
-    );
+      );
+      // return Align(
+      //   alignment: Alignment.bottomCenter,
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(bottom: 5.0),
+      //     child: DecoratedBox(
+      //       decoration: BoxDecoration(
+      //         boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+      //       ),
+      //       child: SizedBox(
+      //           width: 35,
+      //           height: 35,
+      //           child: MyButton.gradient(
+      //               backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+      //               child: Text('庄', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+      //     ),
+      //   ),
+      // );
+    }
+    return SizedBox();
+
   }
 
   changeCard(int index) {
@@ -309,112 +474,134 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getMyCardBuild() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // !showCard1
-        //     ? getCardBackBuild(onTap: () {
-        //         setState(() {
-        //           showCard1 = true;
-        //         });
-        //       })
-        //     : getCardBuild(1, 1, onTap: () {
-        //         changeCard(1);
-        //       }),
-        !showCard1
-            ? CardBackBuild(onTap: () {
-          setState(() {
-            showCard1 = true;
-          });
-        })
-            : getCardBuild(1, 1, onTap: () {
-          changeCard(1);
-        }),
-        SizedBox(width: 10),
-        !showCard2
-            ? getCardBackBuild(onTap: () {
-                setState(() {
-                  showCard2 = true;
-                });
+    if (betting || looking ||resulting) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          !showCard1
+              ? CardBackBuild(
+              index: 0,
+              onTap: () {
+                showMyPoker(1);
               })
-            : getCardBuild(2, 3, onTap: () {
-                changeCard(2);
-              }),
-        SizedBox(width: 10),
-        !showCard3
-            ? getCardBackBuild(onTap: () {
-                setState(() {
-                  showCard3 = true;
-                });
+              : getCardBuild(1, 1, onTap: () { //自己的首张牌.桌面上
+            changeCard(1);
+          }),
+          SizedBox(width: 10),
+          !showCard2
+              ? CardBackBuild(
+              index: 1,
+              onTap: () {
+                showMyPoker(2);
               })
-            : getCardBuild(3, 11, onTap: () {
-                changeCard(3);
-              }),
-        SizedBox(width: 10),
-        !showCard4
-            ? getCardBackBuild(onTap: () {
-                setState(() {
-                  showCard4 = true;
-                });
+              : getCardBuild(2, 3, onTap: () {
+            changeCard(2);
+          }),
+          SizedBox(width: 10),
+          !showCard3
+              ? CardBackBuild(
+              index: 2,
+              onTap: () {
+                showMyPoker(3);
               })
-            : getCardBuild(4, 12, onTap: () {
-                changeCard(4);
-              }),
-        SizedBox(width: 10),
-        !showCard5
-            ? getCardBackBuild(onTap: () {
-                setState(() {
-                  showCard5 = true;
-                });
+              : getCardBuild(3, 11, onTap: () {
+            changeCard(3);
+          }),
+          SizedBox(width: 10),
+          !showCard4
+              ? CardBackBuild(
+              index: 3,
+              onTap: () {
+                showMyPoker(4);
               })
-            : getCardBuild(1, 13, onTap: () {
-                changeCard(5);
-              }),
-      ],
-    );
+              : getCardBuild(4, 12, onTap: () {
+            changeCard(4);
+          }),
+          SizedBox(width: 10),
+          !showCard5
+              ? CardBackBuild(
+              index: 4,
+              onTap: () {
+                showMyPoker(5);
+              })
+              : getCardBuild(1, 13, onTap: () {
+            changeCard(5);
+          })
+        ],
+      );
+
+    }
+    return SizedBox();
   }
 
   leaveGameBuild() {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: InkWell(
-            onTap: () async {
-              endGame();
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                  ),
-                  child: SizedBox(
-                    width: 120,
-                    height: 40,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          '结束游戏',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+    var user = context.watch<SerUser>();
+    if (user.isRoomMaster){
+      return Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: InkWell(
+              onTap: () async {
+                endGame();
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                    ),
+                    child: SizedBox(
+                      width: 120,
+                      height: 40,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0),
+                          child: Text(
+                            '结束游戏',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return SizedBox();
+  }
+
+  getMethodBuild() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left:10,top: 5),
+          child: InkWell(
+            onTap: () async {
+              showAlertDialogRule(context);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  children: [
+                    Center(child: Image.asset('assets/images/rule.png',width: 30,height: 30,)),
+                    Text(
+                      '游戏规则',
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  getMethodBuild() {
-    return Column(
-      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: InkWell(
@@ -453,10 +640,16 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getBetBuild() {
-    var imageWidth = 30.0;
-    if(false){
-      return SizedBox(height: 40.0+35.0,);
+    if (isZhuang) {
+      return selfZhuangBuild();
     }
+    if(betting||looking){
+      return getBetButtonBuild();
+    }
+    return SizedBox();
+  }
+
+  getBetButtonBuild(){
     return SizedBox(
       height: 80,
       child: Padding(
@@ -468,15 +661,17 @@ class _PageGameMainState extends State<PageGameMain> {
               SizedBox(
                 height: 5,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  getChoumaItemBuild(1, padding: EdgeInsets.only(left: 0)),
-                  getChoumaItemBuild(10),
-                  getChoumaItemBuild(50),
-                  getChoumaItemBuild(100),
-                  getChoumaItemBuild(500),
-                ],
+              BetButtonBuild(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    getChoumaItemBuild(1, padding: EdgeInsets.only(left: 0)),
+                    getChoumaItemBuild(10),
+                    getChoumaItemBuild(50),
+                    getChoumaItemBuild(100),
+                    getChoumaItemBuild(500),
+                  ],
+                ),
               ),
             ],
           ),
@@ -507,8 +702,8 @@ class _PageGameMainState extends State<PageGameMain> {
     );
   }
 
-  getButtonBuild() {
-    if(!readying){
+  getReadyBuild() {
+    if (!readying) {
       return SizedBox();
     }
     var user = context.watch<SerUser>();
@@ -598,6 +793,10 @@ class _PageGameMainState extends State<PageGameMain> {
       padding: padding ?? EdgeInsets.only(left: 30),
       child: InkWell(
         onTap: () {
+          if(!betting){
+            showToast(context, '非投注阶段');
+            return;
+          }
           if (myBetting.length >= 10) {
             showToast(context, '最多投注10次');
             return;
@@ -726,7 +925,7 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayer1Build() {
-    if(playerList.length<1){
+    if (playerList.length < 1) {
       return SizedBox();
     }
     return Row(
@@ -738,7 +937,7 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayer2Build() {
-    if(playerList.length<2){
+    if (playerList.length < 2) {
       return SizedBox();
     }
     return Row(
@@ -751,7 +950,7 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayer3Build() {
-    if(playerList.length<3){
+    if (playerList.length < 3) {
       return SizedBox();
     }
     return Row(
@@ -763,7 +962,7 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayer4Build() {
-    if(playerList.length<4){
+    if (playerList.length < 4) {
       return SizedBox();
     }
     return Row(
@@ -789,7 +988,7 @@ class _PageGameMainState extends State<PageGameMain> {
               padding: const EdgeInsets.only(bottom: 1.0),
               child: Text('已准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
             )));
-    if(0==player['state']) {
+    if (0 == player['state']) {
       readyButton = SizedBox(
           width: 40,
           height: 16,
@@ -801,66 +1000,72 @@ class _PageGameMainState extends State<PageGameMain> {
               )));
     }
 
-    var zhuangBuild = DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-      ),
-      child: SizedBox(
-          width: 16,
-          height: 16,
-          child: MyButton.gradient(
-              backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-              child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
-    );
+    // var zhuangBuild = DecoratedBox(
+    //   decoration: BoxDecoration(
+    //     boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+    //   ),
+    //   child: SizedBox(
+    //       width: 16,
+    //       height: 16,
+    //       child: MyButton.gradient(
+    //           backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+    //           child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+    // );
+    var zhuangBuild = ZhuangIconBuild(width: 16,);
 
     return SizedBox(
       width: peopleWidth,
       // height: peopleHeight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          Container(
-            width: imageWidth,
-            height: imageWidth,
-            decoration: BoxDecoration(
-              color: Color(0xffffffff),
-              borderRadius: BorderRadius.all(Radius.circular(imageWidth/2)),
-              boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-            ),
-            child: Center(
-              child: HeadImage.network(
-                '',
-                width: imageWidth-1,
-                height: imageWidth-1,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  player['nick_name'],
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
-                ),
-                if(homeowner==player['user_id'])Text(
-                  '(房主)',
-                  style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
-                )
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if(!(homeowner==player['user_id']))readyButton,
-              zhuangBuild
+              Container(
+                width: imageWidth,
+                height: imageWidth,
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  color: Color(0xffffffff),
+                  borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
+                  boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+                ),
+                child: Center(
+                  child: HeadImage.network(
+                    '',
+                    width: imageWidth - 1,
+                    height: imageWidth - 1,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      player['nick_name'],
+                      maxLines: 2,
+                      style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                    ),
+                    if (homeowner == player['user_id'])
+                      Text(
+                        '(房主)',
+                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
+                      )
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [if (!(homeowner == player['user_id'])) readyButton],
+              ),
+              getJifenBuild(3000),
             ],
           ),
-          getJifenBuild(3000),
+          zhuangBuild
         ],
       ),
     );
@@ -885,18 +1090,17 @@ class _PageGameMainState extends State<PageGameMain> {
                 height: imageWidth,
                 decoration: BoxDecoration(
                   color: Color(0xffffffff),
-                  borderRadius: BorderRadius.all(Radius.circular(imageWidth/2)),
+                  borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
                   boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
                 ),
                 child: Center(
                   child: HeadImage.network(
                     '',
-                    width: imageWidth-2,
-                    height: imageWidth-2,
+                    width: imageWidth - 2,
+                    height: imageWidth - 2,
                   ),
                 ),
               ),
-
             ],
           ),
           Padding(
@@ -914,10 +1118,11 @@ class _PageGameMainState extends State<PageGameMain> {
                         maxLines: 1,
                         style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
                       ),
-                      if(user.isRoomMaster)Text(
-                        '(房主)',
-                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
-                      )
+                      if (user.isRoomMaster)
+                        Text(
+                          '(房主)',
+                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
+                        )
                     ],
                   ),
                 ),
@@ -929,7 +1134,8 @@ class _PageGameMainState extends State<PageGameMain> {
       ),
     );
   }
-  getJifenBuild(int fen){
+
+  getJifenBuild(int fen) {
     return Padding(
       padding: EdgeInsets.only(top: 2),
       child: Row(
@@ -952,6 +1158,7 @@ class _PageGameMainState extends State<PageGameMain> {
       ),
     );
   }
+
   emptyPeopleItem() {
     var imageWidth = 80.00;
     return InkWell(
@@ -978,30 +1185,140 @@ class _PageGameMainState extends State<PageGameMain> {
 
   getCenterInfoBuild() {
     return Stack(
+      alignment: Alignment.center,
       children: [
         getQiangZhuangBuild(),
+        gerWaitPushPokerBuild(),
+        getBettingTipBuild(),
+        getlookingTipBuild(),
+        getResultTipBuild(),
       ],
     );
   }
 
-  getQiangZhuangBuild(){
-    if(qiangZhuanging){
+  pushPoker(){
+    setCurentState(3); //发牌，进入投注中
+  }
+  gerWaitPushPokerBuild(){
+    if (waitPushPoker) {
       return Padding(
         padding: EdgeInsets.only(top: 0),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+            boxShadow: [BoxShadow(color: Color(0xffffffff), blurRadius: 33, offset: Offset(0, 0))],
           ),
           child: SizedBox(
-              width: 100,
+              width: isZhuang?100:200,
               height: 100,
               child: MyButton.gradient(
-                  backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-                  onPressed: () {
-                    setZhuang();
-                  },
-                  child: Text('抢庄', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+                  borderRadius: BorderRadius.all(Radius.circular(isZhuang?50:20)),
+                  backgroundColor: isZhuang?[Color(0xfff2b8e4), Color(0xffb20084)]:[Color(0xffcccccc), Color(0xff333333)],
+                  onPressed: true?(){
+                    pushPoker();
+                  }:null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      isZhuang?Text('发牌', textAlign: TextAlign.center, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
+                          :Text('等待发牌...', textAlign: TextAlign.center, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+
+                    ],
+                  ))),
         ),
+      );
+    }
+    return SizedBox();
+  }
+
+  getResultTipBuild(){
+    if (resulting) {
+      return ResultSingleBuild(onClose: (){
+        setState(() {
+          resulting = false;
+        });
+        setCurentState(6);
+      },);
+    }
+    return SizedBox();
+  }
+
+  getlookingTipBuild() {
+    if (looking) {
+      return Padding(
+        padding: EdgeInsets.only(top: 0),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Color(0xffb3e6f9), blurRadius: 33, offset: Offset(0, 0))],
+          ),
+          child: SizedBox(
+              width: 200,
+              height: 100,
+              child: MyButton.gradient(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  backgroundColor: [Color(0xffb3e6f9), Color(0xff005a97)],
+                  onPressed: (){
+                    showMyPoker(6);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (lookingCountdown > 0)SizedBox(
+                        height: 10,
+                      ),
+                      Text('点击扑克牌\n看牌'+' ('+lookingCountdown.toString()+')', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                    ],
+                  ))),
+        ),
+      );
+    }
+    return SizedBox();
+  }
+  getBettingTipBuild() {
+    if (betting) {
+      return Padding(
+        padding: EdgeInsets.only(top: 0),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Color(0xfffdefabb), blurRadius: 33, offset: Offset(0, 0))],
+          ),
+          child: SizedBox(
+              width: 200,
+              height: 100,
+              child: MyButton.gradient(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  backgroundColor: [Color(0xfffdefabb), Color(0xff008b00)],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (bettingCountdown > 0)SizedBox(
+                        height: 10,
+                      ),
+                      bettingCountdown > 0
+                          ? Text('请开始下注', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
+                          : Text('停止下注', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                      if (bettingCountdown > 0)
+                        Text(bettingCountdown.toString(), style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                    ],
+                  ))),
+        ),
+      );
+    }
+    return SizedBox();
+  }
+
+  getQiangZhuangBuild() {
+    if (qiangZhuanging) {
+      return QiangzhuangButtonBuild(
+        onTap: (value) {
+          if (value == true) {
+            setZhuang();
+          } else {
+            setState(() {
+              qiangZhuanging = false;
+            });
+            setCurentState(6);
+          }
+        },
       );
     }
     return SizedBox();

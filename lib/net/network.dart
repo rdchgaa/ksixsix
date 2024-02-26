@@ -157,6 +157,37 @@ class NetWork {
     return null;
   }
 
+  //【游戏状态接口】 轮询获取游戏状态信息
+  static getGameState(BuildContext context,int room_id,int game_id,) async{
+    var parame = {
+      "room_id": room_id, // 房间id(必传)
+    };
+    if(game_id!=null){
+      parame = {
+        "game_id":game_id, // 游戏id
+        "room_id": room_id, // 房间id(必传)
+      };
+    }
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/state',
+      queryParameters: parame,
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        var data = value['data'];
+        // showToast(context, data['tip']);
+
+        return data;
+      }else if(value['code']==1){
+        //房间不存在
+        return 1;
+        // showToast(context, '获取房间信息失败，请稍后再试');
+      }
+    }
+    return null;
+  }
+
 
   //离开房间
   static leaveRoom(BuildContext context,int user_id,int room_id,) async{

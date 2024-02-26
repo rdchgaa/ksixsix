@@ -195,6 +195,7 @@ class _AppState extends State<App> {
     super.initState();
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
     if (Platform.isIOS) WebView.platform = CupertinoWebView();
+
   }
 
   @override

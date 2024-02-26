@@ -5,6 +5,7 @@ import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_game_main.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
@@ -39,8 +40,6 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
   List userList = [];
 
-  int homeowner = -1;
-
   @override
   void initState() {
     super.initState();
@@ -67,8 +66,9 @@ class _PageRoomMainState extends State<PageRoomMain> {
     });
   }
   getRoomState() async{
+    var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.getRoomMainInfo(context,widget.roomId);
+      return await NetWork.getGameState(context,widget.roomId,user.gameId);
     }, isShowLoading: false);
 
     if (res!=null) {
@@ -84,13 +84,8 @@ class _PageRoomMainState extends State<PageRoomMain> {
   }
 
   setRoomInfo(var res){
-    getRightUserList(res['user_list']);
-    homeowner = res['homeowner'];
-    if(mounted){
-      setState(() {
+    getRightUserList(res['user_list_info']);
 
-      });
-    }
   }
 
 
@@ -102,13 +97,16 @@ class _PageRoomMainState extends State<PageRoomMain> {
         userList.add(user_list[i]);
       }
     }
+    if(mounted){
+      setState(() {
+
+      });
+    }
   }
 
   checkRoomState(int state){
-    /// 房主 [ 0:不可开始(玩家未准备，房间人数小于2) 1:可以开始，全部准备(人数>1) ]
-    /// 其他 [ 2：开始中  3:进入游戏(包括房主) ]
-    /// 当房主收到状态 1（可以开始）点击开始房间状态值会变成 3， 所有人就会收到房间状态3  进行游戏
-    if(state==3){
+    /// 1.未选庄闲  2.等待发牌  3.下注阶段  4. 看牌阶段  5.结算阶段  6.本轮结算结束  7.游戏结束(本局游戏10轮结束)
+    if(state!=0){
       enterTheGame();
     }
   }
@@ -117,7 +115,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
   enterTheGame({bool clickStart = false}) async{
     if(userList.length<1){
       showToast(context, '等待好友进入房间');
-      // return ;
+      return ;
     }
     roomTimer.cancel();
     roomTimer = null;
@@ -136,6 +134,8 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
     Vibration.vibrate(duration: 200, amplitude: 50);
     await PageGameMain(roomId: widget.roomId,).push(context);
+
+    Navigator.pop(context);
     // initData();
     ///TODO 重置房间
   }
@@ -190,19 +190,46 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                       exitRoom();
                                     },
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        SizedBox(
-                                          width: 30,
-                                          height: 30,
-                                          child: Icon(
-                                            Icons.keyboard_arrow_left,
-                                            color: Color(0xffffffff),
-                                            size: 30,
-                                          ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: Icon(
+                                                Icons.keyboard_arrow_left,
+                                                color: Color(0xffffffff),
+                                                size: 30,
+                                              ),
+                                            ),
+                                            Text(
+                                              user.isRoomMaster?'解散房间':'离开房间',
+                                              style: TextStyle(fontSize: 16, color: Color(0xffeeeeee)),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          user.isRoomMaster?'解散房间':'离开房间',
-                                          style: TextStyle(fontSize: 16, color: Color(0xffeeeeee)),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              showAlertDialogRule(context);
+                                            },
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Center(child: Image.asset('assets/images/rule.png',width: 30,height: 30,)),
+                                                    Text(
+                                                      '游戏规则',
+                                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -364,7 +391,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
           width: imageWidth,
           height: imageWidth,
           decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: item['user_id']==homeowner?roomMasterColor:playerColor, blurRadius: 33, offset: Offset(0, 0))],
+            boxShadow: [BoxShadow(color: item['is_master']==1?roomMasterColor:playerColor, blurRadius: 33, offset: Offset(0, 0))],
           ),
           child: HeadImage.network(
             '',
@@ -377,7 +404,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
           child: Row(
             children: [
               Text(item['nick_name'],style: TextStyle(fontSize: 16,color: Color(0xffdddddd)),),
-              if(item['user_id']==homeowner)Text(' (房主)',style: TextStyle(fontSize: 14,color: roomMasterColor),)
+              if(item['is_master']==1)Text(' (房主)',style: TextStyle(fontSize: 14,color: roomMasterColor),)
             ],
           ),
         ),

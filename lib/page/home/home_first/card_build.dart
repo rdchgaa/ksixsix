@@ -138,48 +138,50 @@ Widget getCardBuild(int type, int num,{Function onTap,double width = 50.0}) {
         ),
       ),
     );
-  }
-  child = DecoratedBox(
-    decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
-    child: SizedBox(
-      width: width,
-      height: height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 2.0, left: 2),
-              child: Text(
-                value,
-                style: TextStyle(fontSize: fontSize, color: textColor),
-              ),
-            ),
-          ),
-          Expanded(
-              child: Image.asset(
-            image,
-            width: width * 0.8,
-            height: width * 0.8,
-          )),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 2.0, right: 2),
-              child: Transform.rotate(
-                angle: 180 * math.pi / 180,
+  }else{
+    child = DecoratedBox(
+      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 2.0, left: 2),
                 child: Text(
                   value,
                   style: TextStyle(fontSize: fontSize, color: textColor),
                 ),
               ),
             ),
-          ),
-        ],
+            Expanded(
+                child: Image.asset(
+                  image,
+                  width: width * 0.8,
+                  height: width * 0.8,
+                )),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 2.0, right: 2),
+                child: Transform.rotate(
+                  angle: 180 * math.pi / 180,
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: fontSize, color: textColor),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
+
   return InkWell(
     onTap: onTap,
     child: child,

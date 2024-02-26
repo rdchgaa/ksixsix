@@ -35,27 +35,6 @@ class _PageClipImageState extends State<PageClipImage> {
               backBoxColor1: Colors.black,
             ),
           ),
-          //TODO 临时隐藏 Positioned(
-          //   left: 0,
-          //   bottom: 0,
-          //   top: 0,
-          //   child: Align(
-          //     alignment: const Alignment(-1, 0.5),
-          //     child: UiTextButton(
-          //       onPressed: () {},
-          //       child: Image.asset(
-          //         "assets/images/iocn_rotate.webp",
-          //         height: 20.74,
-          //         width: 20,
-          //       ),
-          //       style: ButtonStyle(
-          //         minimumSize: MaterialStateProperty.all(const Size(78, 30)),
-          //         shape: MaterialStateProperty.all(const StadiumBorder()),
-          //         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Positioned(
             child: const BackButton(
               color: Colors.white,

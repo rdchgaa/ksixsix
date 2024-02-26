@@ -1,28 +1,19 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/dialog_image.dart';
-import 'package:ima2_habeesjobs/dialog/select_image_dialog.dart';
 import 'package:ima2_habeesjobs/net/net_file.dart';
 import 'package:ima2_habeesjobs/page/my/page_deposit_history.dart';
-import 'package:ima2_habeesjobs/page/uitls/page_edit_image.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/page_clip_image.dart';
 import 'package:ima2_habeesjobs/widget/app_bar.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:ima2_habeesjobs/widget/ui_layout.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'dart:ui' as ui;
 
 class PageDeposit extends StatefulWidget {
   final int enterType; //进入类型，1：竖屏进入，2：横屏进入

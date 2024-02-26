@@ -27,23 +27,10 @@ class _controlPageLogin extends RouterDataNotifier {
     value = true;
   }
 
-  _onAgreenment(context) async {
-    if (true != getPolicy()) {
-      var val = await showPolicyDialog(
-        context,
-      );
-      if (true == val) {
-        setPolicy(val);
-      } else {
-        exit(0);
-      }
-    }
-  }
 
 }
 
 class PageLogin extends RouterDataWidget<_controlPageLogin> {
-  // const PageLogin({Key key}) : super(key: key);
 
   @override
   _PageLoginState createState() => _PageLoginState();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
@@ -92,8 +93,10 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   bool checkCanUse(){
-    if(DateTime(2024,3,30).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
-      showToast(context, '本产品维护中，请更新或下载新版本后使用。');
+    if(DateTime(2024,4,1).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
+      ///TODO 请更新或下载新版本后使用
+      showToast(context, '请更新或下载新版本后使用。');
+      showAlertDialogUpdate(context);
       return false;
     }
     return true;

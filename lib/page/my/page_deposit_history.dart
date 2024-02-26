@@ -1,27 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/dialog/dialog_image.dart';
-import 'package:ima2_habeesjobs/dialog/select_image_dialog.dart';
-import 'package:ima2_habeesjobs/net/net_file.dart';
-import 'package:ima2_habeesjobs/page/uitls/page_edit_image.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/navigator.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/page_clip_image.dart';
 import 'package:ima2_habeesjobs/widget/app_bar.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
-import 'package:ima2_habeesjobs/widget/my_image.dart';
-import 'package:ima2_habeesjobs/widget/ui_layout.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'dart:ui' as ui;
 
 class PageDepositHistory extends StatefulWidget {
   final int enterType; //进入类型，1：竖屏进入，2：横屏进入
@@ -35,8 +18,6 @@ class PageDepositHistory extends StatefulWidget {
 }
 
 class _PageDepositHistoryState extends State<PageDepositHistory> {
-
-
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -78,59 +59,56 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
               return UiEmptyView(type: EmptyType.network, onPressed: () => _onInitLoading(context));
             },
             builder: (context) {
-            return Stack(
-              children: [
-                Scaffold(
-                  backgroundColor: Color(0x00ffffff),
-                  appBar: MyAppBar(
-                    title: Text(
-                      '获取门票',
-                      style: TextStyle(
-                        fontFamily: 'Source Han Sans CN',
-                        fontSize: 16,
-                        color: const Color(0xff292929),
-                        fontWeight: FontWeight.w700,
+              return Stack(
+                children: [
+                  Scaffold(
+                    backgroundColor: Color(0x00ffffff),
+                    appBar: MyAppBar(
+                      title: Text(
+                        '获取门票',
+                        style: TextStyle(
+                          fontFamily: 'Source Han Sans CN',
+                          fontSize: 16,
+                          color: const Color(0xff292929),
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                        softWrap: false,
                       ),
-                      textAlign: TextAlign.center,
-                      softWrap: false,
+                      centerTitle: true,
+                      leading: leading(context),
                     ),
-                    centerTitle: true,
-                    leading: leading(context),
-                  ),
-                  body: LayoutBuilder(
-                    builder: (context,con) {
+                    body: LayoutBuilder(builder: (context, con) {
                       return ListView.builder(
                           itemCount: 6,
                           physics: const ClampingScrollPhysics(),
                           padding: EdgeInsets.only(top: 0),
                           itemBuilder: (context, index) {
-                            if(index==4){
+                            if (index == 4) {
                               return getFailBuild(con);
                             }
-                            if(index>3){
+                            if (index > 3) {
                               return getWaitBuild(con);
                             }
                             return getSuccessBuild(con);
                           });
-                    }
+                    }),
                   ),
-                ),
-
-              ],
-            );
-          }
-        ),
+                ],
+              );
+            }),
       ),
     );
   }
 
-  getWaitBuild(BoxConstraints con){
+  getWaitBuild(BoxConstraints con) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.all(Radius.circular(4)),),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
         child: SizedBox(
           height: 56,
           child: Row(
@@ -141,7 +119,10 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 10, right: 20,),
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 20,
+                    ),
                     child: Text(
                       '时间：2024-02-07 19:58:00',
                       style: TextStyle(fontSize: 12, color: Color(0xff333333)),
@@ -198,13 +179,14 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
     );
   }
 
-  getFailBuild(BoxConstraints con){
+  getFailBuild(BoxConstraints con) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0xFFaaaaaa),
-          borderRadius: BorderRadius.all(Radius.circular(4)),),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
         child: SizedBox(
           height: 56,
           child: Row(
@@ -215,7 +197,10 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 10, right: 20,),
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 20,
+                    ),
                     child: Text(
                       '时间：2024-02-07 19:58:00',
                       style: TextStyle(fontSize: 12, color: Color(0xff333333)),
@@ -272,13 +257,14 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
     );
   }
 
-  getSuccessBuild(BoxConstraints con){
+  getSuccessBuild(BoxConstraints con) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0XFF21A27C),
-          borderRadius: BorderRadius.all(Radius.circular(4)),),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
         child: SizedBox(
           height: 56,
           child: Row(
@@ -289,7 +275,10 @@ class _PageDepositHistoryState extends State<PageDepositHistory> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 10, right: 20,),
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 20,
+                    ),
                     child: Text(
                       '时间：2024-02-07 19:58:00',
                       style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),

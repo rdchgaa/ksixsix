@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
+import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/dialog/dialog_logout.dart';
 import 'package:ima2_habeesjobs/page/my/page_deposit.dart';
 import 'package:ima2_habeesjobs/page/my/page_user_about_us.dart';
@@ -154,6 +155,18 @@ class _PageSetUpState extends State<PageSetUp> {
                     ),
                     onTap: () async {
                       await  PageUserAboutUs().push(context);
+                    },
+                  ),
+                  const Divider(height: 1),
+                  UiLayoutTextAndIconItem(
+                    style: layoutItemStyle2,
+                    title: '版本更新',
+                    leftIcon: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Image.asset('assets/images/update.png', width: 16, height: 16),
+                    ),
+                    onTap: () async {
+                      showAlertDialogUpdate(context);
                     },
                   ),
                 ],

@@ -7,6 +7,7 @@ import 'package:ima2_habeesjobs/app.dart';
 import 'package:ima2_habeesjobs/dao/manage_dao.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/net/api.dart';
+import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/page_home.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
@@ -30,21 +31,21 @@ class ControlInit extends RouterDataNotifier {
 
   ControlInit({this.isCheckVersion = true});
 
-  init(BuildContext context) async {
+  init(BuildContext context,{bool needLogin = true}) async {
     value = await LoadingCall.of(context).call((state, controller) async {
       var info = await PackageInfo.fromPlatform();
       try {
-        Api.deviceId = await App.of(context).getDeviceId();
-        var apiDeviceId = Api.deviceId;
-        //26b448e7fb3578b46213f8ce2fe32
-        setDeviceId(Api.deviceId);
-        var deviceId = getDeviceId();
-        // logger.i("init_page_device_id:$deviceId");
-        if (deviceId == null) {
-          var newDeviceId = '1000';
-          setDeviceId(newDeviceId);
-          logger.i("init_page set devoce_id = $newDeviceId");
-        }
+        // Api.deviceId = await App.of(context).getDeviceId();
+        // var apiDeviceId = Api.deviceId;
+        // //26b448e7fb3578b46213f8ce2fe32
+        // setDeviceId(Api.deviceId);
+        // var deviceId = getDeviceId();
+        // // logger.i("init_page_device_id:$deviceId");
+        // if (deviceId == null) {
+        //   var newDeviceId = '1000';
+        //   setDeviceId(newDeviceId);
+        //   logger.i("init_page set devoce_id = $newDeviceId");
+        // }
 
         var token = getToken();
         if (null == token) {
@@ -56,6 +57,18 @@ class ControlInit extends RouterDataNotifier {
           // }
           return true;
         } else {
+          if(needLogin){
+            //登录 保存的账号密码
+            var userName = getUserName();
+            var password = getPassword();
+            if(userName!=null&&password!=null){
+              var res = await NetWork.toLogin(context,userName,password);
+              if (res!=null) {
+                saveLoginInfo(res);
+              } else {
+              }
+            }
+          }
         }
 
       } catch (e) {
@@ -86,19 +99,19 @@ class ControlInit extends RouterDataNotifier {
     }, isShowLoading: false, duration: null);
   }
 
+  saveLoginInfo(var res){
+    setToken(res['token']);
+    setUserId(res['user_id']);
+  }
+
   guestLogin(context) async{
-    setToken('guest');
-    setUserId(0);
+    setToken(null);
+    setUserId(null);
     goHome(context);
   }
 
   goHome(context) async{
-    await Future.delayed(Duration(milliseconds: 2000),(){
-      // AutoRouter.of(context).pushNamedAndRemoveUntil(
-      //   "/",
-      //   predicate: (route) => true,
-      //   params: {"isCheckVersion": "false"},
-      // );
+    await Future.delayed(Duration(milliseconds: 1000),(){
       PageHome().pushAndRemoveUntil(context, (route) => false);
     });
   }
@@ -130,8 +143,8 @@ class ControlInit extends RouterDataNotifier {
 }
 
 class PageInit extends StatefulWidget {
-
-  const PageInit({Key key,}) : super(key: key);
+  final bool needLogin;
+  const PageInit({Key key, this.needLogin = true,}) : super(key: key);
 
   @override
   _PageInitState createState() => _PageInitState();
@@ -146,7 +159,7 @@ class _PageInitState extends State<PageInit> {
   void initState() {
     super.initState();
     initControl = ControlInit();
-    initControl.init(context);
+    initControl.init(context,needLogin: widget.needLogin);
   }
 
   @override

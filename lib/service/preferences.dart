@@ -10,15 +10,10 @@ const deviceIdKey = "device_id";
 const userIdKey = "user_id";
 const tokenKey = "token";
 const channelKey = "channel";
-const maxSYNKey = "max_syn";
 const localeKey = "locale";
 const beforeVersionKey = "before_version";
-const policyKey = "policy";
 
 const applyKey = "apply";
-
-const collectJobKey = "collect_job";
-const collectCompanyKey = "collect_company";
 
 const worksKey = "works";
 
@@ -29,6 +24,10 @@ const birthDayKey = "birthDay";
 const userInfoKey = "userInfo";
 
 const filesPathKey = "files_path";
+
+const userName = "user_name";
+
+const password = "password";
 
 SharedPreferences _sharedPreferences;
 
@@ -144,18 +143,6 @@ String getLocale() {
   return _sharedPreferences.getString(localeKey);
 }
 
-void setPolicy(bool flg) {
-  if (null == flg) {
-    _sharedPreferences.remove(policyKey);
-  } else {
-    _sharedPreferences.setBool(policyKey, flg);
-  }
-}
-
-bool getPolicy() {
-  return _sharedPreferences.getBool(policyKey);
-}
-
 
 
 void setApply(int id) {
@@ -188,65 +175,6 @@ void removeApply(int id) {
   _sharedPreferences.setStringList(applyKey, applyList);
 }
 
-
-void setCollectJob(int id) {
-  List<String> list = _sharedPreferences.getStringList(collectJobKey)??[];
-  if(list.contains(id.toString())){
-
-  }else{
-    list.add(id.toString());
-  }
-  _sharedPreferences.setStringList(collectJobKey, list);
-}
-
-List<int> getCollectJob() {
-  List<String> list = _sharedPreferences.getStringList(collectJobKey)??[];
-
-  List<int> intList = [];
-  for(var i = 0 ;i<list.length;i++){
-    intList.add(int.tryParse(list[i])??0);
-  }
-  return intList;
-}
-
-void removeCollectJob(int id) {
-  List<String> list = _sharedPreferences.getStringList(collectJobKey)??[];
-  if(list.contains(id.toString())){
-    list.remove(id.toString());
-  }else{
-  }
-  _sharedPreferences.setStringList(collectJobKey, list);
-}
-
-
-void setCollectCompany(int id) {
-  List<String> list = _sharedPreferences.getStringList(collectCompanyKey)??[];
-  if(list.contains(id.toString())){
-
-  }else{
-    list.add(id.toString());
-  }
-  _sharedPreferences.setStringList(collectCompanyKey, list);
-}
-
-List<int> getCollectCompany() {
-  List<String> list = _sharedPreferences.getStringList(collectCompanyKey)??[];
-
-  List<int> intList = [];
-  for(var i = 0 ;i<list.length;i++){
-    intList.add(int.tryParse(list[i])??0);
-  }
-  return intList;
-}
-
-void removeCollectCompany(int id) {
-  List<String> list = _sharedPreferences.getStringList(collectCompanyKey)??[];
-  if(list.contains(id.toString())){
-    list.remove(id.toString());
-  }else{
-  }
-  _sharedPreferences.setStringList(collectCompanyKey, list);
-}
 
 void setGender(Gender gender) {
 
@@ -324,4 +252,30 @@ void removeFilesPath(String path) {
   }else{
   }
   _sharedPreferences.setStringList(filesPathKey, list);
+}
+
+
+
+void setUserName(String value) {
+  if (null == value) {
+    _sharedPreferences.remove(userName);
+  } else {
+    _sharedPreferences.setString(userName, value);
+  }
+}
+
+String getUserName() {
+  return _sharedPreferences.getString(userName);
+}
+
+void setPassword(String value) {
+  if (null == value) {
+    _sharedPreferences.remove(password);
+  } else {
+    _sharedPreferences.setString(password, value);
+  }
+}
+
+String getPassword() {
+  return _sharedPreferences.getString(password);
 }

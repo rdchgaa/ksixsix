@@ -133,8 +133,7 @@ class _LoginBuildState extends State<LoginBuild> with SingleTickerProviderStateM
     // var res = await NetWork.toLogin(context,_unPhone.text,_unPassword.text);
 
     if (res!=null) {
-      setToken(res['token']);
-      setUserId(res['user_id']);
+      saveLoginInfo(res);
       goHome();
     } else {
       // showToast(context, Languages.of(context).accountOrPasswordError);
@@ -143,16 +142,17 @@ class _LoginBuildState extends State<LoginBuild> with SingleTickerProviderStateM
     return;
   }
 
-  guestLogin() async{
-    _repeatLogin = await App.of(context).checkTitle("home (${_unPhone.text})");
-    setToken('guest');
-    setUserId(0);
-    goHome();
+  saveLoginInfo(var res){
+    setToken(res['token']);
+    setUserId(res['user_id']);
+    setUserName(_unPhone.text);
+    setPassword(_unPassword.text);
   }
+
 
   goHome(){
     App.of(context).setTitle("baseFlutterDemo (${_unPhone.text})");
-    PageInit().pushAndRemoveUntil(context, (route) => false);
+    PageInit(needLogin: false,).pushAndRemoveUntil(context, (route) => false);
   }
 
   @override
