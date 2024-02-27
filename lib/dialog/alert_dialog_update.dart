@@ -4,11 +4,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 
-Future<bool> showAlertDialogUpdate(BuildContext context) {
+Future<bool> showAlertDialogUpdate(BuildContext context,{int enterType }) {
   return showDialog(
     context: context,
     builder: (context) {
       return DialogAlertUpdateBox(
+        enterType: enterType,
         // contentAlign: contentAlign,
       );
     },
@@ -16,9 +17,9 @@ Future<bool> showAlertDialogUpdate(BuildContext context) {
 }
 
 class DialogAlertUpdateBox extends StatefulWidget {
-
+  final int enterType; //进入类型，1：竖屏进入，2：横屏进入
   const DialogAlertUpdateBox({
-    Key key,
+    Key key, this.enterType = 1,
   }) : super(key: key);
 
   @override
@@ -39,10 +40,12 @@ class _DialogAlertUpdateBoxState extends State<DialogAlertUpdateBox> {
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.landscapeLeft
-    ]);
+    if (widget.enterType == 2) {
+      SystemChrome.setPreferredOrientations([
+        // 强制横屏
+        DeviceOrientation.landscapeLeft
+      ]);
+    }
   }
 
   @override

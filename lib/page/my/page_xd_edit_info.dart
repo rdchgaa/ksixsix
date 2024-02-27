@@ -65,14 +65,17 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
 
     if (null != _avatar) {
       var ret = await Network.of<NetFile>(context).updateAvatar(Uint8List.fromList(_avatar));
+
       _avatarUrl = (await ret.result).url;
     }
 
     if (null != headImage) {
       userInfo.avatar = headImage;
+      user.avatarUrl = headImage;
     }
     if(_unName.text!=''){
       userInfo.name = _unName.text;
+      user.nickname = _unName.text;
     }
 
     userInfo.gender = gender;
@@ -80,7 +83,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
 
     setUserInfo(userInfo);
 
-    showToast(context, 'Successfully saved',alignment: Alignment(0, 0.8));
+    showToast(context, '修改成功');
     Navigator.pop(context);
   }
 

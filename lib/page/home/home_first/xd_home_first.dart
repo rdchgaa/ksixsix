@@ -71,6 +71,8 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     if(checkCanUse()){
       hideTextInput();
       await PageRoomMain(roomId: roomId,).push(context);
+      var user = context.read<SerUser>();
+      user.gameId = null;
       hideTextInput();
       leaveRoom(roomId);
     }
@@ -96,7 +98,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     if(DateTime(2024,4,1).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
       ///TODO 请更新或下载新版本后使用
       showToast(context, '请更新或下载新版本后使用。');
-      showAlertDialogUpdate(context);
+      showAlertDialogUpdate(context,enterType: 2);
       return false;
     }
     return true;

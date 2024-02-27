@@ -166,7 +166,7 @@ class _PageSetUpState extends State<PageSetUp> {
                       child: Image.asset('assets/images/update.png', width: 16, height: 16),
                     ),
                     onTap: () async {
-                      showAlertDialogUpdate(context);
+                      showAlertDialogUpdate(context,enterType: 1);
                     },
                   ),
                 ],

@@ -12,6 +12,8 @@ import 'package:flutter/widgets.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/net/dio_util.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
+import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:provider/provider.dart';
 
 class NetWork {
 
@@ -133,30 +135,6 @@ class NetWork {
     return null;
   }
 
-
-
-  //房间信息，轮询请求获取房间玩家准备的情况
-  static getRoomMainInfo(BuildContext context,int room_id,) async{
-    var res = await DioUtils.instance.getRequest(Method.get, 'room/info/'+room_id.toString(),
-      options: Options(headers: {'token':getToken()}),
-    );
-    if(res!=null){
-      var value = json.decode(res.data);
-      if(value['code']==0){
-        var data = value['data'];
-        // showToast(context, data['tip']);
-
-        if(data['room_Id']!=null)
-          return data;
-      }else if(value['code']==1){
-        //房间不存在
-        return 1;
-        // showToast(context, '获取房间信息失败，请稍后再试');
-      }
-    }
-    return null;
-  }
-
   //【游戏状态接口】 轮询获取游戏状态信息
   static getGameState(BuildContext context,int room_id,int game_id,) async{
     var parame = {
@@ -263,12 +241,12 @@ class NetWork {
   }
 
   //用户准备or取消准备
-  static roomReady(BuildContext context,int user_id,int room_id,bool readyType) async{
-    var res = await DioUtils.instance.getRequest(Method.get, 'room/ready/',
+  static roomReady(BuildContext context,int user_id,int game_id) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/ready/',
       queryParameters: {
-        "user_id":user_id, // 房主
-        "room_id": room_id, // 房间
-        "ready_type": readyType?1:0, // 玩家准备类型  1:玩家准备 非1:未准备
+        "user_id":user_id, //
+        "game_id": user.gameId, //
       },
       options: Options(headers: {'token':getToken()}),
     );
@@ -288,12 +266,38 @@ class NetWork {
     return null;
   }
 
+  //【开始选庄闲接口】状态1(待准备) 由房主调用, 如果有玩家未准备会返回信息提示； 如果都准备了,状态变更为 2(未确认庄闲)
+  static startSelectZhuang(BuildContext context) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/vocation/select/',
+      queryParameters: {
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】获得
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        var data = value['data'];
+        // showToast(context, data['tip']);
+        return data;
+      }else if(value['code']==1){
+        showToast(context, '开始失败，请稍后再试');
+        return 1;
+      }else{
+        // showToast(context, '获取房间信息失败，请稍后再试');
+      }
+    }
+    return null;
+  }
+
   //选择庄闲
-  static setZhuang(BuildContext context,int user_id,int room_id,bool readyType) async{
-    var res = await DioUtils.instance.getRequest(Method.get, 'game/set/master/',
+  static setZhuang(BuildContext context,int user_id) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/vocation/set/',
       queryParameters: {
         "user_id":user_id, //
-        "game_id": room_id, // 游戏id,由 【开始游戏接口】获得
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】获得
       },
       options: Options(headers: {'token':getToken()}),
     );
@@ -314,11 +318,11 @@ class NetWork {
   }
 
   //发牌
-  static deal(BuildContext context,int user_id,int room_id,bool readyType) async{
+  static deal(BuildContext context,int user_id) async{
+    var user = context.read<SerUser>();
     var res = await DioUtils.instance.getRequest(Method.get, 'game/deal/',
       queryParameters: {
-        "user_id":user_id, // 房主
-        "game_id": room_id, // 游戏id,由 【开始游戏接口】获得
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】获得
       },
       options: Options(headers: {'token':getToken()}),
     );
@@ -329,10 +333,68 @@ class NetWork {
         // showToast(context, data['tip']);
         return data;
       }else if(value['code']==1){
-        showToast(context, '选择庄家信息失败，请稍后再试');
+        showToast(context, '发牌失败，请稍后再试');
         return 1;
       }else{
         // showToast(context, '获取房间信息失败，请稍后再试');
+      }
+    }
+    return null;
+  }
+
+  //投注
+  static gameBet(BuildContext context,int user_id,int score) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/bet/',
+      queryParameters: {
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
+        "user_id": user_id, // 游戏id,由 【开始游戏接口】获得
+        "score": score, // 游戏id,由 【开始游戏接口】获得
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        var data = value['data'];
+        // showToast(context, data['tip']);
+        return data;
+      }else if(value['code']==1){
+        showToast(context, '投注失败，请稍后再试');
+        return 1;
+      }else{
+        // showToast(context, '获取房间信息失败，请稍后再试');
+      }
+    }
+    return null;
+  }
+
+
+  //【本轮结算结果接口】状态7(本轮结束)所有玩家调用，返回本轮结算结果，未满10轮读秒时间结束后状态变为 3(待发牌)
+  static gameItemResult(BuildContext context,int user_id,) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/item/result/',
+      queryParameters: {
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
+        "user_id": user_id, // 游戏id,由 【开始游戏接口】获得
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      try{
+        var value = json.decode(res.data);
+        if(value['code']==0){
+          var data = value['data'];
+          // showToast(context, data['tip']);
+          return data;
+        }else if(value['code']==1){
+          // showToast(context, '请等待结果');
+          return 1;
+        }else{
+          // showToast(context, '获取房间信息失败，请稍后再试');
+        }
+      }catch(e){
+        return null;
       }
     }
     return null;

@@ -309,7 +309,7 @@ class ModelUpdateAvatar {
     if (null == map) return null;
     var temp;
     return ModelUpdateAvatar(
-      url: map['url']?.toString(),
+      url: map.toString(),
     );
   }
 }

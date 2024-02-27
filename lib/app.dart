@@ -432,18 +432,18 @@ class _AppState extends State<App> {
     }
 
     if (true) {
-      setToken(null);
-      App.of(context).setTitle(" ");
-      setUserId(null);
-      setDeviceId(null);
-      setChannel(null);
-      context.read<SerBase>().close();
+      // setToken(null);
+      // App.of(context).setTitle(" ");
+      // setUserId(null);
+      // setDeviceId(null);
+      // setChannel(null);
+      // context.read<SerBase>().close();
 
       showAlertDialog(
         context,
-        title: Languages.of(context).tipText,
-        content: Languages.of(context).reloadLoginTipText,
-        buttonOk: Languages.of(context).logAgainText,
+        title: '提示',
+        content: '网络异常断开',
+        buttonOk: '重新登录',
       ).then((value) {
         PageInit().push(context);
       });

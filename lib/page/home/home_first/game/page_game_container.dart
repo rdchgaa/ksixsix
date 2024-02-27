@@ -16,6 +16,7 @@ import 'package:ima2_habeesjobs/widget/app_bar.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_button.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
+import 'package:ima2_habeesjobs/widget/ui_tabbar.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -42,6 +43,7 @@ class _CardBackBuildState extends State<CardBackBuild> with TickerProviderStateM
 
   @override
   void initState() {
+    super.initState();
     _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300))
       ..addListener(() {
         setState(() {});
@@ -99,8 +101,11 @@ class _QiangzhuangButtonBuildState extends State<QiangzhuangButtonBuild> with Ti
 
   Timer hideTimer;
 
+  bool _hide = false;
+
   @override
   void initState() {
+    super.initState();
     _scaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 100), lowerBound: 0, upperBound: 100)
       ..addListener(() {
         setState(() {
@@ -110,16 +115,23 @@ class _QiangzhuangButtonBuildState extends State<QiangzhuangButtonBuild> with Ti
     Future.delayed(Duration(milliseconds: 100), () {
       _scaleController.forward();
     });
-    hideTimer = Timer(Duration(seconds: 4), () {
-      Future.delayed(Duration(milliseconds: 100), () async {
-        hide(false);
-      });
-    });
+    // hideTimer = Timer(Duration(seconds: 4), () {
+    //   Future.delayed(Duration(milliseconds: 100), () async {
+    //     _hide = true;
+    //     setState(() {
+    //
+    //     });
+    //   });
+    // });
   }
 
   hide(bool value) async {
     await _scaleController.reverse();
-    widget.onTap(value);
+    _hide = true;
+    setState(() {});
+    if (value) {
+      widget.onTap(value);
+    }
   }
 
   @override
@@ -133,6 +145,9 @@ class _QiangzhuangButtonBuildState extends State<QiangzhuangButtonBuild> with Ti
   @override
   Widget build(BuildContext context) {
     var height = widget.width / 5.7 * 8.7;
+    if (_hide) {
+      return SizedBox();
+    }
     return getQiangZhuangBuild();
   }
 
@@ -198,6 +213,7 @@ class _ZhuangIconBuildState extends State<ZhuangIconBuild> with TickerProviderSt
 
   @override
   void initState() {
+    super.initState();
     _size = widget.width;
     _scaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300), lowerBound: widget.width, upperBound: 80)
       ..addListener(() {
@@ -265,6 +281,7 @@ class _BetButtonBuildState extends State<BetButtonBuild> with TickerProviderStat
 
   @override
   void initState() {
+    super.initState();
     _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300))
       ..addListener(() {
         setState(() {});
@@ -296,7 +313,7 @@ class _BetButtonBuildState extends State<BetButtonBuild> with TickerProviderStat
   }
 }
 
-///bet投注按钮入场
+///当轮结果
 class ResultSingleBuild extends StatefulWidget {
   final Function onClose;
   final Widget child;
@@ -317,8 +334,11 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
 
   Color roomMasterColor = Color(0xffffaf49);
 
+  bool _hide = false;
+
   @override
   void initState() {
+    super.initState();
     _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
       ..addListener(() {
         setState(() {});
@@ -329,9 +349,11 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     });
   }
 
-  onClose() async{
+  onClose() async {
     await _slideController.reverse();
-    widget.onClose();
+    // widget.onClose();
+    _hide = true;
+    setState(() {});
   }
 
   @override
@@ -342,6 +364,9 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
+    if (_hide) {
+      return SizedBox();
+    }
     var headWidth = 30.0;
     var user = context.watch<SerUser>();
     return Container(
@@ -377,35 +402,159 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                             SizedBox(
                               width: con.maxWidth * 0.9,
                               height: con.maxHeight * 0.8,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 0, bottom: 8, left: 8.0, right: 8.0),
+                              child: ResultSingleItemContainer(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0, right: 5),
+                              child: InkWell(
+                                onTap: () {
+                                  onClose();
+                                },
+                                child: SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+///最终结果展示 10轮
+class FinalResultBuild extends StatefulWidget {
+  final Widget child;
+
+  const FinalResultBuild({
+    Key key,
+    this.child,
+  }) : super(key: key);
+
+  @override
+  _FinalResultBuildState createState() => _FinalResultBuildState();
+}
+
+class _FinalResultBuildState extends State<FinalResultBuild> with TickerProviderStateMixin {
+  AnimationController _slideController;
+  Animation<Offset> _animation;
+
+  Color roomMasterColor = Color(0xffffaf49);
+
+  bool _hide = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+      ..addListener(() {
+        setState(() {});
+      });
+    _animation = Tween(begin: const Offset(0, -500), end: const Offset(0, 0)).animate(_slideController);
+    Future.delayed(Duration(milliseconds: 100), () {
+      _slideController.forward();
+    });
+  }
+
+  onClose() async {
+    await _slideController.reverse();
+    _hide = true;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _slideController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hide) {
+      return SizedBox();
+    }
+    var headWidth = 30.0;
+    var user = context.watch<SerUser>();
+    return Container(
+      // width: widget.width,
+      // height: height,
+      child: Transform.translate(
+        offset: _animation.value,
+        child: Center(
+          child: LayoutBuilder(builder: (context, con) {
+            return InkWell(
+              onTap: () {
+                onClose();
+              },
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color(0x33000000),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: InkWell(
+                      onTap: () {},
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            color: Color(0xcc555555),
+                            boxShadow: [BoxShadow(color: Color(0x99555555), blurRadius: 33, offset: Offset(0, 0))],
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            border: Border.all(color: Color(0xffffffff), width: 2)),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            SizedBox(
+                              width: con.maxWidth * 0.95,
+                              height: con.maxHeight * 0.95,
+                              child: DefaultTabController(
+                                initialIndex: 0,
+                                length: 11,
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    getZhuangPlayerItemBuild(),
-                                    Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            getPlayerItem1Build(),
-                                            // if(false)
-                                              getPlayerItem2Build(),
-                                          ],
-                                        ),
-                                        // if(false)
-                                          Padding(
-                                          padding: const EdgeInsets.only(top: 12.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              getPlayerItem3Build(),
-                                              getPlayerItem4Build(),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )
+                                    SizedBox(
+                                      height: 48,
+                                      width: double.infinity,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: UiTabBar(tabs: [
+                                          Tab(text: '总览'),
+                                          Tab(text: '一轮'),
+                                          Tab(text: '二轮'),
+                                          Tab(text: '三轮'),
+                                          Tab(text: '四轮'),
+                                          Tab(text: '五轮'),
+                                          Tab(text: '六轮'),
+                                          Tab(text: '七轮'),
+                                          Tab(text: '八轮'),
+                                          Tab(text: '九轮'),
+                                          Tab(text: '十轮')
+                                        ]),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TabBarView(
+                                        children: <Widget>[
+                                          mainBuild(),
+                                          for(var i = 0 ;i<10;i++)getSingleBuild(),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -441,7 +590,85 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     );
   }
 
-  getZhuangPlayerItemBuild(){
+  mainBuild(){
+    return ResultAllInfoItemContainer();
+  }
+
+  getSingleBuild() {
+    return ResultSingleItemContainer();
+  }
+}
+
+
+///当轮结果 组件
+class ResultSingleItemContainer extends StatefulWidget {
+  const ResultSingleItemContainer({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ResultSingleItemContainerState createState() => _ResultSingleItemContainerState();
+}
+
+class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> with AutomaticKeepAliveClientMixin {
+
+  Color roomMasterColor = Color(0xffffaf49);
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  onClose() async {
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var headWidth = 30.0;
+    var user = context.watch<SerUser>();
+    return Padding(
+      padding: const EdgeInsets.only(top: 0, bottom: 8, left: 8.0, right: 8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          getZhuangPlayerItemBuild(),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  getPlayerItem1Build(),
+                  // if(false)
+                  getPlayerItem2Build(),
+                ],
+              ),
+              // if(false)
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    getPlayerItem3Build(),
+                    getPlayerItem4Build(),
+                  ],
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  getZhuangPlayerItemBuild() {
     var headWidth = 40.0;
     var user = context.watch<SerUser>();
     var isSelf = true;
@@ -449,13 +676,12 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         DecoratedBox(
-          decoration: isSelf?BoxDecoration(
-              border: Border.all(width: 1,color: Color(0xffffffff)),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Color(0x22ffffff)
-          ):BoxDecoration(),
+          decoration: isSelf
+              ? BoxDecoration(
+              border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+              : BoxDecoration(),
           child: Padding(
-            padding: const EdgeInsets.only(left: 0.0,right: 8.0,top: 2,bottom: 2),
+            padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -520,7 +746,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: getJifenBuild(100,bei: 3),
+                  child: getJifenBuild(100, bei: 3),
                 ),
               ],
             ),
@@ -529,16 +755,15 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
       ],
     );
   }
+
   getPlayerItem1Build() {
     bool isSelf = true;
     return DecoratedBox(
-      decoration: isSelf?BoxDecoration(
-        border: Border.all(width: 1,color: Color(0xffffffff)),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: Color(0x22ffffff)
-      ):BoxDecoration(),
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
       child: Padding(
-        padding: const EdgeInsets.only(left:0.0,right: 8.0,top: 2,bottom: 2),
+        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
         child: Row(
           children: [
             getHeadBuild(),
@@ -552,26 +777,24 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getJifenBuild(100,bei: 2),
+              child: getJifenBuild(100, bei: 2),
             ),
           ],
         ),
       ),
     );
   }
+
   getPlayerItem2Build() {
     bool isSelf = true;
     return DecoratedBox(
-      decoration: isSelf?BoxDecoration(
-          border: Border.all(width: 1,color: Color(0xffffffff)),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color(0x22ffffff)
-      ):BoxDecoration(),
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0,right: 0.0,top: 2,bottom: 2),
+        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
         child: Row(
           children: [
-
             Padding(
               padding: EdgeInsets.only(left: 0),
               child: getJifenBuild(-100),
@@ -593,16 +816,15 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
       ),
     );
   }
+
   getPlayerItem3Build() {
     bool isSelf = false;
     return DecoratedBox(
-      decoration: isSelf?BoxDecoration(
-          border: Border.all(width: 1,color: Color(0xffffffff)),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color(0x22ffffff)
-      ):BoxDecoration(),
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
       child: Padding(
-        padding: const EdgeInsets.only(left: 0.0,right: 8.0,top: 2,bottom: 2),
+        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
         child: Row(
           children: [
             getHeadBuild(),
@@ -623,19 +845,17 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
       ),
     );
   }
+
   getPlayerItem4Build() {
     bool isSelf = false;
     return DecoratedBox(
-      decoration: isSelf?BoxDecoration(
-          border: Border.all(width: 1,color: Color(0xffffffff)),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color(0x22ffffff)
-      ):BoxDecoration(),
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0,right: 0.0,top: 2,bottom: 2),
+        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
         child: Row(
           children: [
-
             Padding(
               padding: EdgeInsets.only(left: 0),
               child: getJifenBuild(100),
@@ -658,7 +878,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     );
   }
 
-  getHeadBuild(){
+  getHeadBuild() {
     var headWidth = 30.0;
     var user = context.watch<SerUser>();
     return Column(
@@ -718,15 +938,23 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        getCardBuild(1, 1,width: width),
-        SizedBox(width: lineWidth,),
-        getCardBuild(2, 10,width: width),
-        SizedBox(width: lineWidth,),
-        getCardBuild(3, 11,width: width),
-        SizedBox(width: lineWidth,),
-        getCardBuild(4, 12,width: width),
-        SizedBox(width: lineWidth,),
-        getCardBuild(1, 13,width: width),
+        getCardBuild(1, 1, width: width),
+        SizedBox(
+          width: lineWidth,
+        ),
+        getCardBuild(2, 10, width: width),
+        SizedBox(
+          width: lineWidth,
+        ),
+        getCardBuild(3, 11, width: width),
+        SizedBox(
+          width: lineWidth,
+        ),
+        getCardBuild(4, 12, width: width),
+        SizedBox(
+          width: lineWidth,
+        ),
+        getCardBuild(1, 13, width: width),
       ],
     );
   }
@@ -744,14 +972,15 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                 width: 14,
                 height: 14,
               ),
-              if(bei>1)Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(
-                  'x'+bei.toString(),
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 12, color: Color(0xffffffff)),
+              if (bei > 1)
+                Padding(
+                  padding: const EdgeInsets.only(left: 2.0),
+                  child: Text(
+                    'x' + bei.toString(),
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 12, color: Color(0xffffffff)),
+                  ),
                 ),
-              ),
             ],
           ),
           Padding(
@@ -759,11 +988,354 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
             child: Text(
               fen.toString(),
               maxLines: 1,
-              style: TextStyle(fontSize: 14, color: fen>0?Color(0xff00ea00):Color(0xffffffff)),
+              style: TextStyle(fontSize: 14, color: fen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
             ),
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+///10轮，总览，第一个页面组件
+class ResultAllInfoItemContainer extends StatefulWidget {
+  const ResultAllInfoItemContainer({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ResultAllInfoItemContainerState createState() => _ResultAllInfoItemContainerState();
+}
+
+class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer> with AutomaticKeepAliveClientMixin {
+
+  Color roomMasterColor = Color(0xffffaf49);
+
+
+  @override
+  void initState() {
+      super.initState();
+  }
+
+  onClose() async {
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var headWidth = 30.0;
+    var user = context.watch<SerUser>();
+    return Padding(
+      padding: const EdgeInsets.only(top: 0, bottom: 8, left: 8.0, right: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          getZhuangPlayerItemBuild(),
+          Row(
+            children: [
+              getPlayerItem1Build(),
+              // if(false)
+              getPlayerItem2Build(),
+              getPlayerItem3Build(),
+              getPlayerItem4Build(),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  getZhuangPlayerItemBuild() {
+    var headWidth = 80.0;
+    var user = context.watch<SerUser>();
+    var isSelf = true;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        DecoratedBox(
+          decoration: isSelf
+              ? BoxDecoration(
+              border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+              : BoxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          width: headWidth,
+                          height: headWidth,
+                          margin: EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xffffffff),
+                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+                          ),
+                          child: Center(
+                            child: HeadImage.network(
+                              '',
+                              width: headWidth - 1,
+                              height: headWidth - 1,
+                            ),
+                          ),
+                        ),
+                        if (true)
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+                            ),
+                            child: SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: MyButton.gradient(
+                                    backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+                                    child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+                          )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 80,
+                      height: 15,
+                      child: Center(
+                        child: Text(
+                          user.nickname,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
+                          style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: getJifenBuild(100, bei: 3),
+                ),
+
+                for(var i = 0 ;i<10;i++)Builder(
+                  builder: (context) {
+                    var itemFen = i ;
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: SizedBox(
+                            width:25,
+                            child: Text(
+                              i.toString()+'：',
+                              maxLines: 1,
+                              style: TextStyle(fontSize: 14, color: Color(0xffffffff)),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: Text(
+                            itemFen.toString(),
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 14, color: itemFen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  getPlayerItem1Build() {
+    bool isSelf = true;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
+        child: Row(
+          children: [
+            getHeadBuild(),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: getJifenBuild(100, bei: 2),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getPlayerItem2Build() {
+    bool isSelf = true;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: getJifenBuild(-100),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: getHeadBuild(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getPlayerItem3Build() {
+    bool isSelf = false;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
+        child: Row(
+          children: [
+            getHeadBuild(),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: getJifenBuild(100),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getPlayerItem4Build() {
+    bool isSelf = false;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: getJifenBuild(100),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: getHeadBuild(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getHeadBuild() {
+    var headWidth = 30.0;
+    var user = context.watch<SerUser>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              width: headWidth,
+              height: headWidth,
+              margin: EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                color: Color(0xffffffff),
+                borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+              ),
+              child: Center(
+                child: HeadImage.network(
+                  '',
+                  width: headWidth - 1,
+                  height: headWidth - 1,
+                ),
+              ),
+            ),
+            if (true)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+                ),
+                child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: MyButton.gradient(
+                        backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+                        child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+              )
+          ],
+        ),
+        SizedBox(
+          width: 50,
+          height: 15,
+          child: Text(
+            user.nickname,
+            maxLines: 1,
+            overflow: TextOverflow.visible,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  getJifenBuild(int fen, {int bei = 1}) {
+    return Padding(
+      padding: EdgeInsets.only(left: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Image.asset(
+                "assets/images/jifen.png",
+                width: 14,
+                height: 14,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 5.0),
+            child: Text(
+              fen.toString(),
+              maxLines: 1,
+              style: TextStyle(fontSize: 14, color: fen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

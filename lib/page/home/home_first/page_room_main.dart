@@ -134,7 +134,8 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
     Vibration.vibrate(duration: 200, amplitude: 50);
     await PageGameMain(roomId: widget.roomId,).push(context);
-
+    var user = context.read<SerUser>();
+    user.gameId = null;
     Navigator.pop(context);
     // initData();
     ///TODO 重置房间
