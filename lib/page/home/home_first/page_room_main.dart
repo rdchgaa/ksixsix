@@ -61,7 +61,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
   initData(){
     getRoomState();
-    roomTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+    roomTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       getRoomState();
     });
   }

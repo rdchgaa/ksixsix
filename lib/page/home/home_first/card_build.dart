@@ -17,9 +17,26 @@ import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import 'dart:math' as math;
 
-Widget getCardBuild(int type, int num,{Function onTap,double width = 50.0}) {
+Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}) {
 
-  Widget child;
+  //花色校正
+  Color textColor = Color(0xff000000);
+  var image = 'assets/images/huase1.png';
+  if (type == 1) {
+    image = 'assets/images/huase4.png'; //黑桃
+    textColor = Color(0xff000000);
+  } else if (type == 2) {
+    image = 'assets/images/huase1.png'; //红桃
+    textColor = Color(0xB4FA0000);
+  } else if (type == 3) {
+    image = 'assets/images/huase2.png'; //梅花
+    textColor = Color(0xff000000);
+  } else if (type == 4) {
+    image = 'assets/images/huase3.png'; //方块
+    textColor = Color(0xB4FA0000);
+  }
+
+    Widget child;
   var height = width / 5.7 * 8.7;
 
   double fontSize = 10;
@@ -41,20 +58,6 @@ Widget getCardBuild(int type, int num,{Function onTap,double width = 50.0}) {
     value = 'Q';
   } else if (num == 13) {
     value = 'K';
-  }
-
-  Color textColor = Color(0xff000000);
-  var image = 'assets/images/huase1.png';
-  if (type == 1) {
-    image = 'assets/images/huase1.png';
-    textColor = Color(0xB4FA0000);
-  } else if (type == 2) {
-    image = 'assets/images/huase2.png';
-  } else if (type == 3) {
-    image = 'assets/images/huase3.png';
-    textColor = Color(0xB4FA0000);
-  } else if (type == 4) {
-    image = 'assets/images/huase4.png';
   }
 
   var jqkImage = 'assets/images/huase1.png';
@@ -183,7 +186,7 @@ Widget getCardBuild(int type, int num,{Function onTap,double width = 50.0}) {
   }
 
   return InkWell(
-    onTap: onTap,
+    onDoubleTap: onDoubleTap,
     child: child,
   );
 }

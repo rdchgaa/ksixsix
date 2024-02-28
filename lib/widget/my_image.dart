@@ -89,15 +89,15 @@ class HeadImage1 extends StatefulWidget {
   }
 
   HeadImage1.file(
-      String url, {
-        this.width = 52.43,
-        this.height = 52.43,
-        this.tagColor,
-        this.isSelect,
-        this.borderRadius = const BorderRadius.all(Radius.circular(200)),
-        this.sex,
-        this.isGroup = false,
-      }) : super(key: ValueKey(url)) {
+    String url, {
+    this.width = 52.43,
+    this.height = 52.43,
+    this.tagColor,
+    this.isSelect,
+    this.borderRadius = const BorderRadius.all(Radius.circular(200)),
+    this.sex,
+    this.isGroup = false,
+  }) : super(key: ValueKey(url)) {
     if (url?.isNotEmpty ?? false) {
       _image = FileImage(File(url ?? ""));
     }
@@ -173,8 +173,8 @@ class _HeadImage1State extends State<HeadImage1> with WidgetsBindingObserver {
     if (null == _imageInfo) {
       child = DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(width: 2,color: Color(0xffcccccc)),
-          borderRadius: BorderRadius.all(Radius.circular(widget.height/2)),
+          border: Border.all(width: 2, color: Color(0xffcccccc)),
+          borderRadius: BorderRadius.all(Radius.circular(widget.height / 2)),
           boxShadow: [
             BoxShadow(
               color: const Color(0x33b3b3b3),
@@ -258,10 +258,6 @@ class _HeadImage1State extends State<HeadImage1> with WidgetsBindingObserver {
   }
 }
 
-
-
-
-
 class HeadDecoration {
   final Widget child;
   final double width;
@@ -297,31 +293,31 @@ class HeadImage extends StatefulWidget {
 
   HeadImage.memory(Uint8List image,
       {Key key,
-        this.width = 54,
-        this.height = 54,
-        this.borderRadius = const BorderRadius.all(Radius.circular(200)),
-        this.decoration,
-        this.child,
-        this.fit = BoxFit.cover,
-        this.defaultAssetImage,
-        this.alignment = Alignment.center,
-        this.border})
+      this.width = 54,
+      this.height = 54,
+      this.borderRadius = const BorderRadius.all(Radius.circular(200)),
+      this.decoration,
+      this.child,
+      this.fit = BoxFit.cover,
+      this.defaultAssetImage,
+      this.alignment = Alignment.center,
+      this.border})
       : super(key: key) {
     _image = image;
   }
 
   HeadImage.network(
-      String url, {
-        this.width = 54,
-        this.height = 54,
-        this.borderRadius = const BorderRadius.all(Radius.circular(200)),
-        this.decoration,
-        this.child,
-        this.fit = BoxFit.cover,
-        this.defaultAssetImage,
-        this.alignment = Alignment.center,
-        this.border,
-      }) : super(key: ValueKey(url)) {
+    String url, {
+    this.width = 54,
+    this.height = 54,
+    this.borderRadius = const BorderRadius.all(Radius.circular(200)),
+    this.decoration,
+    this.child,
+    this.fit = BoxFit.cover,
+    this.defaultAssetImage,
+    this.alignment = Alignment.center,
+    this.border,
+  }) : super(key: ValueKey(url)) {
     _url = url;
   }
 
@@ -343,18 +339,24 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    if(widget._image!=null){
+    if (widget._image != null) {
       child = Image.memory(widget._image);
       // child = ImageUtil.networkImage(
       //     url: widget._url ?? '',
       //     errorWidget: ("assets/images2/icon-touxiang.webp".toImage
       //       ..width = widget.width
       //       ..height = widget.height));
-    }else if(widget._url!=null){
+    } else if (widget._url != null) {
+      var url = (widget._url) ?? '';
+      url = url.replaceAll('http:/192', 'http://192');
       child = ImageUtil.networkImage(
-          url: widget._url ?? '',
+          url: url,
           // errorWidget: (Image.asset('assets/images2/icon-touxiang.webp',width: widget.width,height: widget.height,)));
-        errorWidget: (Image.asset('assets/images/male.png',width: widget.width,height: widget.height,)));
+          errorWidget: (Image.asset(
+            'assets/images/male.png',
+            width: widget.width,
+            height: widget.height,
+          )));
     }
     child = ClipRRect(
       borderRadius: widget.borderRadius,
@@ -416,37 +418,75 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
 }
 
 ///各牌型间的大小 :  炸弹>五小>金牛>银牛>牛牛>有牛>没牛。
-Widget getNiuTypeIcon(int type,{double width = 25}){
-// 7炸弹>6五小>5金牛>4银牛>3牛牛>2有牛>1没牛。
+Widget getNiuTypeIcon(var pokerResult, {double width = 25}) {
+  //HasNiu      int64        `json:"has_niu"`       // 是否有牛  // 0:无牛  1:有牛  2:牛牛  3:五小  4:银牛  5:金牛  6:炸弹
+//type     7炸弹>6五小>5金牛>4银牛>3牛牛>2有牛>1没牛。
+  if(pokerResult==null){
+    return SizedBox();
+  }
+  var type = 1;
+  if (pokerResult['has_niu'] == 0) {
+    type = 1;
+  } else if (pokerResult['has_niu'] == 1) {
+    type = 2;
+  } else if (pokerResult['has_niu'] == 2) {
+    type = 3;
+  } else if (pokerResult['has_niu'] == 3) {
+    type = 6;
+  } else if (pokerResult['has_niu'] == 4) {
+    type = 4;
+  } else if (pokerResult['has_niu'] == 5) {
+    type = 5;
+  } else if (pokerResult['has_niu'] == 6) {
+    type = 7;
+  }
+
+
   Widget child = SizedBox();
-  if(type==7){
+  if(type == 1){
+    return SizedBox();
+  }
+  if (type == 7) {
     child = Image.asset('assets/images/zhadan.png');
   }
-  if(type==6){
+  if (type == 6) {
     child = DecoratedBox(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          color: Color(0xffff0000),
-          border: Border.all(width: 1,color: Color(0xffffffff))
-      ),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xffff0000), border: Border.all(width: 1, color: Color(0xffffffff))),
       child: SizedBox(
         width: width,
         height: width,
-        child: Center(child: Text('小',style: TextStyle(fontSize: 12,color: Color(0xffffffff)),)),
+        child: Center(
+            child: Text(
+          '小',
+          style: TextStyle(fontSize: 12, color: Color(0xffffffff)),
+        )),
       ),
     );
   }
-  if(type==5){
+  if (type == 5) {
     child = Image.asset('assets/images/jinniu.png');
   }
-  if(type==4){
+  if (type == 4) {
     child = Image.asset('assets/images/yinniu.png');
   }
-  if(type==3){
-    child = Image.asset('assets/images/niuniu.png',color: Color(0xff00a2ff),);
+  if (type == 3) {
+    child = Image.asset('assets/images/niuniu.png', color: Color(0xff00a2ff));
   }
-  if(type==2){
-    child = Center(child: Image.asset('assets/images/youniu.png',width:20,height:20,color: Color(0xff00fc00),));
+  if (type == 2) {
+    //有牛
+    child = Row(
+      children: [
+        Center(child: Image.asset('assets/images/youniu.png', width: 20, height: 20, color: Color(0xff00fc00))),
+        Padding(
+          padding: EdgeInsets.only(left: 2),
+          child: Text(pokerResult['niu_num'].toString(), style: TextStyle(fontSize: 18, color: Color(0xff00fc00), fontWeight: FontWeight.bold)),
+        )
+      ],
+    );
+    return SizedBox(
+      child: child,
+    );
   }
 
   return SizedBox(

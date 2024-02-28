@@ -177,7 +177,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                             width: 50,
                                             height: 50,
                                             decoration: BoxDecoration(
-                                              boxShadow: [BoxShadow(color: Color(0x66ffffff), blurRadius: 33, offset: Offset(0, 0))],
+                                              boxShadow: [BoxShadow(color: Color(0xaaffffff), blurRadius: 33, offset: Offset(0, 0))],
                                             ),
                                             child: HeadImage.network(
                                               user.info.avatar ?? '',

@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/dialog_image.dart';
 import 'package:ima2_habeesjobs/net/net_file.dart';
+import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
@@ -69,16 +70,33 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
       _avatarUrl = (await ret.result).url;
     }
 
-    if (null != headImage) {
-      userInfo.avatar = headImage;
-      user.avatarUrl = headImage;
+    var res = await LoadingCall.of(context).call((state, controller) async {
+      return await NetWork.userModify(context,_unName.text,_avatarUrl);
+    }, isShowLoading: false);
+
+    if (res != null) {
+      if (res == 1) {
+      } else {
+        //success
+      }
+    } else {}
+
+
+
+
+
+
+
+    if (null != _avatarUrl) {
+      userInfo.avatar = _avatarUrl;
+      user.avatarUrl = _avatarUrl;
     }
     if(_unName.text!=''){
       userInfo.name = _unName.text;
       user.nickname = _unName.text;
     }
 
-    userInfo.gender = gender;
+    // userInfo.gender = gender;
     user.info = userInfo;
 
     setUserInfo(userInfo);
@@ -286,7 +304,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                   ],
                 ),
               ),
-              Padding(
+              if(false)Padding(
                 padding: EdgeInsets.only(top: 32,bottom: 10),
                 child: Text(
                   '性别',
@@ -299,7 +317,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                   softWrap: false,
                 ),
               ),
-              Padding(
+              if(false)Padding(
                 padding: EdgeInsets.only(left: 0, top: 18),
                 child: Row(
                   children: [

@@ -316,11 +316,11 @@ class _BetButtonBuildState extends State<BetButtonBuild> with TickerProviderStat
 ///当轮结果
 class ResultSingleBuild extends StatefulWidget {
   final Function onClose;
-  final Widget child;
+  final resultData;
 
   const ResultSingleBuild({
     Key key,
-    this.child,
+    this.resultData,
     this.onClose,
   }) : super(key: key);
 
@@ -392,7 +392,12 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                       onTap: () {},
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Color(0xcc555555),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xcc0f7357),Color(0xcc011713)],
+                            ),
+                            // color: Color(0xcc555555),
                             boxShadow: [BoxShadow(color: Color(0x99555555), blurRadius: 33, offset: Offset(0, 0))],
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: Color(0xffffffff), width: 2)),
@@ -402,7 +407,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                             SizedBox(
                               width: con.maxWidth * 0.9,
                               height: con.maxHeight * 0.8,
-                              child: ResultSingleItemContainer(),
+                              child: ResultSingleItemContainer(resultData:widget.resultData),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5.0, right: 5),
@@ -465,7 +470,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
         setState(() {});
       });
     _animation = Tween(begin: const Offset(0, -500), end: const Offset(0, 0)).animate(_slideController);
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(Duration(milliseconds: 2000), () {
       _slideController.forward();
     });
   }
@@ -512,7 +517,12 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                       onTap: () {},
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Color(0xcc555555),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xcc075383),Color(0xcc011826)],
+                            ),
+                            // color: Color(0xcc555555),
                             boxShadow: [BoxShadow(color: Color(0x99555555), blurRadius: 33, offset: Offset(0, 0))],
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: Color(0xffffffff), width: 2)),
@@ -551,7 +561,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                                       child: TabBarView(
                                         children: <Widget>[
                                           mainBuild(),
-                                          for(var i = 0 ;i<10;i++)getSingleBuild(),
+                                          for (var i = 0; i < 10; i++) getSingleBuild(),
                                         ],
                                       ),
                                     ),
@@ -590,7 +600,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
     );
   }
 
-  mainBuild(){
+  mainBuild() {
     return ResultAllInfoItemContainer();
   }
 
@@ -599,11 +609,11 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
   }
 }
 
-
 ///当轮结果 组件
 class ResultSingleItemContainer extends StatefulWidget {
+  final resultData;
   const ResultSingleItemContainer({
-    Key key,
+    Key key, this.resultData,
   }) : super(key: key);
 
   @override
@@ -611,9 +621,7 @@ class ResultSingleItemContainer extends StatefulWidget {
 }
 
 class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> with AutomaticKeepAliveClientMixin {
-
   Color roomMasterColor = Color(0xffffaf49);
-
 
   @override
   void initState() {
@@ -621,7 +629,6 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
   }
 
   onClose() async {
-
     setState(() {});
   }
 
@@ -634,30 +641,38 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
   Widget build(BuildContext context) {
     var headWidth = 30.0;
     var user = context.watch<SerUser>();
+    var zhuangResult = null;
+    var playerList = [];
+    for(var i = 0 ;i<widget.resultData.length;i++){
+      if(widget.resultData[i]['vocation']==1){
+        zhuangResult = widget.resultData[i];
+      }else{
+        playerList.add(widget.resultData[i]);
+      }
+    }
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 8, left: 8.0, right: 8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          getZhuangPlayerItemBuild(),
+          getZhuangPlayerItemBuild(zhuangResult),
           Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getPlayerItem1Build(),
-                  // if(false)
-                  getPlayerItem2Build(),
+                  if(playerList.length>=1)getPlayerItem1Build(playerList[0]),
+                  if(playerList.length>=2)getPlayerItem2Build(playerList[1]),
                 ],
               ),
               // if(false)
-              Padding(
+              if(playerList.length>=3)Padding(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    getPlayerItem3Build(),
-                    getPlayerItem4Build(),
+                    if(playerList.length>=3)getPlayerItem3Build(playerList[2]),
+                    if(playerList.length>=4)getPlayerItem4Build(playerList[3]),
                   ],
                 ),
               )
@@ -668,17 +683,20 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getZhuangPlayerItemBuild() {
+  getZhuangPlayerItemBuild(var resultItem) {
     var headWidth = 40.0;
     var user = context.watch<SerUser>();
-    var isSelf = true;
+    var isSelf = false;
+    if(resultItem['user_id']==getUserId()){
+      isSelf = true;
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         DecoratedBox(
           decoration: isSelf
               ? BoxDecoration(
-              border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+                  border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
               : BoxDecoration(),
           child: Padding(
             padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
@@ -727,7 +745,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                       height: 15,
                       child: Center(
                         child: Text(
-                          user.nickname,
+                          resultItem['user_id'].toString(),
                           maxLines: 1,
                           overflow: TextOverflow.visible,
                           style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
@@ -738,15 +756,15 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 0),
-                  child: getPokersBuild(width: 35),
+                  child: getPokersBuild(resultItem['poker'],width: 35),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: getNiuTypeIcon(6),
+                  child: getNiuTypeIcon(resultItem['poker_result']),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: getJifenBuild(100, bei: 3),
+                  child: getJifenBuild(resultItem['score'], bei: resultItem['multiple']),
                 ),
               ],
             ),
@@ -756,8 +774,11 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getPlayerItem1Build() {
-    bool isSelf = true;
+  getPlayerItem1Build(var resultItem) {
+    var isSelf = false;
+    if(resultItem['user_id']==getUserId()){
+      isSelf = true;
+    }
     return DecoratedBox(
       decoration: isSelf
           ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
@@ -766,18 +787,18 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
         padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
         child: Row(
           children: [
-            getHeadBuild(),
+            getHeadBuild(resultItem),
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getPokersBuild(),
+              child: getPokersBuild(resultItem['poker']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getNiuTypeIcon(7),
+              child: getNiuTypeIcon(resultItem['poker_result']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getJifenBuild(100, bei: 2),
+              child: getJifenBuild(resultItem['score'], bei: resultItem['multiple']),
             ),
           ],
         ),
@@ -785,8 +806,11 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getPlayerItem2Build() {
-    bool isSelf = true;
+  getPlayerItem2Build(var resultItem) {
+    var isSelf = false;
+    if(resultItem['user_id']==getUserId()){
+      isSelf = true;
+    }
     return DecoratedBox(
       decoration: isSelf
           ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
@@ -797,19 +821,19 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
           children: [
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getJifenBuild(-100),
+              child: getJifenBuild(resultItem['score'], bei: resultItem['multiple']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getNiuTypeIcon(6),
+              child: getNiuTypeIcon(resultItem['poker_result']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getPokersBuild(),
+              child: getPokersBuild(resultItem['poker']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getHeadBuild(),
+              child: getHeadBuild(resultItem),
             ),
           ],
         ),
@@ -817,8 +841,11 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getPlayerItem3Build() {
-    bool isSelf = false;
+  getPlayerItem3Build(var resultItem) {
+    var isSelf = false;
+    if(resultItem['user_id']==getUserId()){
+      isSelf = true;
+    }
     return DecoratedBox(
       decoration: isSelf
           ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
@@ -827,18 +854,18 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
         padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
         child: Row(
           children: [
-            getHeadBuild(),
+            getHeadBuild(resultItem),
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getPokersBuild(),
+              child: getPokersBuild(resultItem['poker']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getNiuTypeIcon(3),
+              child: getNiuTypeIcon(resultItem['poker_result']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getJifenBuild(100),
+              child: getJifenBuild(resultItem['score'], bei: resultItem['multiple']),
             ),
           ],
         ),
@@ -846,8 +873,11 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getPlayerItem4Build() {
-    bool isSelf = false;
+  getPlayerItem4Build(var resultItem) {
+    var isSelf = false;
+    if(resultItem['user_id']==getUserId()){
+      isSelf = true;
+    }
     return DecoratedBox(
       decoration: isSelf
           ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
@@ -858,19 +888,19 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
           children: [
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getJifenBuild(100),
+              child: getJifenBuild(resultItem['score'], bei: resultItem['multiple']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getNiuTypeIcon(2),
+              child: getNiuTypeIcon(resultItem['poker_result']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: getPokersBuild(),
+              child: getPokersBuild(resultItem['poker']),
             ),
             Padding(
               padding: EdgeInsets.only(left: 0),
-              child: getHeadBuild(),
+              child: getHeadBuild(resultItem),
             ),
           ],
         ),
@@ -878,7 +908,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getHeadBuild() {
+  getHeadBuild(var resultItem) {
     var headWidth = 30.0;
     var user = context.watch<SerUser>();
     return Column(
@@ -904,7 +934,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                 ),
               ),
             ),
-            if (true)
+            if (false)
               DecoratedBox(
                 decoration: BoxDecoration(
                   boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
@@ -922,7 +952,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
           width: 50,
           height: 15,
           child: Text(
-            user.nickname,
+            resultItem['user_id'].toString(),
             maxLines: 1,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
@@ -933,28 +963,28 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getPokersBuild({double width = 28}) {
+  getPokersBuild(var pokers ,{double width = 28}) {
     var lineWidth = 5.0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        getCardBuild(1, 1, width: width),
+        getCardBuild(pokers[0]['hua_se'], pokers[0]['poker_number'], width: width),
         SizedBox(
           width: lineWidth,
         ),
-        getCardBuild(2, 10, width: width),
+        getCardBuild(pokers[1]['hua_se'], pokers[1]['poker_number'], width: width),
         SizedBox(
           width: lineWidth,
         ),
-        getCardBuild(3, 11, width: width),
+        getCardBuild(pokers[2]['hua_se'], pokers[2]['poker_number'], width: width),
         SizedBox(
           width: lineWidth,
         ),
-        getCardBuild(4, 12, width: width),
+        getCardBuild(pokers[3]['hua_se'], pokers[3]['poker_number'], width: width),
         SizedBox(
           width: lineWidth,
         ),
-        getCardBuild(1, 13, width: width),
+        getCardBuild(pokers[4]['hua_se'], pokers[4]['poker_number'], width: width),
       ],
     );
   }
@@ -1011,17 +1041,14 @@ class ResultAllInfoItemContainer extends StatefulWidget {
 }
 
 class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer> with AutomaticKeepAliveClientMixin {
-
   Color roomMasterColor = Color(0xffffaf49);
-
 
   @override
   void initState() {
-      super.initState();
+    super.initState();
   }
 
   onClose() async {
-
     setState(() {});
   }
 
@@ -1057,21 +1084,172 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   getZhuangPlayerItemBuild() {
     var headWidth = 80.0;
     var user = context.watch<SerUser>();
-    var isSelf = true;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        DecoratedBox(
-          decoration: isSelf
-              ? BoxDecoration(
+    var isSelf = false;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(
               border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-              : BoxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        width: headWidth,
+                        height: headWidth,
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xffffffff),
+                          borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+                        ),
+                        child: Center(
+                          child: HeadImage.network(
+                            '',
+                            width: headWidth - 1,
+                            height: headWidth - 1,
+                          ),
+                        ),
+                      ),
+                      if (true)
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
+                          ),
+                          child: SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: MyButton.gradient(
+                                  backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
+                                  child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
+                        )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: SizedBox(
+                      width: 80,
+                      height: 35,
+                      child: Center(
+                        child: Text(
+                          user.nickname,
+                          maxLines: 2,
+                          overflow: TextOverflow.visible,
+                          style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: getJifenBuild(100),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getPlayerItem1Build() {
+    var headWidth = 80.0;
+    var user = context.watch<SerUser>();
+    var isSelf = true;
+    return DecoratedBox(
+      decoration: isSelf
+          ? BoxDecoration(
+          border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+          : BoxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        width: headWidth,
+                        height: headWidth,
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xffffffff),
+                          borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+                        ),
+                        child: Center(
+                          child: HeadImage.network(
+                            '',
+                            width: headWidth - 1,
+                            height: headWidth - 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: SizedBox(
+                      width: 80,
+                      height: 35,
+                      child: Center(
+                        child: Text(
+                          user.nickname,
+                          maxLines: 2,
+                          overflow: TextOverflow.visible,
+                          style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: getJifenBuild(-500,),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  getPlayerItem2Build() {
+    var headWidth = 80.0;
+    var user = context.watch<SerUser>();
+    var isSelf = false;
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: DecoratedBox(
+        decoration: isSelf
+            ? BoxDecoration(
+            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+            : BoxDecoration(),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -1094,160 +1272,177 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                             ),
                           ),
                         ),
-                        if (true)
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-                            ),
-                            child: SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: MyButton.gradient(
-                                    backgroundColor: [Color(0xfff3ec6c), Color(0xffbe5a05)],
-                                    child: Text('庄', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffffffff))))),
-                          )
                       ],
                     ),
-                    SizedBox(
-                      width: 80,
-                      height: 15,
-                      child: Center(
-                        child: Text(
-                          user.nickname,
-                          maxLines: 1,
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: SizedBox(
+                        width: 80,
+                        height: 35,
+                        child: Center(
+                          child: Text(
+                            user.nickname,
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: getJifenBuild(100, bei: 3),
-                ),
-
-                for(var i = 0 ;i<10;i++)Builder(
-                  builder: (context) {
-                    var itemFen = i ;
-                    return Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: SizedBox(
-                            width:25,
-                            child: Text(
-                              i.toString()+'：',
-                              maxLines: 1,
-                              style: TextStyle(fontSize: 14, color: Color(0xffffffff)),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Text(
-                            itemFen.toString(),
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 14, color: itemFen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: getJifenBuild(-100),
+              ),
+            ],
           ),
-        ),
-      ],
-    );
-  }
-
-  getPlayerItem1Build() {
-    bool isSelf = true;
-    return DecoratedBox(
-      decoration: isSelf
-          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-          : BoxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
-        child: Row(
-          children: [
-            getHeadBuild(),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: getJifenBuild(100, bei: 2),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  getPlayerItem2Build() {
-    bool isSelf = true;
-    return DecoratedBox(
-      decoration: isSelf
-          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-          : BoxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 0),
-              child: getJifenBuild(-100),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 0),
-              child: getHeadBuild(),
-            ),
-          ],
         ),
       ),
     );
   }
 
   getPlayerItem3Build() {
-    bool isSelf = false;
-    return DecoratedBox(
-      decoration: isSelf
-          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-          : BoxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 0.0, right: 8.0, top: 2, bottom: 2),
-        child: Row(
-          children: [
-            getHeadBuild(),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: getJifenBuild(100),
-            ),
-          ],
+    var headWidth = 80.0;
+    var user = context.watch<SerUser>();
+    var isSelf = false;
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: DecoratedBox(
+        decoration: isSelf
+            ? BoxDecoration(
+            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+            : BoxDecoration(),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          width: headWidth,
+                          height: headWidth,
+                          margin: EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xffffffff),
+                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+                          ),
+                          child: Center(
+                            child: HeadImage.network(
+                              '',
+                              width: headWidth - 1,
+                              height: headWidth - 1,
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: SizedBox(
+                        width: 80,
+                        height: 35,
+                        child: Center(
+                          child: Text(
+                            user.nickname,
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: getJifenBuild(100),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   getPlayerItem4Build() {
-    bool isSelf = false;
-    return DecoratedBox(
-      decoration: isSelf
-          ? BoxDecoration(border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-          : BoxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 0.0, top: 2, bottom: 2),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 0),
-              child: getJifenBuild(100),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 0),
-              child: getHeadBuild(),
-            ),
-          ],
+    var headWidth = 80.0;
+    var user = context.watch<SerUser>();
+    var isSelf = false;
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: DecoratedBox(
+        decoration: isSelf
+            ? BoxDecoration(
+            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
+            : BoxDecoration(),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          width: headWidth,
+                          height: headWidth,
+                          margin: EdgeInsets.only(top: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xffffffff),
+                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
+                          ),
+                          child: Center(
+                            child: HeadImage.network(
+                              '',
+                              width: headWidth - 1,
+                              height: headWidth - 1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: SizedBox(
+                        width: 80,
+                        height: 35,
+                        child: Center(
+                          child: Text(
+                            user.nickname,
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: getJifenBuild(-100),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1311,26 +1506,36 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   getJifenBuild(int fen, {int bei = 1}) {
     return Padding(
       padding: EdgeInsets.only(left: 0),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
               Image.asset(
                 "assets/images/jifen.png",
-                width: 14,
-                height: 14,
+                width: 20,
+                height: 20,
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 5.0),
+            padding: const EdgeInsets.only(top: 5.0),
             child: Text(
               fen.toString(),
               maxLines: 1,
-              style: TextStyle(fontSize: 14, color: fen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
+              style: TextStyle(fontSize: 16, color: fen > 0 ? Color(0xff00ea00) : Color(0xffffffff)),
             ),
           ),
+          if (fen > 0)
+            Padding(
+              padding: EdgeInsets.only(top: 0),
+              child: Image.asset(
+                "assets/images/win.png",
+                width: 80,
+                height: 50,
+                fit: BoxFit.contain,
+              ),
+            )
         ],
       ),
     );
@@ -1339,3 +1544,4 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   @override
   bool get wantKeepAlive => true;
 }
+

@@ -10,6 +10,7 @@ import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/alert_dialog_result_all.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/page_change_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
@@ -61,20 +62,14 @@ class _PageGameMainState extends State<PageGameMain> {
   List scoreboard = [];   // 计分牌 当前局每个玩家的分
   List user_bet = [];     // 当前轮是下注信息
   List user_poker = [];   // 玩家的牌
+  var myPoker = null;
 
   List<int> myBetting = []; //我的投注信息
 
   var resultData = null; //当轮结果
-
-  bool showCard1 = false;
-  bool showCard2 = false;
-  bool showCard3 = false;
-  bool showCard4 = false;
-  bool showCard5 = false;
+  var finalResultData = null; ///最终10轮结果
 
   bool selfReady = false;  //自己是否准备
-
-
   bool isZhuang = false;   //自己是否是庄家
   int vocation_user_id = 0 ;// 庄家的用户id
 
@@ -89,6 +84,15 @@ class _PageGameMainState extends State<PageGameMain> {
 
   bool showFinalResult = false; ///展示10轮的最终结果
 
+
+  ///卡片显示
+  bool showCard1 = false;
+  bool showCard2 = false;
+  bool showCard3 = false;
+  bool showCard4 = false;
+  bool showCard5 = false;
+
+
   int round = 1; //当前轮次  --共10轮
 
   int bettingCountdown = 10; //投注倒计时
@@ -98,6 +102,10 @@ class _PageGameMainState extends State<PageGameMain> {
   Timer bettingTimer;
   Timer lookingTimer;
   Timer singleResultTimer;
+
+
+  ///挂
+  bool showChangePokerBuild = false;
 
   @override
   void initState() {
@@ -133,22 +141,15 @@ class _PageGameMainState extends State<PageGameMain> {
   // }
 
   initData() async {
-    getRoomState();
+    getGameState();
     roomTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      getRoomState();
+      getGameState();
 
       // getGameState();
     });
   }
 
   getGameState() async {
-    // var res = await LoadingCall.of(context).call((state, controller) async {
-    //   return await NetWork.roomToGameStart(context, getUserId(), widget.roomId);
-    // }, isShowLoading: false);
-    // if (res == null || res == 1) {}
-  }
-
-  getRoomState() async {
     var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.getGameState(context,widget.roomId,user.gameId);
@@ -175,6 +176,7 @@ class _PageGameMainState extends State<PageGameMain> {
     user_bet = res['user_bet'];
     vocation_user_id = res['vocation_user_id'];
     user_poker = res['user_poker'];
+    setSelfPoker(res['user_poker']);
     if (mounted) {
       setState(() {});
     }
@@ -208,6 +210,21 @@ class _PageGameMainState extends State<PageGameMain> {
       getResultData();
     }else if (state == 8) {
       setCurentState(5);// 8.本局游戏结束(本局游戏10轮结束)
+      getFinalResultData();
+    }
+  }
+
+  setSelfPoker(userPokers){
+    if(userPokers!=null){
+      for (var i = 0; i < userPokers.length; i++) {
+        if (userPokers[i]['user_id'] == getUserId()) {
+          myPoker = userPokers[i];
+          setState(() {
+
+          });
+        } else {
+        }
+      }
     }
   }
 
@@ -219,6 +236,17 @@ class _PageGameMainState extends State<PageGameMain> {
       }, isShowLoading: false);
       setState(() {
         resultData =res;
+      });
+    }
+  }
+  getFinalResultData() async{
+    if(finalResultData==null){
+      var user = context.read<SerUser>();
+      var res = await LoadingCall.of(context).call((state, controller) async {
+        return await NetWork.gameFinalResult(context,getUserId());
+      }, isShowLoading: false);
+      setState(() {
+        finalResultData =res;
       });
     }
   }
@@ -322,19 +350,34 @@ class _PageGameMainState extends State<PageGameMain> {
     ///TODO
     showFinalResult = (num ==5||num ==6 ||num ==1 ||num ==10); ///查看最终结果 10轮
 
+
+    if(num==5){
+      showChangePokerBuild = false;
+    }
     setState(() {});
 
+    //等待发牌阶段  每轮开始  初始化扑克牌
     if((num ==6)){
-      //每轮开始  初始化扑克牌
       initPoker();
-      //十轮一局，结束查看整局结果
-      if(round==10){
-        // initGame();
-        // await showAlertDialogResultAll(context);
-        // return;
+    }
+
+    //抢庄阶段后 清楚finalResultData
+    if(num ==2||num ==3||num ==4){
+      if(finalResultData!=null){
+        finalResultData = null;
+        setState(() {
+        });
       }
     }
 
+    //抢庄阶段后 清楚finalResultData
+    if(num ==1||num ==2||num ==3||num ==4){
+      if(resultData!=null){
+        resultData = null;
+        setState(() {
+        });
+      }
+    }
     //投注倒计时触发
     // if (num == 3) {
     //   bettingTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
@@ -402,9 +445,16 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   showMyPoker(int num){ //0: 全部盖住, 12345:翻开单张 , 6:全部翻开
-    if(!looking){
-      return;
+
+    var user = context.read<SerUser>();
+    if(user.canChange){
+      ///是否有权限变牌
+    }else{
+      if(!looking){
+        return;
+      }
     }
+
     if(num==0){
       setState(() {
         showCard1 = false;
@@ -606,10 +656,11 @@ class _PageGameMainState extends State<PageGameMain> {
                               getBetBuild(),
                             ],
                           ),
-                          Positioned(bottom: 5, left: 60, child: getSelfInfoItemBuild()),
-                          Positioned(top: 0, child: getMyCardBuild()),
-                          Positioned(bottom: 0, right: 0, child: getReadyBuild()),
-                          Positioned(child: getCenterInfoBuild()),
+                          Positioned(bottom: 5, left: 60, child: getSelfInfoItemBuild()), //底部个人信息
+                          Positioned(top: 0, child: getMyCardBuild()),    //顶部我的排
+                          Positioned(bottom: 0, right: 0, child: getReadyBuild()),//准备 、开始按钮
+                          Positioned(child: getCenterInfoBuild()),  //中间 游戏中 提示按钮信息
+                          Positioned(child: getChangePokerBuild()), // 变牌
                         ],
                       ),
                     ),
@@ -619,6 +670,17 @@ class _PageGameMainState extends State<PageGameMain> {
             }),
       ),
     );
+  }
+
+  getChangePokerBuild(){
+    if( showChangePokerBuild){
+      return ChangePokerBuild(userList:playerList,vocation_user_id:vocation_user_id,userPokers:user_poker,onClose: (){
+        setState(() {
+          showChangePokerBuild = false;
+        });
+      },);
+    }
+    return SizedBox();
   }
 
   selfZhuangBuild() {
@@ -657,7 +719,16 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getMyCardBuild() {
+
     if (betting || looking ||resulting) {
+      if(myPoker==null){
+        return SizedBox();
+      }
+      var poker1 = myPoker['poker'][0];
+      var poker2 = myPoker['poker'][1];
+      var poker3 = myPoker['poker'][2];
+      var poker4 = myPoker['poker'][3];
+      var poker5 = myPoker['poker'][4];
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -667,9 +738,7 @@ class _PageGameMainState extends State<PageGameMain> {
               onTap: () {
                 showMyPoker(1);
               })
-              : getCardBuild(1, 1, onTap: () { //自己的首张牌.桌面上
-            changeCard(1);
-          }),
+              : getCardBuild(poker1['hua_se'], poker1['poker_number']),
           SizedBox(width: 10),
           !showCard2
               ? CardBackBuild(
@@ -677,9 +746,7 @@ class _PageGameMainState extends State<PageGameMain> {
               onTap: () {
                 showMyPoker(2);
               })
-              : getCardBuild(2, 3, onTap: () {
-            changeCard(2);
-          }),
+              : getCardBuild(poker2['hua_se'], poker2['poker_number']),
           SizedBox(width: 10),
           !showCard3
               ? CardBackBuild(
@@ -687,9 +754,7 @@ class _PageGameMainState extends State<PageGameMain> {
               onTap: () {
                 showMyPoker(3);
               })
-              : getCardBuild(3, 11, onTap: () {
-            changeCard(3);
-          }),
+              : getCardBuild(poker3['hua_se'], poker3['poker_number']),
           SizedBox(width: 10),
           !showCard4
               ? CardBackBuild(
@@ -697,9 +762,7 @@ class _PageGameMainState extends State<PageGameMain> {
               onTap: () {
                 showMyPoker(4);
               })
-              : getCardBuild(4, 12, onTap: () {
-            changeCard(4);
-          }),
+              : getCardBuild(poker4['hua_se'], poker4['poker_number']),
           SizedBox(width: 10),
           !showCard5
               ? CardBackBuild(
@@ -707,8 +770,15 @@ class _PageGameMainState extends State<PageGameMain> {
               onTap: () {
                 showMyPoker(5);
               })
-              : getCardBuild(1, 13, onTap: () {
-            changeCard(5);
+              : getCardBuild(poker5['hua_se'], poker5['poker_number'], onDoubleTap: () {//最后一张双击改变
+            var user = context.read<SerUser>();
+            if(user.canChange){
+              ///是否有权限变牌
+              setState(() {
+                showChangePokerBuild = true;
+              });
+              showMyPoker(6);
+            }
           })
         ],
       );
@@ -1456,7 +1526,9 @@ class _PageGameMainState extends State<PageGameMain> {
       // },);
 
       ///TODO
-
+      if(finalResultData==null){
+        return SizedBox();
+      }
       return FinalResultBuild();
 
     }
@@ -1468,7 +1540,7 @@ class _PageGameMainState extends State<PageGameMain> {
       if(resultData==null){
         return SizedBox();
       }
-      return ResultSingleBuild(onClose: (){
+      return ResultSingleBuild(resultData:resultData,onClose: (){
         setState(() {
           resulting = false;
         });

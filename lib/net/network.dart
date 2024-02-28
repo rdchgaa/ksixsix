@@ -82,6 +82,26 @@ class NetWork {
     return null;
   }
 
+///修改用户信息
+  static userModify(BuildContext context,String name,String avatar) async{
+    var res = await DioUtils.instance.getRequest(Method.post, 'user/modify',
+      queryParameters: {
+        "user_id":getUserId(), // 账号
+        "nick_name": name, // 密码
+        "avatar":avatar,
+      },
+      options: null,
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        return true;
+      }else{
+        showToast(context, '修改失败，请稍后再试');
+      }
+    }
+    return null;
+  }
 
 
 
@@ -374,6 +394,37 @@ class NetWork {
   static gameItemResult(BuildContext context,int user_id,) async{
     var user = context.read<SerUser>();
     var res = await DioUtils.instance.getRequest(Method.get, 'game/item/result/',
+      queryParameters: {
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
+        "user_id": user_id, // 游戏id,由 【开始游戏接口】获得
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      try{
+        var value = json.decode(res.data);
+        if(value['code']==0){
+          var data = value['data'];
+          // showToast(context, data['tip']);
+          return data;
+        }else if(value['code']==1){
+          // showToast(context, '请等待结果');
+          return 1;
+        }else{
+          // showToast(context, '获取房间信息失败，请稍后再试');
+        }
+      }catch(e){
+        return null;
+      }
+    }
+    return null;
+  }
+
+
+  //【本局结算结果接口】10轮 状态8(本局游戏结束) 所有玩家调用, 时间到状态变为 1(待准备)
+  static gameFinalResult(BuildContext context,int user_id,) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/final/result/',
       queryParameters: {
         "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
         "user_id": user_id, // 游戏id,由 【开始游戏接口】获得

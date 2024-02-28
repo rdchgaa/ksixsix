@@ -185,7 +185,7 @@ UiTabBarStyle get uiTabBarStyle => UiTabBarStyle(
 
 
 //TabBar 没有选中的字体颜色#6A768D
-Color get unselectedTabColor => const Color(0xff6A768D);
+Color get unselectedTabColor => const Color(0xffcccccc);
 
 //TabBar 选中的字体
 Color get selectedTabColor => const Color(0xffFFFFFF);

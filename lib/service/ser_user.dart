@@ -43,6 +43,15 @@ class SerUser extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _canChange = true;
+
+  bool get canChange => _canChange;
+
+  set canChange(bool value) {
+    _canChange = value;
+    notifyListeners();
+  }
+
   int _gameId = null;
 
   int get gameId => _gameId;
@@ -179,6 +188,7 @@ class SerUser extends ChangeNotifier {
 
   setInfo(var user) {
     _info.userId = user['user_id'];
+
     _info.userName = user['account'];
     _info.name = user['nick_name'];
     _info.avatar = user['avatar'];
