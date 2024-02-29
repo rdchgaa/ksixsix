@@ -446,10 +446,10 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
 ///最终结果展示 10轮
 class FinalResultBuild extends StatefulWidget {
   final finalResultData;
-
+  final Function onClose;
   const FinalResultBuild({
     Key key,
-    this.finalResultData,
+    this.finalResultData, this.onClose,
   }) : super(key: key);
 
   @override
@@ -472,7 +472,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
         setState(() {});
       });
     _animation = Tween(begin: const Offset(0, -500), end: const Offset(0, 0)).animate(_slideController);
-    Future.delayed(Duration(milliseconds: 1000), () {
+    Future.delayed(Duration(milliseconds: 100), () {
       _slideController.forward();
     });
   }
@@ -480,6 +480,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
   onClose() async {
     await _slideController.reverse();
     _hide = true;
+    widget.onClose();
     setState(() {});
   }
 
@@ -1097,7 +1098,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   }
 
   getZhuangPlayerItemBuild(gameFinalResultData ) {
-    var headWidth = 80.0;
+    var headWidth = 70.0;
     var user = context.watch<SerUser>();
     var isSelf = false;
     return DecoratedBox(
@@ -1150,7 +1151,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.only(top: 0.0),
                     child: SizedBox(
                       width: 80,
                       height: 35,
@@ -1178,7 +1179,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   }
 
   getPlayerItem1Build(gameFinalResultData) {
-    var headWidth = 80.0;
+    var headWidth = 70.0;
     var user = context.watch<SerUser>();
     var isSelf = true;
     return DecoratedBox(
@@ -1219,7 +1220,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.only(top: 0.0),
                     child: SizedBox(
                       width: 80,
                       height: 35,

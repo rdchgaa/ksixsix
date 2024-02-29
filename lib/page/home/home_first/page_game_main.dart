@@ -250,7 +250,7 @@ class _PageGameMainState extends State<PageGameMain> {
     if(finalResultData==null){
       var user = context.read<SerUser>();
       var res = await LoadingCall.of(context).call((state, controller) async {
-        return await NetWork.gameFinalResult(context,getUserId());
+        return await NetWork.gameFinalResult(context,getUserId(),user.gameId);
       }, isShowLoading: false);
       setState(() {
         finalResultData =res;
@@ -1567,7 +1567,7 @@ class _PageGameMainState extends State<PageGameMain> {
       if(finalResultData==null){
         return SizedBox();
       }
-      return FinalResultBuild(finalResultData: finalResultData);
+      return FinalResultBuild(finalResultData: finalResultData,onClose: (){},);
 
     }
     return SizedBox();

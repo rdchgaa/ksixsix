@@ -107,6 +107,31 @@ class NetWork {
   }
 
 
+  //查询游戏记录  userId
+  static userGameRecord(BuildContext context,int userId,) async{
+    var res = await DioUtils.instance.getRequest(Method.get, 'user/game/record',
+      queryParameters: {
+        "user_id":userId, // 账号
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        var data = value['data'];
+        // showToast(context, data['tip']);
+
+        return data;
+      }else{
+        // showToast(context, '获取房间信息失败，请稍后再试');
+      }
+    }
+    return null;
+  }
+
+
+
+
 
   //创建房间  userId
   static getCreatRoom(BuildContext context,int userId,) async{
@@ -428,11 +453,10 @@ class NetWork {
 
 
   //【本局结算结果接口】10轮 状态8(本局游戏结束) 所有玩家调用, 时间到状态变为 1(待准备)
-  static gameFinalResult(BuildContext context,int user_id,) async{
-    var user = context.read<SerUser>();
+  static gameFinalResult(BuildContext context,int user_id,int gameId) async{
     var res = await DioUtils.instance.getRequest(Method.get, 'game/final/result/',
       queryParameters: {
-        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
+        "game_id": gameId, // 游戏id,由 【开始游戏接口】
         "user_id": user_id, // 游戏id,由 【开始游戏接口】获得
       },
       options: Options(headers: {'token':getToken()}),

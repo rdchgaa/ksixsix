@@ -99,7 +99,8 @@ class _PageSetUpState extends State<PageSetUp> {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Color(0xddffffff)),
               child: Column(
                 children: [
-                  if(checkLogin())UiLayoutTextAndIconItem(
+
+                  if(checkLogin()&&false)UiLayoutTextAndIconItem(
                     style: layoutItemStyle2,
                     title: '获取门票',
                     leftIcon: Padding(
