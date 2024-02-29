@@ -160,6 +160,13 @@ class _PageGameMainState extends State<PageGameMain> {
         showToast(context, '房间已解散');
         Navigator.pop(context);
       } else {
+        if(res['state']==-1){
+          //游戏解散
+          roomTimer.cancel();
+          roomTimer = null;
+          showToast(context, '房间已解散');
+          Navigator.pop(context);
+        }
         setAllInfo(res);
       }
     } else {}
@@ -247,6 +254,7 @@ class _PageGameMainState extends State<PageGameMain> {
       }, isShowLoading: false);
       setState(() {
         finalResultData =res;
+        selfReady = false;
       });
     }
   }
@@ -370,7 +378,7 @@ class _PageGameMainState extends State<PageGameMain> {
       }
     }
 
-    //抢庄阶段后 清楚finalResultData
+    //抢庄阶段后 清楚resultData
     if(num ==1||num ==2||num ==3||num ==4){
       if(resultData!=null){
         resultData = null;
@@ -444,15 +452,20 @@ class _PageGameMainState extends State<PageGameMain> {
     });
   }
 
+  showMyPokerVip(){
+    setState(() {
+      showCard1 = true;
+      showCard2 = true;
+      showCard3 = true;
+      showCard4 = true;
+      showCard5 = true;
+    });
+  }
+
   showMyPoker(int num){ //0: 全部盖住, 12345:翻开单张 , 6:全部翻开
 
-    var user = context.read<SerUser>();
-    if(user.canChange){
-      ///是否有权限变牌
-    }else{
-      if(!looking){
-        return;
-      }
+    if(!looking){
+      return;
     }
 
     if(num==0){
@@ -678,9 +691,17 @@ class _PageGameMainState extends State<PageGameMain> {
         setState(() {
           showChangePokerBuild = false;
         });
+      },onTap: (type){
+        changePorker(type);
       },);
     }
     return SizedBox();
+  }
+  changePorker(type) async{
+    var res = await LoadingCall.of(context).call((state, controller) async {
+      return await NetWork.gameChangePoker(context,getUserId(),type);
+    }, isShowLoading: false);
+
   }
 
   selfZhuangBuild() {
@@ -769,16 +790,11 @@ class _PageGameMainState extends State<PageGameMain> {
               index: 4,
               onTap: () {
                 showMyPoker(5);
-              })
+              },onDoubleTap: () {//最后一张双击改变
+            vipDoubleTap();
+          })
               : getCardBuild(poker5['hua_se'], poker5['poker_number'], onDoubleTap: () {//最后一张双击改变
-            var user = context.read<SerUser>();
-            if(user.canChange){
-              ///是否有权限变牌
-              setState(() {
-                showChangePokerBuild = true;
-              });
-              showMyPoker(6);
-            }
+            vipDoubleTap();
           })
         ],
       );
@@ -787,55 +803,69 @@ class _PageGameMainState extends State<PageGameMain> {
     return SizedBox();
   }
 
+  vipDoubleTap(){
+    var user = context.read<SerUser>();
+    if(user.canChange){
+      ///是否有权限变牌
+      setState(() {
+        showChangePokerBuild = true;
+      });
+      showMyPokerVip();
+    }
+  }
+
   leaveGameBuild() {
     var user = context.watch<SerUser>();
     if (user.isRoomMaster){
-      return Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: InkWell(
-              onTap: () async {
-                endGame();
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                    ),
-                    child: SizedBox(
-                      width: 120,
-                      height: 40,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0),
-                          child: Text(
-                            '结束游戏',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+      if(readying||qiangZhuanging){
+        return Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: InkWell(
+                onTap: () async {
+                  endGame();
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                      ),
+                      child: SizedBox(
+                        width: 120,
+                        height: 40,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              '结束游戏',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      );
+          ],
+        );
+      }
     }
     return SizedBox();
   }
 
   getMethodBuild() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left:10,top: 5),
-          child: InkWell(
+    return Padding(
+      padding: EdgeInsets.only(left:10,top: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          InkWell(
             onTap: () async {
               showAlertDialogRule(context);
             },
@@ -854,41 +884,57 @@ class _PageGameMainState extends State<PageGameMain> {
               ],
             ),
           ),
-        ),
-        // Padding(
-        //   padding: EdgeInsets.only(top: 10),
-        //   child: InkWell(
-        //     onTap: () async {
-        //       setState(() {
-        //         showCard1 = showCard2 = showCard3 = showCard4 = showCard5 = true;
-        //       });
-        //     },
-        //     child: Stack(
-        //       alignment: Alignment.center,
-        //       children: [
-        //         DecoratedBox(
-        //           decoration: BoxDecoration(
-        //             image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-        //           ),
-        //           child: SizedBox(
-        //             width: 60,
-        //             height: 25,
-        //             child: Center(
-        //               child: Padding(
-        //                 padding: const EdgeInsets.only(bottom: 3.0),
-        //                 child: Text(
-        //                   '看牌',
-        //                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-      ],
+          Padding(
+            padding: EdgeInsets.only(left:10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '房间号',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+                Text(
+                  widget.roomId.toString(),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+              ],
+            ),
+          ),
+          // Padding(
+          //   padding: EdgeInsets.only(top: 10),
+          //   child: InkWell(
+          //     onTap: () async {
+          //       setState(() {
+          //         showCard1 = showCard2 = showCard3 = showCard4 = showCard5 = true;
+          //       });
+          //     },
+          //     child: Stack(
+          //       alignment: Alignment.center,
+          //       children: [
+          //         DecoratedBox(
+          //           decoration: BoxDecoration(
+          //             image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+          //           ),
+          //           child: SizedBox(
+          //             width: 60,
+          //             height: 25,
+          //             child: Center(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.only(bottom: 3.0),
+          //                 child: Text(
+          //                   '看牌',
+          //                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 
@@ -1316,7 +1362,7 @@ class _PageGameMainState extends State<PageGameMain> {
                 ),
                 child: Center(
                   child: HeadImage.network(
-                    '',
+                    player['avatar'],
                     width: imageWidth - 1,
                     height: imageWidth - 1,
                   ),
@@ -1383,7 +1429,7 @@ class _PageGameMainState extends State<PageGameMain> {
                 ),
                 child: Center(
                   child: HeadImage.network(
-                    '',
+                    user.avatarUrl,
                     width: imageWidth - 2,
                     height: imageWidth - 2,
                   ),
@@ -1518,18 +1564,10 @@ class _PageGameMainState extends State<PageGameMain> {
 
   getFinalResultBuild(){
     if (showFinalResult) {
-      // return ResultSingleBuild(onClose: (){
-      //   setState(() {
-      //     resulting = false;
-      //   });
-      //   setCurentState(6);
-      // },);
-
-      ///TODO
       if(finalResultData==null){
         return SizedBox();
       }
-      return FinalResultBuild();
+      return FinalResultBuild(finalResultData: finalResultData);
 
     }
     return SizedBox();

@@ -115,7 +115,7 @@ class _DialogAlertRuleBoxState extends State<DialogAlertRuleBox> {
                                         child: Text('赔率',style: TextStyle(fontSize: 14,color: Color(0xffffffff)),),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 5.0,bottom: 10),
+                                        padding: const EdgeInsets.only(top: 5.0,bottom: 0),
                                         child: Text('炸弹：3倍'
                                             '\n五小：3倍'
                                             '\n金牛：3倍'
@@ -123,6 +123,14 @@ class _DialogAlertRuleBoxState extends State<DialogAlertRuleBox> {
                                             '\n牛牛：3倍'
                                             '\n有牛：7,8,9点2倍，其他点数1倍'
                                             '\n没牛：1倍',style: TextStyle(fontSize: 12,color: Color(0xffcccccc)),),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10.0),
+                                        child: Text('其他',style: TextStyle(fontSize: 14,color: Color(0xffffffff)),),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5.0,bottom: 10),
+                                        child: Text('若未投注，默认投注1',style: TextStyle(fontSize: 12,color: Color(0xffcccccc)),),
                                       ),
                                     ],
                                   ),

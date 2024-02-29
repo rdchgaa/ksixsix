@@ -29,7 +29,9 @@ class NetWork {
       var value = json.decode(res.data);
       if(value['code']==0){
         var data = value['data'];
-        showToast(context, data['tip']);
+        if(data['tip']!='登录成功'){
+          showToast(context, data['tip']);
+        }
 
         if(data['user_id']!=null&&(data['token']!=null&&data['token']!=""))
           return data;
@@ -52,8 +54,9 @@ class NetWork {
       var value = json.decode(res.data);
       if(value['code']==0){
         var data = value['data'];
-        showToast(context, data['tip']);
-
+        if(data['tip']!='登录成功'){
+          showToast(context, data['tip']);
+        }
         if(data['user_id']!=null&&(data['token']!=null&&data['token']!=""))
         return data;
       }else{
@@ -146,6 +149,9 @@ class NetWork {
           return data;
       }else if(value['code']==1){
         var data = value['data'];
+        if(data=="已在房间"){
+          return {"room_Id":roomId};
+        }
         showToast(context, data);
         // showToast(context, '房间不存在');
       }else {
@@ -443,6 +449,48 @@ class NetWork {
           return 1;
         }else{
           // showToast(context, '获取房间信息失败，请稍后再试');
+        }
+      }catch(e){
+        return null;
+      }
+    }
+    return null;
+  }
+
+
+  //换牌接口，在当前游戏轮剩余的牌中随机换成指定类型的牌， 如果剩余的牌无法组合成需要换的类型接口会报错，请换一种类型;
+  //1:炸弹  2:五小  3:金牛  4:银牛  5:牛牛  6:有牛
+  // 61牛1
+  // 62牛2
+  // 63牛3
+  // 64牛4
+  // 65牛5
+  // 66牛6
+  // 67牛7
+  // 68牛8
+  // 69牛9
+  static gameChangePoker(BuildContext context,int user_id,int type) async{
+    var user = context.read<SerUser>();
+    var res = await DioUtils.instance.getRequest(Method.get, 'game/change/',
+      queryParameters: {
+        "game_id": user.gameId, // 游戏id,由 【开始游戏接口】
+        "user_id": user_id, // 游戏id,由 【开始游戏接口】获得
+        "type":type,
+      },
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      try{
+        var value = json.decode(res.data);
+        if(value['code']==0){
+          var data = value['data'];
+          // showToast(context, data['tip']);
+          return data;
+        }else if(value['code']==1){
+          showToast(context, value['data']);
+          return 1;
+        }else{
+          showToast(context, '更换失败，请稍后再试');
         }
       }catch(e){
         return null;

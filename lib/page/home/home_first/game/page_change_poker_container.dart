@@ -450,7 +450,7 @@ class _SingleItemContainerState extends State<SingleItemContainer> with Automati
                         ),
                         child: Center(
                           child: HeadImage.network(
-                            '',
+                            resultItem['avatar'],
                             width: headWidth - 1,
                             height: headWidth - 1,
                           ),
@@ -475,7 +475,7 @@ class _SingleItemContainerState extends State<SingleItemContainer> with Automati
                     height: 15,
                     child: Center(
                       child: Text(
-                        resultItem['user_id'].toString(),
+                        resultItem['nick_name'].toString(),
                         maxLines: 1,
                         overflow: TextOverflow.visible,
                         style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
@@ -637,7 +637,7 @@ class _SingleItemContainerState extends State<SingleItemContainer> with Automati
               ),
               child: Center(
                 child: HeadImage.network(
-                  '',
+                  resultItem['avatar'],
                   width: headWidth - 1,
                   height: headWidth - 1,
                 ),
@@ -661,7 +661,7 @@ class _SingleItemContainerState extends State<SingleItemContainer> with Automati
           width: 50,
           height: 15,
           child: Text(
-            resultItem['user_id'].toString(),
+            resultItem['nick_name'].toString(),
             maxLines: 1,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,

@@ -14,6 +14,7 @@ import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
+import 'package:ima2_habeesjobs/widget/refresh_loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -28,6 +29,10 @@ class XdHomeFirst extends StatefulWidget {
 
 class _XdHomeFirstState extends State<XdHomeFirst> {
   TextEditingController _unRoomId = new TextEditingController(text: '');
+
+  int _pageIndex = 1;
+
+  var historyList = [];
 
   @override
   void initState() {
@@ -177,12 +182,16 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                             width: 50,
                                             height: 50,
                                             decoration: BoxDecoration(
+                                              color: Color(0xffffffff),
+                                              borderRadius: BorderRadius.all(Radius.circular(50 / 2)),
                                               boxShadow: [BoxShadow(color: Color(0xaaffffff), blurRadius: 33, offset: Offset(0, 0))],
                                             ),
-                                            child: HeadImage.network(
-                                              user.info.avatar ?? '',
-                                              width: 50,
-                                              height: 50,
+                                            child: Center(
+                                              child: HeadImage.network(
+                                                user.info.avatar ?? '',
+                                                width: 50-1.0,
+                                                height: 50-1.0,
+                                              ),
                                             ),
                                           ),
                                           Padding(
@@ -399,45 +408,109 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
               ),
             ),
             Expanded(
-                child: ListView.builder(
-                    itemCount: 6,
-                    physics: const ClampingScrollPhysics(),
-                    padding: EdgeInsets.only(top: 0),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                          child: Container(
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xFF131530)),
-                            padding: EdgeInsets.only(left: 16, right: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
-                                  child: Text(
-                                    '时间：2024-02-07 19:58:00',
-                                    style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
+                child: RefreshLoadingIndicator(
+                  onRefresh: (type) => _onRefresh(context, type),
+                  child: Builder(
+                    builder: (context) {
+                      if(true){
+                        return ListView(
+                          children: [
+                            SizedBox(
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 50.0),
+                                  child: Text('暂无记录，先玩一局吧',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: 6,
+                          physics: const ClampingScrollPhysics(),
+                          padding: EdgeInsets.only(top: 0),
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                                child: Container(
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xFF131530)),
+                                  padding: EdgeInsets.only(left: 16, right: 16),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
+                                        child: Text(
+                                          '时间：2024-02-07 19:58:00',
+                                          style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
+                                        child: Row(
+                                          children: [
+                                            // Image.asset(
+                                            //   "assets/images/jifen.png",
+                                            //   width: 14,
+                                            //   height: 14,
+                                            // ),
+                                            // Padding(
+                                            //   padding: const EdgeInsets.only(left: 2.0),
+                                            //   child: Text(
+                                            //     '+100',
+                                            //     maxLines: 1,
+                                            //     style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                                            //   ),
+                                            // ),
+                                            Text(
+                                              '结果：',
+                                              style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
+                                            ),
+                                            Text(
+                                              '+100',
+                                              maxLines: 1,
+                                              style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
-                                  child: Text(
-                                    '结果：+50',
-                                    style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }))
+                              ),
+                            );
+                          });
+                    }
+                  ),
+                ))
           ],
         ),
       ),
     );
+  }
+
+
+  Future<bool> _onRefresh(BuildContext context, OnRefreshType type) async {
+    if (OnRefreshType.Refresh == type) {
+      await LoadingCall.of(context).call((state, controller) async {
+        // var res = await NetWork.getCreatRoom(context,getUserId());
+        // historyList = res.recordList;
+        _pageIndex = 1;
+      }, isShowLoading: false);
+      setState(() {});
+      return true;
+    } else {
+      await LoadingCall.of(context).call((state, controller) async {
+        // var res = await NetWork.getCreatRoom(context,getUserId());
+        // historyList.addAll(res.recordList);
+        _pageIndex += 1;
+      },isShowLoading: false);
+      setState(() {});
+      return true;
+    }
   }
 
   Future<bool> _onInitLoading(BuildContext context) async {

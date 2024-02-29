@@ -105,8 +105,11 @@ class _PageRoomMainState extends State<PageRoomMain> {
   }
 
   checkRoomState(int state){
-    /// 1.未选庄闲  2.等待发牌  3.下注阶段  4. 看牌阶段  5.结算阶段  6.本轮结算结束  7.游戏结束(本局游戏10轮结束)
-    if(state!=0){
+    ///-1，游戏解散， 0 组队状态 ，>0游戏中状态
+    if(state==-1){
+      showToast(context, '房间已解散');
+      exitRoom();
+    } else if(state>0){
       enterTheGame();
     }
   }
@@ -244,13 +247,19 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Container(
+                                            width: 80,
+                                            height: 80,
                                             decoration: BoxDecoration(
+                                              color: Color(0xffffffff),
+                                              borderRadius: BorderRadius.all(Radius.circular(80 / 2)),
                                               boxShadow: [BoxShadow(color:user.isRoomMaster?roomMasterColor: playerColor, blurRadius: 33, offset: Offset(0, 0))],
                                             ),
-                                            child: HeadImage.network(
-                                              user.info.avatar ?? '',
-                                              width: 80,
-                                              height: 80,
+                                            child: Center(
+                                              child: HeadImage.network(
+                                                user.info.avatar ?? '',
+                                                width: 79,
+                                                height: 79,
+                                              ),
                                             ),
                                           ),
                                           Padding(
@@ -392,12 +401,16 @@ class _PageRoomMainState extends State<PageRoomMain> {
           width: imageWidth,
           height: imageWidth,
           decoration: BoxDecoration(
+            color: Color(0xffffffff),
+            borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
             boxShadow: [BoxShadow(color: item['is_master']==1?roomMasterColor:playerColor, blurRadius: 33, offset: Offset(0, 0))],
           ),
-          child: HeadImage.network(
-            '',
-            width: imageWidth,
-            height: imageWidth,
+          child: Center(
+            child: HeadImage.network(
+              item['avatar'],
+              width: imageWidth-1,
+              height: imageWidth-1,
+            ),
           ),
         ),
         Padding(

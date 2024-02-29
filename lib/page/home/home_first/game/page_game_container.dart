@@ -25,12 +25,12 @@ class CardBackBuild extends StatefulWidget {
   final Function onTap;
   final double width;
   final int index;
-
+  final Function onDoubleTap;
   const CardBackBuild({
     Key key,
     this.onTap,
     this.width = 50,
-    this.index = 0,
+    this.index = 0, this.onDoubleTap,
   }) : super(key: key);
 
   @override
@@ -71,6 +71,8 @@ class _CardBackBuildState extends State<CardBackBuild> with TickerProviderStateM
         child: Center(
           child: getCardBackBuild(onTap: () {
             widget.onTap();
+          },onDoubleTap:(){
+            widget.onDoubleTap();
           }),
         ),
       ),
@@ -443,11 +445,11 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
 
 ///最终结果展示 10轮
 class FinalResultBuild extends StatefulWidget {
-  final Widget child;
+  final finalResultData;
 
   const FinalResultBuild({
     Key key,
-    this.child,
+    this.finalResultData,
   }) : super(key: key);
 
   @override
@@ -470,7 +472,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
         setState(() {});
       });
     _animation = Tween(begin: const Offset(0, -500), end: const Offset(0, 0)).animate(_slideController);
-    Future.delayed(Duration(milliseconds: 2000), () {
+    Future.delayed(Duration(milliseconds: 1000), () {
       _slideController.forward();
     });
   }
@@ -560,8 +562,8 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                                     Expanded(
                                       child: TabBarView(
                                         children: <Widget>[
-                                          mainBuild(),
-                                          for (var i = 0; i < 10; i++) getSingleBuild(),
+                                          mainBuild(widget.finalResultData['final_result']),
+                                          for (var i = 0; i < 10; i++) getSingleBuild(widget.finalResultData['item_list'].length>(i)?widget.finalResultData['item_list'][i]:null),
                                         ],
                                       ),
                                     ),
@@ -600,12 +602,15 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
     );
   }
 
-  mainBuild() {
-    return ResultAllInfoItemContainer();
+  mainBuild(final_result) {
+    return ResultAllInfoItemContainer(final_result:final_result);
   }
 
-  getSingleBuild() {
-    return ResultSingleItemContainer();
+  getSingleBuild(gameItemResultData  ) {
+    if(gameItemResultData==null){
+      return SizedBox();
+    }
+    return ResultSingleItemContainer(resultData: gameItemResultData['list'],);
   }
 }
 
@@ -644,7 +649,12 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     var zhuangResult = null;
     var playerList = [];
     for(var i = 0 ;i<widget.resultData.length;i++){
-      if(widget.resultData[i]['vocation']==1){
+      var item = widget.resultData[i];
+      if(item==null){
+        continue;
+      }
+      var vocation = item['vocation'];
+      if(vocation==1){
         zhuangResult = widget.resultData[i];
       }else{
         playerList.add(widget.resultData[i]);
@@ -683,7 +693,10 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
     );
   }
 
-  getZhuangPlayerItemBuild(var resultItem) {
+  getZhuangPlayerItemBuild(resultItem) {
+    if(resultItem==null){
+      return SizedBox();
+    }
     var headWidth = 40.0;
     var user = context.watch<SerUser>();
     var isSelf = false;
@@ -720,7 +733,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                           ),
                           child: Center(
                             child: HeadImage.network(
-                              '',
+                              resultItem['avatar'],
                               width: headWidth - 1,
                               height: headWidth - 1,
                             ),
@@ -745,7 +758,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                       height: 15,
                       child: Center(
                         child: Text(
-                          resultItem['user_id'].toString(),
+                          resultItem['nick_name'].toString(),
                           maxLines: 1,
                           overflow: TextOverflow.visible,
                           style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
@@ -928,7 +941,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
               ),
               child: Center(
                 child: HeadImage.network(
-                  '',
+                  resultItem['avatar'],
                   width: headWidth - 1,
                   height: headWidth - 1,
                 ),
@@ -952,7 +965,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
           width: 50,
           height: 15,
           child: Text(
-            resultItem['user_id'].toString(),
+            resultItem['nick_name'].toString(),
             maxLines: 1,
             overflow: TextOverflow.visible,
             textAlign: TextAlign.center,
@@ -1002,7 +1015,7 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
                 width: 14,
                 height: 14,
               ),
-              if (bei > 1)
+              if (fen>0&&bei > 1)
                 Padding(
                   padding: const EdgeInsets.only(left: 2.0),
                   child: Text(
@@ -1032,8 +1045,9 @@ class _ResultSingleItemContainerState extends State<ResultSingleItemContainer> w
 
 ///10轮，总览，第一个页面组件
 class ResultAllInfoItemContainer extends StatefulWidget {
+  final final_result;
   const ResultAllInfoItemContainer({
-    Key key,
+    Key key, this.final_result,
   }) : super(key: key);
 
   @override
@@ -1061,19 +1075,20 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
   Widget build(BuildContext context) {
     var headWidth = 30.0;
     var user = context.watch<SerUser>();
+
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 8, left: 8.0, right: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          getZhuangPlayerItemBuild(),
+          if(widget.final_result.length>=1)getZhuangPlayerItemBuild(widget.final_result[0]),
           Row(
             children: [
-              getPlayerItem1Build(),
+              if(widget.final_result.length>=2)getPlayerItem1Build(widget.final_result[1]),
               // if(false)
-              getPlayerItem2Build(),
-              getPlayerItem3Build(),
-              getPlayerItem4Build(),
+              if(widget.final_result.length>=3)getPlayerItem1Build(widget.final_result[2]),
+              if(widget.final_result.length>=4)getPlayerItem1Build(widget.final_result[3]),
+              if(widget.final_result.length>=5)getPlayerItem1Build(widget.final_result[4]),
             ],
           )
         ],
@@ -1081,7 +1096,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
     );
   }
 
-  getZhuangPlayerItemBuild() {
+  getZhuangPlayerItemBuild(gameFinalResultData ) {
     var headWidth = 80.0;
     var user = context.watch<SerUser>();
     var isSelf = false;
@@ -1114,13 +1129,13 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                         ),
                         child: Center(
                           child: HeadImage.network(
-                            '',
+                            gameFinalResultData['avatar'],
                             width: headWidth - 1,
                             height: headWidth - 1,
                           ),
                         ),
                       ),
-                      if (true)
+                      if (gameFinalResultData['vocation']==1)
                         DecoratedBox(
                           decoration: BoxDecoration(
                             boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
@@ -1141,7 +1156,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                       height: 35,
                       child: Center(
                         child: Text(
-                          user.nickname,
+                          gameFinalResultData['nick_name'],
                           maxLines: 2,
                           overflow: TextOverflow.visible,
                           style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
@@ -1154,7 +1169,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: getJifenBuild(100),
+              child: getJifenBuild(gameFinalResultData['all_score']),
             ),
           ],
         ),
@@ -1162,7 +1177,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
     );
   }
 
-  getPlayerItem1Build() {
+  getPlayerItem1Build(gameFinalResultData) {
     var headWidth = 80.0;
     var user = context.watch<SerUser>();
     var isSelf = true;
@@ -1195,7 +1210,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                         ),
                         child: Center(
                           child: HeadImage.network(
-                            '',
+                            gameFinalResultData['avatar'],
                             width: headWidth - 1,
                             height: headWidth - 1,
                           ),
@@ -1210,7 +1225,7 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                       height: 35,
                       child: Center(
                         child: Text(
-                          user.nickname,
+                          gameFinalResultData['nick_name'],
                           maxLines: 2,
                           overflow: TextOverflow.visible,
                           style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
@@ -1223,226 +1238,9 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: getJifenBuild(-500,),
+              child: getJifenBuild(gameFinalResultData['all_score'],),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  getPlayerItem2Build() {
-    var headWidth = 80.0;
-    var user = context.watch<SerUser>();
-    var isSelf = false;
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: DecoratedBox(
-        decoration: isSelf
-            ? BoxDecoration(
-            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-            : BoxDecoration(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          width: headWidth,
-                          height: headWidth,
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
-                            color: Color(0xffffffff),
-                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
-                          ),
-                          child: Center(
-                            child: HeadImage.network(
-                              '',
-                              width: headWidth - 1,
-                              height: headWidth - 1,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: SizedBox(
-                        width: 80,
-                        height: 35,
-                        child: Center(
-                          child: Text(
-                            user.nickname,
-                            maxLines: 2,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: getJifenBuild(-100),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  getPlayerItem3Build() {
-    var headWidth = 80.0;
-    var user = context.watch<SerUser>();
-    var isSelf = false;
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: DecoratedBox(
-        decoration: isSelf
-            ? BoxDecoration(
-            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-            : BoxDecoration(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          width: headWidth,
-                          height: headWidth,
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
-                            color: Color(0xffffffff),
-                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
-                          ),
-                          child: Center(
-                            child: HeadImage.network(
-                              '',
-                              width: headWidth - 1,
-                              height: headWidth - 1,
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: SizedBox(
-                        width: 80,
-                        height: 35,
-                        child: Center(
-                          child: Text(
-                            user.nickname,
-                            maxLines: 2,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: getJifenBuild(100),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  getPlayerItem4Build() {
-    var headWidth = 80.0;
-    var user = context.watch<SerUser>();
-    var isSelf = false;
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: DecoratedBox(
-        decoration: isSelf
-            ? BoxDecoration(
-            border: Border.all(width: 1, color: Color(0xffffffff)), borderRadius: BorderRadius.all(Radius.circular(10)), color: Color(0x22ffffff))
-            : BoxDecoration(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2, bottom: 2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          width: headWidth,
-                          height: headWidth,
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
-                            color: Color(0xffffffff),
-                            borderRadius: BorderRadius.all(Radius.circular(headWidth / 2)),
-                          ),
-                          child: Center(
-                            child: HeadImage.network(
-                              '',
-                              width: headWidth - 1,
-                              height: headWidth - 1,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: SizedBox(
-                        width: 80,
-                        height: 35,
-                        child: Center(
-                          child: Text(
-                            user.nickname,
-                            maxLines: 2,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: getJifenBuild(-100),
-              ),
-            ],
-          ),
         ),
       ),
     );

@@ -43,7 +43,7 @@ class SerUser extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _canChange = true;
+  bool _canChange = false;
 
   bool get canChange => _canChange;
 
@@ -196,16 +196,21 @@ class SerUser extends ChangeNotifier {
     userId = user['user_id'];
     nickname = user['nick_name'];
     avatarUrl = user['avatar'];
+
+    if(user['is_vip'] == 1){
+      canChange = true;
+    }
+
     notifyListeners();
     // _info = getUserInfo()??UserInfo();
   }
 
   Future<void> _update() async {
-    var res = await NetWork.getUserInfo(context,getUserId());
-    _userInfo = res;
-
-    save();
-    notifyListeners();
+    // var res = await NetWork.getUserInfo(context,getUserId());
+    // _userInfo = res;
+    //
+    // save();
+    // notifyListeners();
   }
 
   void updateByUserInfo(info) {
@@ -234,6 +239,7 @@ class SerUser extends ChangeNotifier {
     setUserInfo(null);
     setPassword(null);
 
+    canChange = false;
     var user = {
       "user_id": null,
       "account": null,

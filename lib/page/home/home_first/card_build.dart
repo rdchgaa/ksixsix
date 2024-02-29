@@ -191,11 +191,12 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
   );
 }
 
-Widget getCardBackBuild({Function onTap,double width = 50.0}) {
+Widget getCardBackBuild({Function onTap,Function onDoubleTap,double width = 50.0}) {
   var height = width / 5.7 * 8.7;
 
   return InkWell(
     onTap: onTap,
+    onDoubleTap: onDoubleTap,
     child: DecoratedBox(
       decoration: BoxDecoration(
         // color: Color.fromRGBO(246, 246, 246, 1),
