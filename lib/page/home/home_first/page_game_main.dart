@@ -137,7 +137,7 @@ class _PageGameMainState extends State<PageGameMain> {
 
   initData() async {
     getGameState();
-    roomTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    roomTimer = Timer.periodic(Duration(milliseconds: 400), (timer) {
       getGameState();
 
       // getGameState();
@@ -157,10 +157,12 @@ class _PageGameMainState extends State<PageGameMain> {
       } else {
         if(res['state']==-1){
           //游戏解散
-          roomTimer.cancel();
-          roomTimer = null;
-          showToast(context, '房间已解散');
-          Navigator.pop(context);
+          if(mounted){
+            roomTimer.cancel();
+            roomTimer = null;
+            showToast(context, '房间已解散');
+            Navigator.pop(context);
+          }
         }
         setAllInfo(res);
       }
@@ -179,6 +181,11 @@ class _PageGameMainState extends State<PageGameMain> {
     vocation_user_id = res['vocation_user_id'];
     user_poker = res['user_poker'];
     setSelfPoker(res['user_poker']);
+    if(vocation_user_id==getUserId()){
+      if(!isZhuang){
+        isZhuang = true;
+      }
+    }
     if (mounted) {
       setState(() {});
     }

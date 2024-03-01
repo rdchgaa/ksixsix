@@ -93,7 +93,7 @@ class NetWork {
         "nick_name": name, // 密码
         "avatar":avatar,
       },
-      options: null,
+      options: Options(headers: {'token':getToken()}),
     );
     if(res!=null){
       var value = json.decode(res.data);

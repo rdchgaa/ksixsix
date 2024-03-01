@@ -208,7 +208,7 @@ Widget getCardBackBuild({Function onTap,Function onDoubleTap,double width = 50.0
         width: width,
         height: height,
         child: Center(
-          child: Image.asset('assets/images/niured.png',width: width * 0.6,height: width * 0.6,color: Colors.red.withOpacity(0.6),),
+          child: Image.asset('assets/images/youniu.png',width: width * 0.6,height: width * 0.6,color: Colors.red.withOpacity(0.9),),
         ),
       ),
     ),

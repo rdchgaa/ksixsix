@@ -34,6 +34,8 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
   List userList = [];
 
+  bool clickBack= false;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +57,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
   initData(){
     getRoomState();
-    roomTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    roomTimer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       getRoomState();
     });
   }
@@ -67,6 +69,9 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
     if (res!=null) {
       if(res==1){
+        if(clickBack){
+          return;
+        }
         showToast(context, '房间已解散');
         Navigator.pop(context);
       }else{
@@ -101,8 +106,13 @@ class _PageRoomMainState extends State<PageRoomMain> {
   checkRoomState(int state){
     ///-1，游戏解散， 0 组队状态 ，>0游戏中状态
     if(state==-1){
-      showToast(context, '房间已解散');
-      exitRoom();
+      if(clickBack){
+        return;
+      }
+      if(mounted){
+        showToast(context, '房间已解散');
+        exitRoom();
+      }
     } else if(state>0){
       enterTheGame();
     }
@@ -185,6 +195,9 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      setState(() {
+                                        clickBack = true;
+                                      });
                                       exitRoom();
                                     },
                                     child: Row(

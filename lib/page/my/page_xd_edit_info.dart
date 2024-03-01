@@ -72,7 +72,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
 
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.userModify(context,_unName.text,_avatarUrl);
-    }, isShowLoading: false);
+    }, isShowLoading: true);
 
     if (res != null) {
       if (res == 1) {

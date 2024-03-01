@@ -109,7 +109,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   bool checkCanUse(){
-    if(DateTime(2024,5,5).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
+    if(DateTime(2024,4,1).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
       ///TODO 请更新或下载新版本后使用
       showToast(context, '请更新或下载新版本后使用。');
       showAlertDialogUpdate(context,enterType: 2);
@@ -373,9 +373,9 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                       ),
                                       Positioned(bottom:30,right:0,child: InkWell(
                                         onTap: () async{
-                                          AudioPlayerUtilBackGround.playSound();
+                                          // AudioPlayerUtilBackGround.playSound();
                                           await PageSetUp().push(context);
-                                          AudioPlayerUtilBackGround.stopSound();
+                                          // AudioPlayerUtilBackGround.stopSound();
                                         },
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
@@ -543,6 +543,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
       await LoadingCall.of(context).call((state, controller) async {
         var res = await NetWork.userGameRecord(context,getUserId());
         historyList = res??[];
+        historyList = historyList.reversed.toList();
         _pageIndex = 1;
       }, isShowLoading: false);
       setState(() {});
@@ -562,6 +563,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     await LoadingCall.of(context).call((state, controller) async {
       var res = await NetWork.userGameRecord(context,getUserId());
       historyList = res??[];
+      historyList = historyList.reversed.toList();
       _pageIndex = 1;
     }, isShowLoading: false);
     setState(() {});

@@ -80,7 +80,7 @@ dependencies:
   flutter_svg: 1.0.3
   open_file: 3.2.1
 
-  audioplayers: 4.0.1
+  audioplayers: ^3.0.1
   soundpool: ^2.3.0
   extended_image: 6.4.1
 

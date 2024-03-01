@@ -475,12 +475,16 @@ Widget getNiuTypeIcon(var pokerResult, {double width = 25}) {
   }
   if (type == 2) {
     //有牛
+    var textColor = Color(0xffffffff);
+    if(pokerResult['niu_num']>=7){
+      textColor = Color(0xffec6553);
+    }
     child = Row(
       children: [
-        Center(child: Image.asset('assets/images/youniu.png', width: 20, height: 20, color: Color(0xff00fc00))),
+        Center(child: Image.asset('assets/images/youniu.png', width: 20, height: 20,)),
         Padding(
           padding: EdgeInsets.only(left: 2),
-          child: Text(pokerResult['niu_num'].toString(), style: TextStyle(fontSize: 18, color: Color(0xff00fc00), fontWeight: FontWeight.bold)),
+          child: Text(pokerResult['niu_num'].toString(), style: TextStyle(fontSize: 18, color: textColor, fontWeight: FontWeight.bold)),
         )
       ],
     );
