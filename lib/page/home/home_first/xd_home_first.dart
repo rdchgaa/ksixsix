@@ -10,6 +10,7 @@ import 'package:ima2_habeesjobs/page/my/page_set_up.dart';
 import 'package:ima2_habeesjobs/page/my/page_xd_edit_info.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/datetime.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
@@ -49,9 +50,6 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     ]);
   }
 
-  Future<void> playSound() async {
-    SoundpoolUtil2.playSound();
-  }
   @override
   void dispose() {
     super.dispose();
@@ -111,7 +109,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   bool checkCanUse(){
-    if(DateTime(2024,4,1).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
+    if(DateTime(2024,5,5).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
       ///TODO 请更新或下载新版本后使用
       showToast(context, '请更新或下载新版本后使用。');
       showAlertDialogUpdate(context,enterType: 2);
@@ -374,8 +372,10 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                         ),
                                       ),
                                       Positioned(bottom:30,right:0,child: InkWell(
-                                        onTap: (){
-                                          PageSetUp().push(context);
+                                        onTap: () async{
+                                          AudioPlayerUtilBackGround.playSound();
+                                          await PageSetUp().push(context);
+                                          AudioPlayerUtilBackGround.stopSound();
                                         },
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
@@ -542,7 +542,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     if (OnRefreshType.Refresh == type) {
       await LoadingCall.of(context).call((state, controller) async {
         var res = await NetWork.userGameRecord(context,getUserId());
-        historyList = res;
+        historyList = res??[];
         _pageIndex = 1;
       }, isShowLoading: false);
       setState(() {});
@@ -561,7 +561,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   Future<bool> _onInitLoading(BuildContext context) async {
     await LoadingCall.of(context).call((state, controller) async {
       var res = await NetWork.userGameRecord(context,getUserId());
-      historyList = res;
+      historyList = res??[];
       _pageIndex = 1;
     }, isShowLoading: false);
     setState(() {});

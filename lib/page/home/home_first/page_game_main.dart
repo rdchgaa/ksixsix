@@ -1,23 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
-import 'package:ima2_habeesjobs/page/home/home_first/game/alert_dialog_result_all.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_change_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_button.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
@@ -114,7 +108,7 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   Future<void> playSound() async {
-    SoundpoolUtil2.playSound();
+    AudioPlayerUtilBackGround.playSound();
   }
 
   @override
@@ -130,6 +124,7 @@ class _PageGameMainState extends State<PageGameMain> {
       lookingTimer.cancel();
       lookingTimer = null;
     }
+    AudioPlayerUtilBackGround.stopSound();
     // leaveRoom();
   }
 
@@ -359,6 +354,11 @@ class _PageGameMainState extends State<PageGameMain> {
     showFinalResult = (num ==5||num ==6 ||num ==1 ||num ==10); ///查看最终结果 10轮
 
 
+    if(num==1){
+      setState(() {
+        isZhuang = false;
+      });
+    }
     if(num==5){
       showChangePokerBuild = false;
     }
@@ -428,11 +428,6 @@ class _PageGameMainState extends State<PageGameMain> {
     //   });
     // }
 
-  }
-
-  initGame(){
-    isZhuang = false;
-    setCurentState(1);
   }
 
   initPoker(){
@@ -544,9 +539,9 @@ class _PageGameMainState extends State<PageGameMain> {
       return await NetWork.deal(context, getUserId());
     }, isShowLoading: false);
     if (res != null && res != 1) {
-      setState(() {
-        isZhuang = true;
-      });
+      // setState(() {
+      //   isZhuang = true;
+      // });
       setCurentState(3); //发牌，进入投注中
     }
   }
@@ -1669,6 +1664,10 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   Future<bool> _onInitLoading(BuildContext context) async {
+    var res = await LoadingCall.of(context).call((state, controller) async {
+      return true;
+    }, isShowLoading: false);
+    playSound();
     initData();
     setCurentState(1);
     // var user = context.read<SerUser>();

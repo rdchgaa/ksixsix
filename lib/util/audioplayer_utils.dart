@@ -1,19 +1,34 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui' as ui;
 
-import 'package:ima2_habeesjobs/net/api.dart';
 
-import 'package:ima2_habeesjobs/service/ser_base.dart';
-import 'package:ima2_habeesjobs/util/datetime.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_app_update/flutter_app_update.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:image/image.dart' as img;
-import 'package:lpinyin/lpinyin.dart';
-import 'package:provider/src/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+class AudioPlayerUtilBackGround {
+  static AudioPlayer audioPlayer = AudioPlayer();
+  static Future<void> stopSound() async {
+    // audioCache.clearAll();
+    // audioPlayer.pause(); // 暂停播放
+    // audioPlayer.resume(); // 恢复播放
+    audioPlayer.stop(); // 停止播放
+  }
+  static Future<void> playSound() async {
+    audioPlayer.setReleaseMode(ReleaseMode.loop); // 设置循环模式
+    audioPlayer.play(AssetSource('images/doudizhu3.mp3'));
+  }
+
+}
+
+class AudioPlayerUtilFapai {
+  static AudioPlayer audioPlayer = AudioPlayer();
+  static Future<void> stopSound() async {
+    // audioCache.clearAll();
+    // audioPlayer.pause(); // 暂停播放
+    // audioPlayer.resume(); // 恢复播放
+    audioPlayer.stop(); // 停止播放
+  }
+  static Future<void> playSound() async {
+    // audioPlayer.setReleaseMode(ReleaseMode.loop); // 设置循环模式
+    audioPlayer.play(AssetSource('images/fapai.mp3'));
+  }
+
+}
+

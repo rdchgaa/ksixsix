@@ -1,20 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_game_main.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +42,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
   }
 
   Future<void> playSound() async {
-    SoundpoolUtil2.playSound();
+    // SoundpoolUtil2.playSound();
   }
 
   @override
@@ -430,7 +424,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
     var imageWidth= 80.00;
     return InkWell(
       onTap: (){
-        Clipboard.setData(ClipboardData(text: '12345'));
+        Clipboard.setData(ClipboardData(text: widget.roomId.toString()));
         showToast(context, '复制房间号成功，请发送给您的牌友');
       },
       child: Container(

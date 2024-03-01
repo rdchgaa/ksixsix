@@ -9,6 +9,7 @@ import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
@@ -52,6 +53,13 @@ class _CardBackBuildState extends State<CardBackBuild> with TickerProviderStateM
     Future.delayed(Duration(milliseconds: 200 * widget.index), () {
       _slideController.forward();
     });
+
+    playSound();
+  }
+  playSound(){
+    if(widget.index==0){
+      AudioPlayerUtilFapai.playSound();
+    }
   }
 
   @override

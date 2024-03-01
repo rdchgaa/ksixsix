@@ -176,7 +176,13 @@ class _PageInitState extends State<PageInit> {
           builder: (context) {
           return Container(
             alignment: Alignment.center,
-            color: Colors.white,
+            // color: Colors.white,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/home.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
             child: Container(
               width: 100.0,
               height: 100.0,
