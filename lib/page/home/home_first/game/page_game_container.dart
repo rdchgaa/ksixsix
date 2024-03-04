@@ -1176,10 +1176,11 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: getJifenBuild(gameFinalResultData['all_score']),
-            ),
+            ///TODO
+            // Padding(
+            //   padding: EdgeInsets.only(top: 10),
+            //   // child: getJifenBuild(gameFinalResultData['all_score']),
+            // ),
           ],
         ),
       ),

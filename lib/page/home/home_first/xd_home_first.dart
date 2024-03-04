@@ -452,6 +452,18 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                   onRefresh: (type) => _onRefresh(context, type),
                   child: Builder(
                     builder: (context) {
+                      return ListView(
+                        children: [
+                          SizedBox(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 50.0),
+                                child: Text('游戏记录后续版本开放，尽请期待',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
+                              ),
+                            ),
+                          )
+                        ],
+                      );
                       if(historyList.length==0){
                         return ListView(
                           children: [
