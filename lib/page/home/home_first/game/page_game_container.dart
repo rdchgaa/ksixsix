@@ -349,7 +349,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
   @override
   void initState() {
     super.initState();
-    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400))
       ..addListener(() {
         setState(() {});
       });
@@ -475,7 +475,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400))
       ..addListener(() {
         setState(() {});
       });
@@ -548,24 +548,27 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                                 length: 11,
                                 child: Column(
                                   children: [
-                                    SizedBox(
-                                      height: 48,
-                                      width: double.infinity,
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: UiTabBar(tabs: [
-                                          Tab(text: '总览'),
-                                          Tab(text: '一轮'),
-                                          Tab(text: '二轮'),
-                                          Tab(text: '三轮'),
-                                          Tab(text: '四轮'),
-                                          Tab(text: '五轮'),
-                                          Tab(text: '六轮'),
-                                          Tab(text: '七轮'),
-                                          Tab(text: '八轮'),
-                                          Tab(text: '九轮'),
-                                          Tab(text: '十轮')
-                                        ]),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 50.0),
+                                      child: SizedBox(
+                                        height: 48,
+                                        width: double.infinity,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: UiTabBar(tabs: [
+                                            Tab(text: '总览'),
+                                            Tab(text: '一轮'),
+                                            Tab(text: '二轮'),
+                                            Tab(text: '三轮'),
+                                            Tab(text: '四轮'),
+                                            Tab(text: '五轮'),
+                                            Tab(text: '六轮'),
+                                            Tab(text: '七轮'),
+                                            Tab(text: '八轮'),
+                                            Tab(text: '九轮'),
+                                            Tab(text: '十轮')
+                                          ]),
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -1176,11 +1179,10 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                 ],
               ),
             ),
-            ///TODO
-            // Padding(
-            //   padding: EdgeInsets.only(top: 10),
-            //   // child: getJifenBuild(gameFinalResultData['all_score']),
-            // ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: getJifenBuild(gameFinalResultData['all_score']),
+            ),
           ],
         ),
       ),

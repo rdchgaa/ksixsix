@@ -119,9 +119,9 @@ class ControlInit extends RouterDataNotifier {
   void _showNetwork(BuildContext context) async {
     var value = await showAlertDialog(
       context,
-      content: Languages.of(context).networkErrorText,
-      buttonCancel: Languages.of(context).exitText,
-      buttonOk: Languages.of(context).reconnectText,
+      content: '服务器维护中，请稍后在试，敬请谅解',
+      buttonCancel: '退出',
+      buttonOk: '尝试重连',
     );
     if (true == value) {
       init(context);

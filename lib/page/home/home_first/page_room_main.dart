@@ -8,6 +8,7 @@ import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_game_main.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
@@ -143,6 +144,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
     await PageGameMain(roomId: widget.roomId,).push(context);
     var user = context.read<SerUser>();
     user.gameId = null;
+    AudioPlayerUtilBackGround.stopSound();
     Navigator.pop(context);
     // initData();
     ///TODO 重置房间

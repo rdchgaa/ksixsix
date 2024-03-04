@@ -108,10 +108,12 @@ class NetWork {
 
 
   //查询游戏记录  userId
-  static userGameRecord(BuildContext context,int userId,) async{
+  static userGameRecord(BuildContext context,int userId,int page) async{
     var res = await DioUtils.instance.getRequest(Method.get, 'user/game/record',
       queryParameters: {
         "user_id":userId, // 账号
+        "page":page, // 账号
+        "limit":10, // 账号
       },
       options: Options(headers: {'token':getToken()}),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
@@ -40,6 +41,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   bool showRecord = false;
 
   var finalResultData = null;
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +91,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
       user.gameId = null;
       hideTextInput();
       leaveRoom(roomId);
+      _onRefresh(context, OnRefreshType.Refresh);
     }
   }
 
@@ -408,6 +411,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
       ),
     );
   }
+
   getRecordBuild(){
     if(showRecord&&finalResultData!=null){
       return FinalResultBuild(finalResultData: finalResultData,onClose: (){
@@ -452,18 +456,18 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                   onRefresh: (type) => _onRefresh(context, type),
                   child: Builder(
                     builder: (context) {
-                      return ListView(
-                        children: [
-                          SizedBox(
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 50.0),
-                                child: Text('游戏记录后续版本开放，尽请期待',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
-                              ),
-                            ),
-                          )
-                        ],
-                      );
+                      // return ListView(
+                      //   children: [
+                      //     SizedBox(
+                      //       child: Center(
+                      //         child: Padding(
+                      //           padding: const EdgeInsets.only(top: 50.0),
+                      //           child: Text('游戏记录后续版本开放，尽请期待',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ],
+                      // );
                       if(historyList.length==0){
                         return ListView(
                           children: [
@@ -552,19 +556,19 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   Future<bool> _onRefresh(BuildContext context, OnRefreshType type) async {
     if (OnRefreshType.Refresh == type) {
+      _pageIndex = 1;
       await LoadingCall.of(context).call((state, controller) async {
-        var res = await NetWork.userGameRecord(context,getUserId());
-        historyList = res??[];
-        historyList = historyList.reversed.toList();
-        _pageIndex = 1;
+        var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
+        historyList = res==null?[]:res['list'];
+        // historyList = historyList.reversed.toList();
       }, isShowLoading: false);
       setState(() {});
       return true;
     } else {
       await LoadingCall.of(context).call((state, controller) async {
-        // var res = await NetWork.userGameRecord(context,getUserId());
-        // historyList.addAll(res.recordList);
-        // _pageIndex += 1;
+        var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
+        historyList.addAll(res['list']);
+        _pageIndex += 1;
       },isShowLoading: false);
       setState(() {});
       return true;
@@ -573,10 +577,10 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   Future<bool> _onInitLoading(BuildContext context) async {
     await LoadingCall.of(context).call((state, controller) async {
-      var res = await NetWork.userGameRecord(context,getUserId());
-      historyList = res??[];
-      historyList = historyList.reversed.toList();
       _pageIndex = 1;
+      var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
+      historyList = res==null?[]:res['list'];
+      // historyList = historyList.reversed.toList();
     }, isShowLoading: false);
     setState(() {});
     return true;
