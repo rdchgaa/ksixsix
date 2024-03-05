@@ -353,7 +353,7 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
           url: url,
           // errorWidget: (Image.asset('assets/images2/icon-touxiang.webp',width: widget.width,height: widget.height,)));
           errorWidget: (Image.asset(
-            'assets/images/male.png',
+            'assets/images/default_head.png',
             width: widget.width,
             height: widget.height,
           )));

@@ -17,6 +17,7 @@ import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:image/image.dart' as img;
 import 'package:lpinyin/lpinyin.dart';
 import 'package:provider/src/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 int getOsType() {
   if (Platform.isAndroid) {
@@ -177,4 +178,13 @@ enum Gender{
   MALE,
   FEMALE,
   UNKNOWN
+}
+
+Future<void> appLaunch(BuildContext context, String url, { String title}) async {
+  var theUri = Uri.parse(url);
+  launch(url);
+  // if (mode != null) {
+  //   launchUrl(theUri, mode: mode);
+  //   return;
+  // }
 }

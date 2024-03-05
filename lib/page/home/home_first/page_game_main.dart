@@ -68,6 +68,10 @@ class _PageGameMainState extends State<PageGameMain> {
   bool isZhuang = false;   //自己是否是庄家
   int vocation_user_id = 0 ;// 庄家的用户id
 
+  bool isMaster = false;  //自己是否是房主
+
+  //重复点击
+  bool canClickFapai = true;
 
   /// 本地状态
   bool readying = false; //准备阶段
@@ -158,9 +162,11 @@ class _PageGameMainState extends State<PageGameMain> {
       } else {
         if(res['state']==-1){
           //游戏解散
-          if(mounted){
+          if(mounted && roomTimer != null){
             roomTimer.cancel();
             roomTimer = null;
+            setState(() {
+            });
             showToast(context, '房间已解散');
             Navigator.pop(context);
           }
@@ -333,6 +339,11 @@ class _PageGameMainState extends State<PageGameMain> {
     for (var i = 0; i < user_list.length; i++) {
       if (user_list[i]['user_id'] == getUserId()) {
         selfUserInfo = user_list[i];
+        if(user_list[i]['is_master']==1){
+          isMaster = true;
+          var user = context.read<SerUser>();
+          user.isRoomMaster = true;
+        }
       } else {
         playerList.add(user_list[i]);
       }
@@ -503,9 +514,25 @@ class _PageGameMainState extends State<PageGameMain> {
 
   pushPoker() async{
     Vibration.vibrate(duration: 200, amplitude: 50);
+
+
+    if(!canClickFapai){
+      return;
+    }
+    setState(() {
+      canClickFapai = false;
+    });
+    Future.delayed(Duration(milliseconds: 5000),(){
+      if(mounted){
+        setState(() {
+          canClickFapai = true;
+        });
+      }
+    });
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.deal(context, getUserId());
     }, isShowLoading: false);
+
     if (res != null && res != 1) {
       // setState(() {
       //   isZhuang = true;
@@ -523,7 +550,7 @@ class _PageGameMainState extends State<PageGameMain> {
       showToast(context, '最多投注10次');
       return;
     }
-    Vibration.vibrate(duration: 200, amplitude: 50);
+    Vibration.vibrate(duration: 50, amplitude: 128);
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.gameBet(context, getUserId(),num);
     }, isShowLoading: false);
@@ -858,6 +885,26 @@ class _PageGameMainState extends State<PageGameMain> {
                 ),
                 Text(
                   widget.roomId.toString(),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+              ],
+            ),
+          ),
+          if(round!=0)Padding(
+            padding: EdgeInsets.only(left:10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '第',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+                Text(
+                  round.toString(),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: roomMasterColor),
+                ),
+                Text(
+                  '局',
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
                 ),
               ],
