@@ -113,10 +113,10 @@ class NetWork {
       queryParameters: {
         "user_id":userId, // 账号
         "page":page, // 账号
-        "limit":10, // 账号
+        "limit":20, // 账号
       },
       options: Options(headers: {'token':getToken()}),
-    );
+    ); 
     if(res!=null){
       var value = json.decode(res.data);
       if(value['code']==0){

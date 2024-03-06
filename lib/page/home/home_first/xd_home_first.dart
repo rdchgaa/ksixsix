@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/full_card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
@@ -50,6 +52,10 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
       // 强制竖屏
       DeviceOrientation.landscapeLeft
     ]);
+
+
+    ///TODO  测试
+    // controller1.addListener(ScrollListener1);
   }
 
   @override
@@ -57,36 +63,40 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     super.dispose();
   }
 
-  creatRoom() async{
-    if(!checkCanUse()){
+  creatRoom() async {
+    if (!checkCanUse()) {
       return;
     }
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.getCreatRoom(context,getUserId());
+      return await NetWork.getCreatRoom(context, getUserId());
     }, isShowLoading: true);
-    if(res!=null){
+    if (res != null) {
       var user = context.read<SerUser>();
       user.isRoomMaster = true;
       goRoom(res['room_Id']);
     }
   }
-  joinRoom() async{
-    if(!checkCanUse()){
+
+  joinRoom() async {
+    if (!checkCanUse()) {
       return;
     }
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.getJoinRoom(context,getUserId(),int.tryParse(_unRoomId.text)??0);
+      return await NetWork.getJoinRoom(context, getUserId(), int.tryParse(_unRoomId.text) ?? 0);
     }, isShowLoading: true);
-    if(res!=null){
+    if (res != null) {
       var user = context.read<SerUser>();
       user.isRoomMaster = false;
       goRoom(res['room_Id']);
     }
   }
-  goRoom(int roomId)async{
-    if(checkCanUse()){
+
+  goRoom(int roomId) async {
+    if (checkCanUse()) {
       hideTextInput();
-      await PageRoomMain(roomId: roomId,).push(context);
+      await PageRoomMain(
+        roomId: roomId,
+      ).push(context);
       var user = context.read<SerUser>();
       user.gameId = null;
       hideTextInput();
@@ -95,38 +105,144 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     }
   }
 
-  leaveRoom(int roomId) async{
+  leaveRoom(int roomId) async {
     var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      if(user.isRoomMaster){
+      if (user.isRoomMaster) {
         user.isRoomMaster = false;
-        return await NetWork.dissolutionRoom(context,getUserId(),roomId);
-      }else{
+        return await NetWork.dissolutionRoom(context, getUserId(), roomId);
+      } else {
         user.isRoomMaster = false;
-        return await NetWork.leaveRoom(context,getUserId(),roomId);
+        return await NetWork.leaveRoom(context, getUserId(), roomId);
       }
     }, isShowLoading: true);
-    if (res!=null) {
-    } else {
-    }
+    if (res != null) {
+    } else {}
   }
 
-  bool checkCanUse(){
-    if(DateTime(2024,4,1).millisecondsSinceEpoch<DateTime.now().millisecondsSinceEpoch){
+  bool checkCanUse() {
+    if (DateTime(2024, 4, 1).millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
       ///TODO 请更新或下载新版本后使用
       showToast(context, '请更新或下载新版本后使用。');
-      showAlertDialogUpdate(context,enterType: 2);
-      return false;
-    }
-    return true;
-  }
-  bool checkLogin(){
-    if((getUserId() == null || getUserId() == 0)){
+      showAlertDialogUpdate(context, enterType: 2);
       return false;
     }
     return true;
   }
 
+  bool checkLogin() {
+    if ((getUserId() == null || getUserId() == 0)) {
+      return false;
+    }
+    return true;
+  }
+
+  ///TODO   测试组件
+  var pokerWidth = 110.0;
+  var pokerHeight = 110.0 / 5.7 * 8.7;
+
+  ScrollController controller1 = ScrollController();
+  bool zhedang1 = true;
+
+  ScrollListener1() async{
+    if (controller1.offset >= (pokerWidth / 2)) {
+      // controller1.removeListener(ScrollListener1());
+      await controller1.animateTo(controller1.position.maxScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.linear);
+      zhedang1 = false;
+      setState(() {
+      });
+    }
+  }
+
+  getTestBuild() {
+    return SizedBox();
+    return Center(
+      child: getPokerBox(1),
+    );
+  }
+
+  getPokerBox(int num) {
+    return Padding(
+      padding: EdgeInsets.only(left: 10, top: 10, bottom: 10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xcc0f7357), Color(0xcc011713)],
+            ),
+            // color: Color(0xcc555555),
+            boxShadow: [BoxShadow(color: Color(0xffeeb202), blurRadius: 33, offset: Offset(0, 0))],
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+            border: Border.all(color: Color(0xffb68a08), width: 2)),
+        child: SizedBox(
+          width: pokerWidth,
+          height: pokerHeight + 0,
+          // child: getCardBuild(0,1,width: itemWidth),
+          child: getPoker1(),
+        ),
+      ),
+    );
+  }
+
+  getPoker1() {
+    return ListView(
+      controller: controller1,
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
+      children: [
+        getPokerNullBoxBuild(),
+        Center(
+            child: Stack(
+          children: [
+            getFullCardBuild(4, 10, width: pokerWidth),
+            if(zhedang1)Positioned(
+              top: 6,left: 0,
+                child: DecoratedBox(
+              decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: 15,height: 40,),
+            )),
+            if(zhedang1)Positioned(
+              right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: 15,height: 40,),
+                )),
+          ],
+        ))
+      ],
+    );
+  }
+
+  getPokerNullBoxBuild() {
+    return Row(
+      children: [
+        SizedBox(
+          width: pokerWidth,
+          height: pokerHeight,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/zuola.png',
+                width: 40,
+                height: 40,
+                fit: BoxFit.contain,
+              ),
+              Text(
+                '拉出扑克',
+                style: TextStyle(fontSize: 16, color: Color(0xffe19b4b)),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 10,
+          height: pokerHeight,
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,295 +261,300 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
               return UiEmptyView(type: EmptyType.network, onPressed: () => _onInitLoading(context));
             },
             builder: (context) {
-            return Stack(
-              children: [
-                Image.asset(
-                  'assets/images/home.png',
-                  width: width,
-                  height: height,
-                  fit: BoxFit.cover,
-                ),
-                SafeArea(
-                  child: Stack(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 300,
-                            height: height,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left:5),
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            // var res = await NetWork.toLogin();
-                                            if (checkLogin()) {
-                                              PageXdEditInfo().push(context);
-                                            } else {
-                                              // AutoRouter.of(context).pushNamed(
-                                              //   "/my_edit_info",
-                                              // );
-                                              PageLogin().push(context);
-                                            }
-                                            // return AutoRouter.of(context).pushNamed("/dialog_alert", params: {
-                                            //   "title": title,
-                                            //   "content": content,
-                                            //   "buttonCancel": buttonCancel,
-                                            //   "buttonOk": buttonOk,
-                                            // });
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 50,
-                                                height: 50,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffffffff),
-                                                  borderRadius: BorderRadius.all(Radius.circular(50 / 2)),
-                                                  boxShadow: [BoxShadow(color: Color(0xaaffffff), blurRadius: 33, offset: Offset(0, 0))],
-                                                ),
-                                                child: Center(
-                                                  child: HeadImage.network(
-                                                    user.info.avatar ?? '',
-                                                    width: 50-1.0,
-                                                    height: 50-1.0,
+              return Stack(
+                children: [
+                  Image.asset(
+                    'assets/images/home.png',
+                    width: width,
+                    height: height,
+                    fit: BoxFit.cover,
+                  ),
+                  SafeArea(
+                    child: Stack(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 300,
+                              height: height,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 5),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              // var res = await NetWork.toLogin();
+                                              if (checkLogin()) {
+                                                PageXdEditInfo().push(context);
+                                              } else {
+                                                // AutoRouter.of(context).pushNamed(
+                                                //   "/my_edit_info",
+                                                // );
+                                                PageLogin().push(context);
+                                              }
+                                              // return AutoRouter.of(context).pushNamed("/dialog_alert", params: {
+                                              //   "title": title,
+                                              //   "content": content,
+                                              //   "buttonCancel": buttonCancel,
+                                              //   "buttonOk": buttonOk,
+                                              // });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 50,
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffffffff),
+                                                    borderRadius: BorderRadius.all(Radius.circular(50 / 2)),
+                                                    boxShadow: [BoxShadow(color: Color(0xaaffffff), blurRadius: 33, offset: Offset(0, 0))],
                                                   ),
+                                                  child: Center(
+                                                    child: HeadImage.network(
+                                                      user.info.avatar ?? '',
+                                                      width: 50 - 1.0,
+                                                      height: 50 - 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: 15),
+                                                  child: Text(
+                                                    checkLogin() ? (user.nickname) : '登录/注册',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Source Han Sans CN',
+                                                      fontSize: 18,
+                                                      color: const Color(0xffeeeeee),
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                    softWrap: false,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 5, top: 10),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 40,
+                                                width: 110,
+                                                child: TextFormField(
+                                                  autofocus: false,
+                                                  onChanged: (val) {},
+                                                  controller: _unRoomId,
+                                                  keyboardType: TextInputType.number,
+                                                  cursorColor: Color(0xFF21A27C),
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(color: Color(0xFFffffff), fontSize: 16, fontWeight: FontWeight.bold),
+                                                  decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: Color(0x22ffffff),
+                                                    prefix: SizedBox(
+                                                      width: 0,
+                                                    ),
+                                                    // prefixIconConstraints: BoxConstraints(),
+                                                    // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
+                                                    hintText: '输入房间号',
+                                                    hintStyle: TextStyle(color: Color(0xFFCCCCCC), fontSize: 11),
+                                                    enabledBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                                                      borderSide: BorderSide(style: BorderStyle.none),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                                                      borderSide: BorderSide(style: BorderStyle.none),
+                                                    ),
+                                                    // border: InputBorder.none
+                                                  ),
+                                                  inputFormatters: [
+                                                    LengthLimitingTextInputFormatter(20),
+                                                  ],
                                                 ),
                                               ),
                                               Padding(
-                                                padding: EdgeInsets.only(left: 15),
-                                                child: Text(
-                                                  checkLogin() ? (user.nickname):'登录/注册',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Source Han Sans CN',
-                                                    fontSize: 18,
-                                                    color: const Color(0xffeeeeee),
-                                                    fontWeight: FontWeight.w700,
+                                                padding: EdgeInsets.only(left: 10),
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    if (!checkLogin()) {
+                                                      PageLogin().push(context);
+                                                      return;
+                                                    }
+                                                    joinRoom();
+                                                  },
+                                                  child: Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                          image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                                                        ),
+                                                        child: SizedBox(
+                                                          width: 120,
+                                                          height: 45,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.only(bottom: 5.0),
+                                                              child: Text(
+                                                                '加入房间',
+                                                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  softWrap: false,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left:5,top: 10),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 40,
-                                              width: 110,
-                                              child: TextFormField(
-                                                autofocus: false,
-                                                onChanged: (val) {},
-                                                controller: _unRoomId,
-                                                keyboardType: TextInputType.number,
-                                                cursorColor: Color(0xFF21A27C),
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(color: Color(0xFFffffff), fontSize: 16,fontWeight: FontWeight.bold),
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0x22ffffff),
-                                                  prefix: SizedBox(width: 0,),
-                                                  // prefixIconConstraints: BoxConstraints(),
-                                                  // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
-                                                  hintText: '输入房间号',
-                                                  hintStyle: TextStyle(color: Color(0xFFCCCCCC), fontSize: 11),
-                                                  enabledBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                                    borderSide: BorderSide(style: BorderStyle.none),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              if (!checkLogin()) {
+                                                PageLogin().push(context);
+                                                return;
+                                              }
+                                              creatRoom();
+                                            },
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
                                                   ),
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                                    borderSide: BorderSide(style: BorderStyle.none),
+                                                  child: SizedBox(
+                                                    width: 250,
+                                                    height: 65,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(bottom: 5.0),
+                                                        child: Text(
+                                                          '创建房间',
+                                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  // border: InputBorder.none
                                                 ),
-                                                inputFormatters: [
-                                                  LengthLimitingTextInputFormatter(20),
-                                                ],
-                                              ),
+                                              ],
                                             ),
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 10),
-                                              child: InkWell(
-                                                onTap: () async{
-                                                  if(!checkLogin()){
-                                                    PageLogin().push(context);
-                                                    return;
-                                                  }
-                                                  joinRoom();
-                                                },
-                                                child: Stack(
-                                                  alignment: Alignment.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 5, bottom: 20.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 10.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     DecoratedBox(
                                                       decoration: BoxDecoration(
-                                                        image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                                                        image: DecorationImage(image: AssetImage("assets/images/new_logo.webp"), fit: BoxFit.fill),
                                                       ),
                                                       child: SizedBox(
-                                                        width: 120,
-                                                        height: 45,
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.only(bottom: 5.0),
-                                                            child: Text(
-                                                              '加入房间',
-                                                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                            ),
-                                                          ),
-                                                        ),
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 5.0),
+                                                      child: Text(
+                                                        'K牛牛',
+                                                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            if(!checkLogin()){
-                                              PageLogin().push(context);
-                                              return;
-                                            }
-                                            creatRoom();
-                                          },
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              DecoratedBox(
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                                                ),
-                                                child: SizedBox(
-                                                  width: 250,
-                                                  height: 65,
-                                                  child: Center(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(bottom: 5.0),
-                                                      child: Text(
-                                                        '创建房间',
-                                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left:5,bottom: 20.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 10.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  DecoratedBox(
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(image: AssetImage("assets/images/new_logo.webp"), fit: BoxFit.fill),
-                                                    ),
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      height: 50,
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 5.0),
-                                                    child: Text(
-                                                      'K牛牛',
-                                                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
-                                                    ),
-                                                  ),
-                                                ],
+                                        Positioned(
+                                          bottom: 30,
+                                          right: 0,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              // AudioPlayerUtilBackGround.playSound();
+                                              await PageSetUp().push(context);
+                                              // AudioPlayerUtilBackGround.stopSound();
+                                            },
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(image: AssetImage("assets/images/set.png"), fit: BoxFit.fill),
+                                              ),
+                                              child: SizedBox(
+                                                width: 25,
+                                                height: 25,
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      Positioned(bottom:30,right:0,child: InkWell(
-                                        onTap: () async{
-                                          // AudioPlayerUtilBackGround.playSound();
-                                          await PageSetUp().push(context);
-                                          // AudioPlayerUtilBackGround.stopSound();
-                                        },
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(image: AssetImage("assets/images/set.png"), fit: BoxFit.fill),
                                           ),
-                                          child: SizedBox(
-                                            width: 25,
-                                            height: 25,
-                                          ),
-                                        ),
-                                      ),)
-                                    ],
-                                  )
-                                ],
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(child: getRightBuild())
-                        ],
-                      ),
-                      getRecordBuild()
-                    ],
+                            Expanded(child: getRightBuild())
+                          ],
+                        ),
+                        getRecordBuild()
+                      ],
+                    ),
                   ),
-                ),
-
-              ],
-            );
-          }
-        ),
+                  getTestBuild(),
+                ],
+              );
+            }),
       ),
     );
   }
 
-  getRecordBuild(){
-    if(showRecord&&finalResultData!=null){
-      return FinalResultBuild(finalResultData: finalResultData,onClose: (){
-        setState(() {
-          showRecord = false;
-          finalResultData = null;
-        });
-      },);
+  getRecordBuild() {
+    if (showRecord && finalResultData != null) {
+      return FinalResultBuild(
+        finalResultData: finalResultData,
+        onClose: () {
+          setState(() {
+            showRecord = false;
+            finalResultData = null;
+          });
+        },
+      );
     }
     return SizedBox();
   }
 
-  showFinalResultBuild(record) async{
+  showFinalResultBuild(record) async {
     var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.gameFinalResult(context,getUserId(),record['game_id']);
+      return await NetWork.gameFinalResult(context, getUserId(), record['game_id']);
     }, isShowLoading: true);
     finalResultData = res;
     showRecord = true;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   getRightBuild() {
@@ -453,123 +574,123 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
             ),
             Expanded(
                 child: RefreshLoadingIndicator(
-                  onRefresh: (type) => _onRefresh(context, type),
-                  child: Builder(
-                    builder: (context) {
-                      // return ListView(
-                      //   children: [
-                      //     SizedBox(
-                      //       child: Center(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.only(top: 50.0),
-                      //           child: Text('游戏记录后续版本开放，尽请期待',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
-                      //         ),
-                      //       ),
-                      //     )
-                      //   ],
-                      // );
-                      if(historyList.length==0){
-                        return ListView(
-                          children: [
-                            SizedBox(
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 50.0),
-                                  child: Text('暂无记录，先玩一局吧',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
+              onRefresh: (type) => _onRefresh(context, type),
+              child: Builder(builder: (context) {
+                // return ListView(
+                //   children: [
+                //     SizedBox(
+                //       child: Center(
+                //         child: Padding(
+                //           padding: const EdgeInsets.only(top: 50.0),
+                //           child: Text('游戏记录后续版本开放，尽请期待',style: TextStyle(fontSize: 14,color: Color(0xffcccccc)),),
+                //         ),
+                //       ),
+                //     )
+                //   ],
+                // );
+                if (historyList.length == 0) {
+                  return ListView(
+                    children: [
+                      SizedBox(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 50.0),
+                            child: Text(
+                              '暂无记录，先玩一局吧',
+                              style: TextStyle(fontSize: 14, color: Color(0xffcccccc)),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                }
+                return ListView.builder(
+                    itemCount: historyList.length,
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.only(top: 0),
+                    itemBuilder: (context, index) {
+                      var item = historyList[index];
+                      var time = item['created_at'];
+                      // time =DateTime.fromMillisecondsSinceEpoch(time*1000).format("yyyy/MM/dd HH:mm:ss");
+                      return InkWell(
+                        onTap: () {
+                          showFinalResultBuild(item);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, left: 16, right: 16),
+                          child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xFF131530)),
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
+                                  child: Text(
+                                    '时间：' + time.toString(),
+                                    style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
-                        );
-                      }
-                      return ListView.builder(
-                          itemCount: historyList.length,
-                          physics: const ClampingScrollPhysics(),
-                          padding: EdgeInsets.only(top: 0),
-                          itemBuilder: (context, index) {
-                            var item = historyList[index];
-                            var time = item['created_at'];
-                            // time =DateTime.fromMillisecondsSinceEpoch(time*1000).format("yyyy/MM/dd HH:mm:ss");
-                            return InkWell(
-                              onTap: () {
-                                showFinalResultBuild(item);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 16, right: 16),
-                                child: Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xFF131530)),
-                                  padding: EdgeInsets.only(left: 16, right: 16),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
-                                        child: Text(
-                                          '时间：'+time.toString(),
-                                          style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
-                                        ),
+                                      // Image.asset(
+                                      //   "assets/images/jifen.png",
+                                      //   width: 14,
+                                      //   height: 14,
+                                      // ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(left: 2.0),
+                                      //   child: Text(
+                                      //     '+100',
+                                      //     maxLines: 1,
+                                      //     style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                                      //   ),
+                                      // ),
+                                      Text(
+                                        '结果：',
+                                        style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 10),
-                                        child: Row(
-                                          children: [
-                                            // Image.asset(
-                                            //   "assets/images/jifen.png",
-                                            //   width: 14,
-                                            //   height: 14,
-                                            // ),
-                                            // Padding(
-                                            //   padding: const EdgeInsets.only(left: 2.0),
-                                            //   child: Text(
-                                            //     '+100',
-                                            //     maxLines: 1,
-                                            //     style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
-                                            //   ),
-                                            // ),
-                                            Text(
-                                              '结果：',
-                                              style: TextStyle(fontSize: 12, color: Color(0xffeeeeee)),
-                                            ),
-                                            Text(
-                                              item['score'].toString(),
-                                              maxLines: 1,
-                                              style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
-                                            ),
-                                          ],
-                                        ),
+                                      Text(
+                                        item['score'].toString(),
+                                        maxLines: 1,
+                                        style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            );
-                          });
-                    }
-                  ),
-                ))
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    });
+              }),
+            ))
           ],
         ),
       ),
     );
   }
 
-
   Future<bool> _onRefresh(BuildContext context, OnRefreshType type) async {
     if (OnRefreshType.Refresh == type) {
       _pageIndex = 1;
       await LoadingCall.of(context).call((state, controller) async {
-        var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
-        historyList = res==null?[]:res['list'];
+        var res = await NetWork.userGameRecord(context, getUserId(), _pageIndex);
+        historyList = res == null ? [] : res['list'];
         // historyList = historyList.reversed.toList();
       }, isShowLoading: false);
       setState(() {});
       return true;
     } else {
       await LoadingCall.of(context).call((state, controller) async {
-        var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
+        var res = await NetWork.userGameRecord(context, getUserId(), _pageIndex);
         historyList.addAll(res['list']);
         _pageIndex += 1;
-      },isShowLoading: false);
+      }, isShowLoading: false);
       setState(() {});
       return true;
     }
@@ -578,12 +699,11 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   Future<bool> _onInitLoading(BuildContext context) async {
     await LoadingCall.of(context).call((state, controller) async {
       _pageIndex = 1;
-      var res = await NetWork.userGameRecord(context,getUserId(),_pageIndex);
-      historyList = res==null?[]:res['list'];
+      var res = await NetWork.userGameRecord(context, getUserId(), _pageIndex);
+      historyList = res == null ? [] : res['list'];
       // historyList = historyList.reversed.toList();
     }, isShowLoading: false);
     setState(() {});
     return true;
   }
-
 }

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/full_card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
@@ -53,6 +54,14 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
   ScrollController controller3 = ScrollController();
   ScrollController controller4 = ScrollController();
   ScrollController controller5 = ScrollController();
+
+  bool zhedang1 = true;
+  bool zhedang2 = true;
+  bool zhedang3 = true;
+  bool zhedang4 = true;
+  bool zhedang5 = true;
+
+  double zhedangWidth = 14.0;
 
   Duration duration= Duration(milliseconds: 300);
 
@@ -122,30 +131,45 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     if(controller1.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller1.animateTo(controller1.position.maxScrollExtent, duration: duration, curve: Curves.linear);
+      setState(() {
+        zhedang1 = false;
+      });
     }
   }
   ScrollListener2(){
     if(controller2.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller2.animateTo(controller2.position.maxScrollExtent, duration: duration, curve: Curves.linear);
+      setState(() {
+        zhedang2 = false;
+      });
     }
   }
   ScrollListener3(){
     if(controller3.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller3.animateTo(controller3.position.maxScrollExtent, duration: duration, curve: Curves.linear);
+      setState(() {
+        zhedang3 = false;
+      });
     }
   }
   ScrollListener4(){
     if(controller4.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller4.animateTo(controller4.position.maxScrollExtent, duration: duration, curve: Curves.linear);
+      setState(() {
+        zhedang4 = false;
+      });
     }
   }
   ScrollListener5(){
     if(controller5.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller5.animateTo(controller5.position.maxScrollExtent, duration: duration, curve: Curves.linear);
+      setState(() {
+        zhedang5 = false;
+      });
     }
   }
 
@@ -253,7 +277,23 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
-        Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
+        Center(child: Stack(
+          children: [
+            getFullCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth),
+            if(zhedang1)Positioned(
+                top: 6,left: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+            if(zhedang1)Positioned(
+                right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+          ],
+        ))
       ],
     );
   }
@@ -265,7 +305,23 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
-        Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
+        Center(child: Stack(
+          children: [
+            getFullCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth),
+            if(zhedang2)Positioned(
+                top: 6,left: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+            if(zhedang2)Positioned(
+                right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+          ],
+        ))
       ],
     );
   }
@@ -277,7 +333,23 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
-        Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
+        Center(child: Stack(
+          children: [
+            getFullCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth),
+            if(zhedang3)Positioned(
+                top: 6,left: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+            if(zhedang3)Positioned(
+                right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+          ],
+        ))
       ],
     );
   }
@@ -289,7 +361,23 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
-        Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
+        Center(child: Stack(
+          children: [
+            getFullCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth),
+            if(zhedang4)Positioned(
+                top: 6,left: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+            if(zhedang4)Positioned(
+                right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: zhedangWidth,height: 40,),
+                )),
+          ],
+        ))
       ],
     );
   }
@@ -301,7 +389,23 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
-        Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
+        Center(child: Stack(
+          children: [
+            getFullCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth),
+            if(zhedang5)Positioned(
+                top: 6,left: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: 15,height: 40,),
+                )),
+            if(zhedang5)Positioned(
+                right: 0,bottom: 6,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
+                  child: SizedBox(width: 15,height: 40,),
+                )),
+          ],
+        ))
       ],
     );
   }
@@ -321,7 +425,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
           ),
         ),
         SizedBox(
-          width: 20,
+          width: 10,
           height: pokerHeight,
         )
       ],
