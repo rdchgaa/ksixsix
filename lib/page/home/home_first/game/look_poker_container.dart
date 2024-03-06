@@ -119,31 +119,31 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
   }
 
   ScrollListener1(){
-    if(controller1.offset>=(pokerHeight/2)){
+    if(controller1.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller1.animateTo(controller1.position.maxScrollExtent, duration: duration, curve: Curves.linear);
     }
   }
   ScrollListener2(){
-    if(controller2.offset>=(pokerHeight/2)){
+    if(controller2.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller2.animateTo(controller2.position.maxScrollExtent, duration: duration, curve: Curves.linear);
     }
   }
   ScrollListener3(){
-    if(controller3.offset>=(pokerHeight/2)){
+    if(controller3.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller3.animateTo(controller3.position.maxScrollExtent, duration: duration, curve: Curves.linear);
     }
   }
   ScrollListener4(){
-    if(controller4.offset>=(pokerHeight/2)){
+    if(controller4.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller4.animateTo(controller4.position.maxScrollExtent, duration: duration, curve: Curves.linear);
     }
   }
   ScrollListener5(){
-    if(controller5.offset>=(pokerHeight/2)){
+    if(controller5.offset>=(pokerWidth/2)){
       // controller1.removeListener(ScrollListener1());
       controller5.animateTo(controller5.position.maxScrollExtent, duration: duration, curve: Curves.linear);
     }
@@ -236,7 +236,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
             borderRadius: BorderRadius.all(Radius.circular(6)),
             border: Border.all(color: Color(0xffb68a08), width: 2)),
         child: SizedBox(
-          width: pokerWidth+2,
+          width: pokerWidth,
           height: pokerHeight+0,
           // child: getCardBuild(0,1,width: itemWidth),
           child: num==1?getPoker1():num==2?getPoker2():num==3?getPoker3():num==4?getPoker4():num==5?getPoker5():SizedBox(),
@@ -249,7 +249,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     var poker = widget.pokers[0];
     return ListView(
       controller: controller1,
-      padding: EdgeInsets.only(top: 0),
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
         Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
@@ -260,7 +261,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     var poker = widget.pokers[1];
     return ListView(
       controller: controller2,
-      padding: EdgeInsets.only(top: 0),
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
         Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
@@ -271,7 +273,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     var poker = widget.pokers[2];
     return ListView(
       controller: controller3,
-      padding: EdgeInsets.only(top: 0),
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
         Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
@@ -282,7 +285,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     var poker = widget.pokers[3];
     return ListView(
       controller: controller4,
-      padding: EdgeInsets.only(top: 0),
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
         Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
@@ -293,7 +297,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     var poker = widget.pokers[4];
     return ListView(
       controller: controller5,
-      padding: EdgeInsets.only(top: 0),
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.only(left: 0),
       children: [
         getPokerNullBoxBuild(),
         Center(child: getCardBuild(poker['hua_se'], poker['poker_number'],width: pokerWidth))
@@ -302,16 +307,24 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
   }
 
   getPokerNullBoxBuild(){
-    return SizedBox(
-      width: pokerWidth,
-      height: pokerHeight,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/shangla2.png',width: 40,height: 40,fit: BoxFit.contain,),
-          Text('拉出扑克',style: TextStyle(fontSize: 16,color: Color(0xffe19b4b)),),
-        ],
-      ),
+    return Row(
+      children: [
+        SizedBox(
+          width: pokerWidth,
+          height: pokerHeight,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/zuola.png',width: 40,height: 40,fit: BoxFit.contain,),
+              Text('拉出扑克',style: TextStyle(fontSize: 16,color: Color(0xffe19b4b)),),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 20,
+          height: pokerHeight,
+        )
+      ],
     );
   }
 }
