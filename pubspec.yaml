@@ -15,73 +15,38 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.0.6
-  grpc: ^3.0.2
-  protobuf: ^2.0.1
   dio: ^4.0.0
   dio_cookie_manager: ^2.0.0
   cookie_jar: ^3.0.1
   provider: ^5.0.0
-  cached_network_image: ^2.5.0
-  photo_view: ^0.10.3
-  logger: ^1.0.0
-  qr_flutter: ^3.0.1
-  image_gallery_saver: ^1.7.1
-  #  share_plus: 3.0.4  #分享插件
-  connectivity_plus: 2.1.0 #网格状态发现插件
-  yaml: ^3.1.0
-  webview_flutter: ^3.0.0
-  uuid: ^3.0.1
-  image: ^3.1.1
-  wakelock: ^0.6.1+1
 
   head_image_cropper:
     git:
-      url: https://github.com/wskfjtheqian/head_image_cropper.git
-      ref: 3.1.2
-  lpinyin: ^2.0.3
-  scrollable_positioned_list: ^0.1.10
+      url: https://github.com/rdchgaa/head_image_cropper.git
+      ref: 82a7b41
+#  lpinyin: ^2.0.3
   flutter_widget_from_html_core: ^0.7.0
-  heqian_flutter_utils:
-    #    path: ../../heqian_flutter_utils
+  xxc_flutter_utils:
     git:
-      url: https://github.com/wskfjtheqian/heqian_flutter_utils.git
-      ref: f21cb6f
+      url: https://github.com/rdchgaa/xxc_flutter_utils.git
+      ref: 0bf9a42
   path_provider: ^2.0.2
   url_launcher:
     path: plugins/url_launcher
   package_info_plus: ^1.3.0
   flutter_cache_manager: ^2.1.2
-  file_selector: ^0.8.2
-  file_selector_windows: ^0.0.2+1
-  file_selector_macos: ^0.0.4+1
-#  image_picker: ^0.6.7+14
   image_picker: 0.8.4+8
-  file_picker: ^4.0.3
-  sqflite_common_ffi: 2.0.0+3
-  sqflite_common: ^2.0.0+2
-  device_info_plus: 3.1.1
-#  时间选择器
-  flutter_cupertino_datetime_picker: ^3.0.0
 
   vibration:
     path: plugins/vibration
 
-  flutter_local_notifications: 9.1.4
   permission_handler: 8.1.4+2
-  flutter_app_update:
-    path: plugins/flutter_app_update
-  double_tap_player_view: ^2.0.3
-  hbuf_dart:
-    git:
-      url: https://github.com/wskfjtheqian/hbuf_dart.git
-      ref: "5520210"
+
   fixnum: ^1.0.1
   adobe_xd: ^2.0.1
   flutter_svg: 1.0.3
-  open_file: 3.2.1
 
   audioplayers: ^3.0.1
-  soundpool: ^2.3.0
   extended_image: 6.4.1
 
 
@@ -99,8 +64,6 @@ dependency_overrides:
   uuid: ^3.0.5
   logger: ^1.0.0
   intl: ^0.17.0
-  device_info_plus_windows:
-    path: plugins/device_info_plus_windows
 flutter:
   uses-material-design: true
 

@@ -1,15 +1,7 @@
-import 'package:ima2_habeesjobs/dao/dao_user.dart';
-
-import 'package:ima2_habeesjobs/net/api.dart';
-import 'package:ima2_habeesjobs/net/network.dart';
-import 'package:ima2_habeesjobs/page/page_init.dart';
-
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/util/app_cache_manager.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/util/navigator.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
+import 'package:ima2_habeesjobs/net/network.dart';
+import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 
 ///用户状态服务
@@ -158,9 +150,6 @@ class SerUser extends ChangeNotifier {
   }
 
   void save() async {
-    await DaoUser.set(
-      _info,
-    );
     // var val = await DaoUser.get();
     // _info = val.info;
   }

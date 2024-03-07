@@ -1,23 +1,13 @@
-import 'package:adobe_xd/pinned.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ima2_habeesjobs/app.dart';
-import 'package:ima2_habeesjobs/dao/manage_dao.dart';
-import 'package:ima2_habeesjobs/net/api.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/page/my/page_user_agreement.dart';
 import 'package:ima2_habeesjobs/page/my/page_user_privacy_policy.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/service/ser_base.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/widget/app_bar.dart';
-import 'package:ima2_habeesjobs/widget/app_content.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/widget/item_layout.dart';
 import 'package:ima2_habeesjobs/widget/ui_layout.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 
 class PageUserAboutUs extends RouterDataWidget {
   PageUserAboutUs({Key key}) : super(key: key);
@@ -107,7 +97,7 @@ class _PageUserAboutUsState extends State<PageUserAboutUs> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(bottom: 15),
-                        child: Text(Languages.of(context).versionText+' ${_info.version}'),
+                        child: Text('版本'+' ${_info.version}'),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 24, bottom: 15,left: 20,right: 20),

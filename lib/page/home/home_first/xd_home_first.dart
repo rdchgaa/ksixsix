@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
-import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/full_card_build.dart';
-import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
@@ -13,16 +10,13 @@ import 'package:ima2_habeesjobs/page/my/page_set_up.dart';
 import 'package:ima2_habeesjobs/page/my/page_xd_edit_info.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
-import 'package:ima2_habeesjobs/util/datetime.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:ima2_habeesjobs/widget/refresh_loading_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 class XdHomeFirst extends StatefulWidget {
   const XdHomeFirst({

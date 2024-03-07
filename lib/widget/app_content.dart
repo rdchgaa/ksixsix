@@ -43,9 +43,7 @@ class UiEmptyView extends StatelessWidget {
     switch (this.type) {
       case EmptyType.network:
         image = 'my/icon_no_network.webp';
-        text = Languages
-            .of(context)
-            .networkErrorText;
+        text = '网络错误';
         break;
       case EmptyType.game:
         image = 'my/icon_no_data.webp';

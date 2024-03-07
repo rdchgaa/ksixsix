@@ -1,14 +1,6 @@
-import 'dart:io';
-
-import 'package:ima2_habeesjobs/app.dart';
-import 'package:ima2_habeesjobs/dialog/policy_dialog.dart';
-import 'package:ima2_habeesjobs/page/login/login_page/login_build.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/widget/my_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
+import 'package:ima2_habeesjobs/page/login/login_page/login_build.dart';
 
 class _controlPageLogin extends RouterDataNotifier {
   GlobalKey _formKey = new GlobalKey<FormState>();

@@ -1,25 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
-import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_button.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:ima2_habeesjobs/widget/ui_tabbar.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 
 ///扑克牌入场卡片
 class CardBackBuild extends StatefulWidget {

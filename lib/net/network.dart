@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/net/dio_util.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_game_main.dart';

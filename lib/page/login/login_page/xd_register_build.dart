@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/app.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/login/page_register.dart';
@@ -384,11 +384,11 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
                                 validator: (v) {
                                   if (v.trim().length > 0) {
                                     if (v != _unPassword.text) {
-                                      return Languages.of(context).comfirmPasswordValidatorText;
+                                      return '两次输入密码不一致';
                                     }
                                     return null;
                                   }
-                                  return Languages.of(context).passwordValidatorTipText;
+                                  return '密码不能为空';
                                 },
                               ),
                             ),
@@ -433,12 +433,9 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
                                 // obscureText: passwordComVisible,
                                 validator: (v) {
                                   if (v.trim().length > 0) {
-                                    // if (v != _unPassword.text) {
-                                    //   return Languages.of(context).comfirmPasswordValidatorText;
-                                    // }
                                     return null;
                                   }
-                                  return 'enter the verification code';
+                                  return '’请输入昵称';
                                 },
                                 // inputFormatters: [
                                 //   LengthLimitingTextInputFormatter(15),

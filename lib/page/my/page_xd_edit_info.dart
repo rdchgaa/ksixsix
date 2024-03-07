@@ -5,7 +5,7 @@ import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/dialog_image.dart';
 import 'package:ima2_habeesjobs/net/net_file.dart';
 import 'package:ima2_habeesjobs/net/network.dart';

@@ -1,21 +1,6 @@
-import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/net/network.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
-import 'package:ima2_habeesjobs/widget/my_image.dart';
-import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
-import 'dart:math' as math;
 
 Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}) {
 

@@ -1,25 +1,15 @@
 import 'dart:io';
 
-import 'package:adobe_xd/pinned.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:ima2_habeesjobs/app.dart';
-import 'package:ima2_habeesjobs/dao/manage_dao.dart';
+import 'package:flutter/material.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
-import 'package:ima2_habeesjobs/net/api.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/page_home.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_base.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/app_cache_manager.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/logger.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_app_update/flutter_app_update.dart';
-import 'package:hbuf_dart/hbuf_dart.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -75,8 +65,6 @@ class ControlInit extends RouterDataNotifier {
         _showNetwork(context);
         return false;
       }
-      // 初始化数据库连接
-      await ManageDao.init();
 
       await context.read<SerUser>().init();
       // try {
@@ -276,7 +264,7 @@ class _ShowGuideState extends State<ShowGuide> {
                   }
                 },
                 child: Text(
-                  Languages.of(context).nowExperienceTipText,
+                  '立即体验',
                   style: TextStyle(
                     color: Color(0xffffffff),
                     fontSize: 18,

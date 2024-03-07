@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/app.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/login/page_register.dart';
 import 'package:ima2_habeesjobs/page/page_init.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 class LoginBuild extends StatefulWidget {
   LoginBuild({

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 Future<bool> showAlertDialog(BuildContext context, {String title, String content, String buttonOk, String buttonCancel}) {
   // return AutoRouter.of(context).pushNamed("/dialog_alert", params: {
