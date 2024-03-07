@@ -18,7 +18,6 @@ import com.github.gzuliyujiang.oaid.IGetter
 import java.security.MessageDigest
 import java.io.File
 import java.io.InputStream
-import com.qihoo360.replugin.RePlugin
 
 class MainActivity : FlutterActivity(), MethodChannel.MethodCallHandler {
     private val handler = Handler(Looper.getMainLooper()!!)
@@ -27,8 +26,6 @@ class MainActivity : FlutterActivity(), MethodChannel.MethodCallHandler {
     private var _deviceId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        RePlugin.setPluginContext(this);
-        RePlugin.setPackageName(BuildConfig.APPLICATION_ID);
         super.onCreate(savedInstanceState)
         this.channel = MethodChannel(flutterEngine?.dartExecutor!!, "flutter/application", StandardMethodCodec.INSTANCE)
         channel.setMethodCallHandler(this)

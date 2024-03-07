@@ -44,10 +44,6 @@
         </activity>
 
         <meta-data
-            android:name="com.qihoo360.plugin.name"
-            android:value="habeesJob_A" />
-
-        <meta-data
                 android:name="flutterEmbedding"
                 android:value="2"/>
 

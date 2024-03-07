@@ -120,5 +120,4 @@ dependencies {
     implementation fileTree(includes: ['*.aar'], dir: "libs")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'io.github.happylishang:antifake:1.7.0' //模拟器检测库
-    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
 }

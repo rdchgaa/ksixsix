@@ -346,49 +346,6 @@ class _AppState extends State<App> {
     return _locale;
   }
 
-  Future<void> goBackToSystemHome() async {
-    await channel.invokeMethod("goBackToSystemHome");
-  }
-
-  Future<void> setSpeakerphoneOn(bool value) async {
-    await channel.invokeMethod("setSpeakerphoneOn", value);
-  }
-
-  Future<bool> getSpeakerphoneOn() async {
-    return await channel.invokeMethod("getSpeakerphoneOn");
-  }
-
-  Future<void> setNotify(bool value) async {
-    await channel.invokeMethod("setNotify", {"status": value});
-  }
-
-  Future<void> setTitle(String value) async {
-    if (Platform.isWindows) {
-      await channel.invokeMethod("setTitle", {"title": value});
-    }
-  }
-
-  Future<bool> checkTitle(String value) async {
-    if (Platform.isWindows) {
-      return await channel.invokeMethod("checkTitle", {"title": value});
-    }
-    return false;
-  }
-
-  Future<bool> checkEmulator() async {
-    if (Platform.isAndroid) {
-      return await channel.invokeMethod("checkEmulator");
-    }
-    return false;
-  }
-
-  Future<String> getDeviceId() async {
-    if (Platform.isWindows || Platform.isAndroid) {
-      return await channel.invokeMethod("getDeviceId");
-    }
-    return "getDeviceId";
-  }
-
   Future _onError(BuildContext context, error) async {
     print(error);
 

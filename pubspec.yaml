@@ -53,17 +53,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-dependency_overrides:
-  crypto: ^3.0.0
-  path_provider_platform_interface: ^2.0.0
-  plugin_platform_interface: ^2.0.0
-  path_provider: ^2.0.2
-  http_parser: ^4.0.0
-  flutter_plugin_android_lifecycle: 2.0.5
-  http: ^0.13.0
-  uuid: ^3.0.5
-  logger: ^1.0.0
-  intl: ^0.17.0
 flutter:
   uses-material-design: true
 

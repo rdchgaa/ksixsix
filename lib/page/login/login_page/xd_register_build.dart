@@ -123,7 +123,6 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
   }
 
   goHome(){
-    App.of(context).setTitle("baseFlutterDemo (${_unPhone.text})");
     PageInit(needLogin: false,).pushAndRemoveUntil(context, (route) => true);
   }
 

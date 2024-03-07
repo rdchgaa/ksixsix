@@ -150,7 +150,6 @@ class _LoginBuildState extends State<LoginBuild> with SingleTickerProviderStateM
 
 
   goHome(){
-    App.of(context).setTitle("baseFlutterDemo (${_unPhone.text})");
     PageInit(needLogin: false,).pushAndRemoveUntil(context, (route) => false);
   }
 
