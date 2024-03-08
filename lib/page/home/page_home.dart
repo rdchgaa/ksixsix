@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/app.dart';
 import 'package:ima2_habeesjobs/page/home/home_first.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';

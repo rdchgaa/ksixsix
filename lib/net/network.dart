@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/net/dio_util.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
@@ -108,13 +108,15 @@ class NetWork {
 
 
   //查询游戏记录  userId
-  static userGameRecord(BuildContext context,int userId,) async{
+  static userGameRecord(BuildContext context,int userId,int page) async{
     var res = await DioUtils.instance.getRequest(Method.get, 'user/game/record',
       queryParameters: {
         "user_id":userId, // 账号
+        "page":page, // 账号
+        "limit":20, // 账号
       },
       options: Options(headers: {'token':getToken()}),
-    );
+    ); 
     if(res!=null){
       var value = json.decode(res.data);
       if(value['code']==0){

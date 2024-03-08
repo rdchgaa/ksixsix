@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/page/login/login_page/xd_register_build.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/widget/my_button.dart';

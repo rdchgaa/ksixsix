@@ -1,11 +1,4 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/app_cache_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:provider/src/provider.dart';
 
 class SerBase extends ChangeNotifier {
   final BuildContext Function() _context;

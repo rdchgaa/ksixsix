@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_game_main.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
@@ -16,8 +17,10 @@ import 'package:vibration/vibration.dart';
 
 class PageRoomMain extends StatefulWidget {
   final int roomId;
+
   const PageRoomMain({
-    Key key, this.roomId,
+    Key key,
+    this.roomId,
   }) : super(key: key);
 
   @override
@@ -25,7 +28,6 @@ class PageRoomMain extends StatefulWidget {
 }
 
 class _PageRoomMainState extends State<PageRoomMain> {
-
   Color roomMasterColor = Color(0xffffaf49);
 
   Color playerColor = Color(0x66ffffff);
@@ -34,13 +36,12 @@ class _PageRoomMainState extends State<PageRoomMain> {
 
   List userList = [];
 
-  bool clickBack= false;
+  bool clickBack = false;
 
   @override
   void initState() {
     super.initState();
     // SoundpoolUtil.playSound();
-
   }
 
   Future<void> playSound() async {
@@ -55,94 +56,93 @@ class _PageRoomMainState extends State<PageRoomMain> {
     // exitRoom();
   }
 
-  initData(){
+  initData() {
     getRoomState();
     roomTimer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       getRoomState();
     });
   }
-  getRoomState() async{
+
+  getRoomState() async {
     var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.getGameState(context,widget.roomId,user.gameId);
+      return await NetWork.getGameState(context, widget.roomId, user.gameId);
     }, isShowLoading: false);
 
-    if (res!=null) {
-      if(res==1){
-        if(clickBack){
+    if (res != null) {
+      if (res == 1) {
+        if (clickBack) {
           return;
         }
-        showToast(context, '房间已解散');
-        Navigator.pop(context);
-      }else{
+        if (mounted) {
+          showToast(context, '房间已解散');
+          exitRoom();
+        }
+      } else {
         await setRoomInfo(res);
         checkRoomState(res['state']);
       }
-    } else {
-    }
+    } else {}
   }
 
-  setRoomInfo(var res){
+  setRoomInfo(var res) {
     getRightUserList(res['user_list_info']);
-
   }
 
-
-  getRightUserList(List user_list){
+  getRightUserList(List user_list) {
     userList = [];
-    for(var i = 0 ;i<user_list.length;i++){
-      if(user_list[i]['user_id']==getUserId()){
-      }else{
+    for (var i = 0; i < user_list.length; i++) {
+      if (user_list[i]['user_id'] == getUserId()) {
+      } else {
         userList.add(user_list[i]);
       }
     }
-    if(mounted){
-      setState(() {
-
-      });
+    if (mounted) {
+      setState(() {});
     }
   }
 
-  checkRoomState(int state){
+  checkRoomState(int state) {
     ///-1，游戏解散， 0 组队状态 ，>0游戏中状态
-    if(state==-1){
-      if(clickBack){
+    if (state == -1) {
+      if (clickBack) {
         return;
       }
-      if(mounted){
+      if (mounted) {
         showToast(context, '房间已解散');
         exitRoom();
       }
-    } else if(state>0){
+    } else if (state > 0) {
       enterTheGame();
     }
   }
 
-
-  enterTheGame({bool clickStart = false}) async{
-    if(userList.length<1){
+  enterTheGame({bool clickStart = false}) async {
+    if (userList.length < 1) {
       showToast(context, '等待好友进入房间');
-      return ;
+      return;
     }
     roomTimer.cancel();
     roomTimer = null;
-    setState(() {
-    });
+    setState(() {});
 
-    if(clickStart){
+    if (clickStart) {
       var res = await LoadingCall.of(context).call((state, controller) async {
-        return await NetWork.roomToGameStart(context,getUserId(),widget.roomId);
+        return await NetWork.roomToGameStart(context, getUserId(), widget.roomId);
       }, isShowLoading: false);
-      if(res==null||res==1){
+      if (res == null || res == 1) {
         initData();
         return;
       }
     }
 
     Vibration.vibrate(duration: 200, amplitude: 50);
-    await PageGameMain(roomId: widget.roomId,).push(context);
+    await PageGameMain(
+      roomId: widget.roomId,
+    ).push(context);
     var user = context.read<SerUser>();
     user.gameId = null;
+    AudioPlayerUtilBackGround.stopSound();
     Navigator.pop(context);
     // initData();
     ///TODO 重置房间
@@ -170,158 +170,87 @@ class _PageRoomMainState extends State<PageRoomMain> {
               return UiEmptyView(type: EmptyType.network, onPressed: () => _onInitLoading(context));
             },
             builder: (context) {
-            return Stack(
-              children: [
-                Image.asset(
-                  'assets/images/home.png',
-                  width: width,
-                  height: height,
-                  fit: BoxFit.cover,
-                ),
-                SafeArea(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        height: height,
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        clickBack = true;
-                                      });
-                                      exitRoom();
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 30,
-                                              height: 30,
-                                              child: Icon(
-                                                Icons.keyboard_arrow_left,
-                                                color: Color(0xffffffff),
-                                                size: 30,
-                                              ),
-                                            ),
-                                            Text(
-                                              user.isRoomMaster?'解散房间':'离开房间',
-                                              style: TextStyle(fontSize: 16, color: Color(0xffeeeeee)),
-                                            ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 5),
-                                          child: InkWell(
-                                            onTap: () async {
-                                              showAlertDialogRule(context);
-                                            },
-                                            child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Center(child: Image.asset('assets/images/rule.png',width: 30,height: 30,)),
-                                                    Text(
-                                                      '游戏规则',
-                                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: SizedBox(
-                                      width: 300,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+              return Stack(
+                children: [
+                  Image.asset(
+                    'assets/images/rome_back.png',
+                    width: width,
+                    height: height,
+                    fit: BoxFit.cover,
+                  ),
+                  // DecoratedBox(
+                  //   decoration: BoxDecoration(color: Color(0x66000000)),
+                  //   child: SizedBox(
+                  //     width: width,
+                  //     height: height,
+                  //   ),
+                  // ),
+                  SafeArea(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          height: height,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          clickBack = true;
+                                        });
+                                        exitRoom();
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            width: 80,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffffffff),
-                                              borderRadius: BorderRadius.all(Radius.circular(80 / 2)),
-                                              boxShadow: [BoxShadow(color:user.isRoomMaster?roomMasterColor: playerColor, blurRadius: 33, offset: Offset(0, 0))],
-                                            ),
-                                            child: Center(
-                                              child: HeadImage.network(
-                                                user.info.avatar ?? '',
-                                                width: 79,
-                                                height: 79,
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 30,
+                                                height: 30,
+                                                child: Icon(
+                                                  Icons.keyboard_arrow_left,
+                                                  color: Color(0xffffffff),
+                                                  size: 30,
+                                                ),
                                               ),
-                                            ),
+                                              Text(
+                                                user.isRoomMaster ? '解散房间' : '离开房间',
+                                                style: TextStyle(fontSize: 16, color: Color(0xffeeeeee)),
+                                              ),
+                                            ],
                                           ),
                                           Padding(
-                                            padding: EdgeInsets.only(top: 10),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  (getUserId() == null || getUserId() == 0) ? '登录/注册' : (user.nickname),
-                                                  style: TextStyle(
-                                                    fontFamily: 'Source Han Sans CN',
-                                                    fontSize: 18,
-                                                    color: const Color(0xffeeeeee),
-                                                    fontWeight: FontWeight.w700,
+                                            padding: EdgeInsets.only(top: 5),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                showAlertDialogRule(context);
+                                              },
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Center(
+                                                          child: Image.asset(
+                                                        'assets/images/rule.png',
+                                                        width: 30,
+                                                        height: 30,
+                                                      )),
+                                                      Text(
+                                                        '游戏规则',
+                                                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  softWrap: false,
-                                                ),
-                                                if(user.isRoomMaster)Text(' (房主)',style: TextStyle(fontSize: 14,color: roomMasterColor),)
-                                              ],
-                                            )
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    if(user.isRoomMaster)InkWell(
-                                      onTap: () {
-                                        enterTheGame(clickStart:true);
-                                        // playSound();
-                                      },
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                                            ),
-                                            child: SizedBox(
-                                              width: 200,
-                                              height: 65,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(bottom: 5.0),
-                                                  child: Text(
-                                                    '进入游戏',
-                                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                  ),
-                                                ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -329,35 +258,123 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left: 15, top: 10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 5.0),
-                                            child: Text(
-                                              '房间号：'+widget.roomId.toString(),
-                                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: SizedBox(
+                                        width: 300,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              width: 80,
+                                              height: 80,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffffffff),
+                                                borderRadius: BorderRadius.all(Radius.circular(80 / 2)),
+                                                boxShadow: [
+                                                  BoxShadow(color: user.isRoomMaster ? roomMasterColor : playerColor, blurRadius: 33, offset: Offset(0, 0))
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: HeadImage.network(
+                                                  user.info.avatar ?? '',
+                                                  width: 79,
+                                                  height: 79,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                                padding: EdgeInsets.only(top: 10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      (getUserId() == null || getUserId() == 0) ? '登录/注册' : (user.nickname),
+                                                      style: TextStyle(
+                                                        fontFamily: 'Source Han Sans CN',
+                                                        fontSize: 18,
+                                                        color: const Color(0xffeeeeee),
+                                                        fontWeight: FontWeight.w700,
+                                                      ),
+                                                      softWrap: false,
+                                                    ),
+                                                    if (user.isRoomMaster)
+                                                      Text(
+                                                        ' (房主)',
+                                                        style: TextStyle(fontSize: 14, color: roomMasterColor),
+                                                      )
+                                                  ],
+                                                )),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              )
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      if (user.isRoomMaster)
+                                        InkWell(
+                                          onTap: () {
+                                            enterTheGame(clickStart: true);
+                                            // playSound();
+                                          },
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                                                ),
+                                                child: SizedBox(
+                                                  width: 200,
+                                                  height: 65,
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(bottom: 5.0),
+                                                      child: Text(
+                                                        '进入游戏',
+                                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 15, top: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 5.0),
+                                              child: Text(
+                                                '房间号：' + widget.roomId.toString(),
+                                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(child: getRightBuild())
-                    ],
+                        Expanded(child: getRightBuild())
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-        ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -374,11 +391,13 @@ class _PageRoomMainState extends State<PageRoomMain> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                userList.length<1?emptyPeopleItem():peopleItem(userList[0]),
-                userList.length<2?Padding(padding: const EdgeInsets.only(left: 100.0),child: emptyPeopleItem()):Padding(
-                  padding: const EdgeInsets.only(left: 100.0),
-                  child: peopleItem(userList[1]),
-                ),
+                userList.length < 1 ? emptyPeopleItem() : peopleItem(userList[0]),
+                userList.length < 2
+                    ? Padding(padding: const EdgeInsets.only(left: 100.0), child: emptyPeopleItem())
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 100.0),
+                        child: peopleItem(userList[1]),
+                      ),
               ],
             ),
             Padding(
@@ -386,11 +405,13 @@ class _PageRoomMainState extends State<PageRoomMain> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  userList.length<3?emptyPeopleItem():peopleItem(userList[2]),
-                  userList.length<4?Padding(padding: const EdgeInsets.only(left: 100.0),child: emptyPeopleItem()):Padding(
-                    padding: const EdgeInsets.only(left: 100.0),
-                    child: peopleItem(userList[3]),
-                  ),
+                  userList.length < 3 ? emptyPeopleItem() : peopleItem(userList[2]),
+                  userList.length < 4
+                      ? Padding(padding: const EdgeInsets.only(left: 100.0), child: emptyPeopleItem())
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 100.0),
+                          child: peopleItem(userList[3]),
+                        ),
                 ],
               ),
             ),
@@ -400,7 +421,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
     );
   }
 
-  peopleItem(item){
+  peopleItem(item) {
     var imageWidth = 70.0;
     return Column(
       children: [
@@ -410,13 +431,13 @@ class _PageRoomMainState extends State<PageRoomMain> {
           decoration: BoxDecoration(
             color: Color(0xffffffff),
             borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
-            boxShadow: [BoxShadow(color: item['is_master']==1?roomMasterColor:playerColor, blurRadius: 33, offset: Offset(0, 0))],
+            boxShadow: [BoxShadow(color: item['is_master'] == 1 ? roomMasterColor : playerColor, blurRadius: 33, offset: Offset(0, 0))],
           ),
           child: Center(
             child: HeadImage.network(
               item['avatar'],
-              width: imageWidth-1,
-              height: imageWidth-1,
+              width: imageWidth - 1,
+              height: imageWidth - 1,
             ),
           ),
         ),
@@ -424,8 +445,15 @@ class _PageRoomMainState extends State<PageRoomMain> {
           padding: EdgeInsets.only(top: 10),
           child: Row(
             children: [
-              Text(item['nick_name'],style: TextStyle(fontSize: 16,color: Color(0xffdddddd)),),
-              if(item['is_master']==1)Text(' (房主)',style: TextStyle(fontSize: 14,color: roomMasterColor),)
+              Text(
+                item['nick_name'],
+                style: TextStyle(fontSize: 16, color: Color(0xffdddddd)),
+              ),
+              if (item['is_master'] == 1)
+                Text(
+                  ' (房主)',
+                  style: TextStyle(fontSize: 14, color: roomMasterColor),
+                )
             ],
           ),
         ),
@@ -433,10 +461,10 @@ class _PageRoomMainState extends State<PageRoomMain> {
     );
   }
 
-  emptyPeopleItem(){
-    var imageWidth= 80.00;
+  emptyPeopleItem() {
+    var imageWidth = 80.00;
     return InkWell(
-      onTap: (){
+      onTap: () {
         Clipboard.setData(ClipboardData(text: widget.roomId.toString()));
         showToast(context, '复制房间号成功，请发送给您的牌友');
       },
@@ -446,10 +474,13 @@ class _PageRoomMainState extends State<PageRoomMain> {
         decoration: BoxDecoration(
           boxShadow: [BoxShadow(color: playerColor, blurRadius: 33, offset: Offset(0, 0))],
           color: Color(0xaaffffff),
-          borderRadius: BorderRadius.all(Radius.circular(imageWidth/2)),
+          borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
         ),
-        child: Center(child: Text('+',style: TextStyle(fontSize: 50,color: Color(0xffffaf49)),)),
-
+        child: Center(
+            child: Text(
+          '+',
+          style: TextStyle(fontSize: 50, color: Color(0xffffaf49)),
+        )),
       ),
     );
   }
@@ -458,5 +489,4 @@ class _PageRoomMainState extends State<PageRoomMain> {
     initData();
     return true;
   }
-
 }

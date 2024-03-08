@@ -3,20 +3,15 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui' as ui;
 
-import 'package:ima2_habeesjobs/net/api.dart';
-
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/service/ser_base.dart';
 import 'package:ima2_habeesjobs/util/datetime.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:fixnum/fixnum.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_app_update/flutter_app_update.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:image/image.dart' as img;
-import 'package:lpinyin/lpinyin.dart';
 import 'package:provider/src/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 int getOsType() {
   if (Platform.isAndroid) {
@@ -31,23 +26,12 @@ int getOsType() {
   return 0;
 }
 
-String getTextPinyin(String initials) {
-  initials = PinyinHelper.getShortPinyin(initials);
-  if (initials?.isNotEmpty ?? false) {
-    var temp = initials.substring(0, 1).toUpperCase();
-    if (1 > 'A'.compareTo(temp) && -1 < 'Z'.compareTo(temp)) {
-      return temp;
-    }
-  }
-  return "#";
-}
-
 String getOnlineText(BuildContext context, bool isOnline, DateTime time) {
   if (true == isOnline) {
-    return Languages.of(context).onlineText;
+    return '在线';
   }
   if (null == time || 0 == time.millisecondsSinceEpoch) {
-    return Languages.of(context).notOnlineText;
+    return '不在线';
   }
   return context.read<SerBase>().toLocalTime(time)?.format("yyyy/MM/dd HH:mm") ?? "";
 }
@@ -144,37 +128,22 @@ onVersionUpdate(BuildContext context) async {
   // if (true == value) {
   //   return;
   // } else if (false == value) {
-    showToast(context, Languages.of(context).versionTips);
+    showToast(context, '当前是最新版本');
   // }
 }
 
-String formatContactTime(BuildContext context, DateTime dateTime) {
-  if (null == dateTime) {
-    return "";
-  }
-  var now = DateTime.now();
-
-  if (dateTime.isToDay(now)) {
-    return dateTime.format(Languages.of(context).pageChatTime);
-  }
-  return dateTime.format(Languages.of(context).pageChatDate);
-}
-
-
-
-String genderToString(BuildContext context, Gender gender) {
-  if (gender == Gender.MALE) {
-    return Languages.of(context).maleText;
-  } else if (gender == Gender.FEMALE) {
-    return Languages.of(context).female;
-  } else if (gender == Gender.UNKNOWN) {
-    return Languages.of(context).unknownText;
-  }
-  return null;
-}
 
 enum Gender{
   MALE,
   FEMALE,
   UNKNOWN
+}
+
+Future<void> appLaunch(BuildContext context, String url, { String title}) async {
+  var theUri = Uri.parse(url);
+  launch(url);
+  // if (mode != null) {
+  //   launchUrl(theUri, mode: mode);
+  //   return;
+  // }
 }

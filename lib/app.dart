@@ -6,26 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_update/flutter_app_update_language.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:grpc/grpc.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
-import 'package:ima2_habeesjobs/net/api.dart';
 import 'package:ima2_habeesjobs/net/net_file.dart';
-import 'package:ima2_habeesjobs/net/net_grpc.dart' if (dart.library.html) 'package:ima2_habeesjobs/net/net_grpc_web.dart';
 import 'package:ima2_habeesjobs/page/page_init.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_base.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
-import 'package:ima2_habeesjobs/util/notification.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 const MaterialColor primarySwatch = MaterialColor(
   0xff703EFE,
@@ -72,8 +64,6 @@ class AppConfig {
 }
 
 Future<void> run(AppConfig config) async {
-  Api.baseUrl = config.apiHost;
-
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
   } else if (Platform.isAndroid) {
@@ -87,12 +77,8 @@ Future<void> run(AppConfig config) async {
       // 强制竖屏
       DeviceOrientation.landscapeLeft
     ]);
-  } else if (Platform.isWindows || Platform.isLinux) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
   }
   try {
-    await LocalNotification.instance.init();
   } catch (e) {
     print(e);
   }
@@ -190,12 +176,9 @@ class _AppState extends State<App> {
   final MethodChannel _channel = const MethodChannel("flutter/application", StandardMethodCodec());
 
   void initState() {
-    _bundle = AppAssetBundle(channel: _channel);
+    // _bundle = AppAssetBundle(channel: _channel);
     channel.setMethodCallHandler(onMethodCallHandler);
     super.initState();
-    if (Platform.isAndroid) WebView.platform = AndroidWebView();
-    if (Platform.isIOS) WebView.platform = CupertinoWebView();
-
   }
 
   @override
@@ -204,13 +187,6 @@ class _AppState extends State<App> {
       bundle: _bundle ?? rootBundle,
       child: Network(create: (context) {
         return [
-          NetGrpc(
-            host: widget.config.logicHost,
-            port: widget.config.logicPort,
-            interface: (channel, interceptor) {
-              return [];
-            },
-          ),
           NetFile(
             scheme: widget.config.fileScheme,
             host: widget.config.fileHost,
@@ -265,7 +241,6 @@ class _AppState extends State<App> {
                       GlobalWidgetsLocalizations.delegate,
                       // Languages.delegate,
                       Languages.getDelegate(context),
-                      FlutterAppUpdateLanguages.delegate,
                     ],
                     builder: (context, Widget child) {
                       return _BindingObserver(child: child);
@@ -368,69 +343,15 @@ class _AppState extends State<App> {
 
   Locale _onLocaleResolutionCallback(Locale locale, Iterable<Locale> supported) {
     _locale = supported.firstWhere((element) => element.languageCode == getLocale(), orElse: () => supported.toList()[0]);
-    Api().lang = _locale.languageCode;
     return _locale;
-  }
-
-  Future<void> goBackToSystemHome() async {
-    await channel.invokeMethod("goBackToSystemHome");
-  }
-
-  Future<void> setSpeakerphoneOn(bool value) async {
-    await channel.invokeMethod("setSpeakerphoneOn", value);
-  }
-
-  Future<bool> getSpeakerphoneOn() async {
-    return await channel.invokeMethod("getSpeakerphoneOn");
-  }
-
-  Future<void> setNotify(bool value) async {
-    await channel.invokeMethod("setNotify", {"status": value});
-  }
-
-  Future<void> setTitle(String value) async {
-    if (Platform.isWindows) {
-      await channel.invokeMethod("setTitle", {"title": value});
-    }
-  }
-
-  Future<bool> checkTitle(String value) async {
-    if (Platform.isWindows) {
-      return await channel.invokeMethod("checkTitle", {"title": value});
-    }
-    return false;
-  }
-
-  Future<bool> checkEmulator() async {
-    if (Platform.isAndroid) {
-      return await channel.invokeMethod("checkEmulator");
-    }
-    return false;
-  }
-
-  Future<String> getDeviceId() async {
-    if (Platform.isWindows || Platform.isAndroid) {
-      return await channel.invokeMethod("getDeviceId");
-    }
-    return "getDeviceId";
   }
 
   Future _onError(BuildContext context, error) async {
     print(error);
 
     if (error is DioError) {
-      // return ERequest(code: error.type.index, msg: Languages.of(context).networkErrorText);
       return ERequest(code: error.type.index, msg: '网络错误，请稍后再试');
     }
-    if (error is GrpcError) {
-      if (14 == error.code) {
-        return null;
-        return ERequest(code: error.code, msg: Languages.of(context).networkErrorText);
-      }
-      // return ERequest(code: error.code, msg: Languages.of(context).serverErrorText);
-      return ERequest(code: error.code, msg: '服务器内部错误，请稍后再试');
-    }
-
     if (true) {
       // setToken(null);
       // App.of(context).setTitle(" ");
@@ -512,5 +433,20 @@ class _BindingObserverState extends State<_BindingObserver> with WidgetsBindingO
         hideTextInput();
       },
     );
+  }
+}
+
+class ERequest {
+  final int code;
+  final String msg;
+
+  ERequest({
+    this.code,
+    this.msg,
+  });
+
+  @override
+  String toString() {
+    return msg;
   }
 }

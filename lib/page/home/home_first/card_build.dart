@@ -1,21 +1,6 @@
-import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/net/network.dart';
-import 'package:ima2_habeesjobs/service/preferences.dart';
-import 'package:ima2_habeesjobs/service/ser_user.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
-import 'package:ima2_habeesjobs/widget/my_image.dart';
-import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
-import 'dart:math' as math;
 
 Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}) {
 
@@ -60,6 +45,13 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
     value = 'K';
   }
 
+
+  var marginTop = 0.0;
+  if(width>=100){
+    marginTop = 5.0;
+  }
+
+
   var jqkImage = 'assets/images/huase1.png';
   if (num > 10) {
     if (num == 11) {
@@ -69,6 +61,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
     } else if (num == 13) {
       jqkImage = 'assets/images/k.png';
     }
+
     child = DecoratedBox(
       decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
       child: SizedBox(
@@ -112,7 +105,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
                 Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 0.0, left: 0.5),
+                    padding: EdgeInsets.only(top: marginTop, left: 0.5),
                     child: SizedBox(
                       width: fontSize,
                       child: Text(
@@ -125,7 +118,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 0.0, right: 0.5),
+                    padding: EdgeInsets.only(bottom: marginTop, right: 0.5),
                     child: Transform.rotate(
                       angle: 180 * math.pi / 180,
                       child: Text(
@@ -153,7 +146,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: const EdgeInsets.only(top: 2.0, left: 2),
+                padding: EdgeInsets.only(top: marginTop+2.0, left: 2),
                 child: Text(
                   value,
                   style: TextStyle(fontSize: fontSize, color: textColor),
@@ -169,7 +162,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
             Align(
               alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 2.0, right: 2),
+                padding: EdgeInsets.only(bottom: marginTop+2.0, right: 2),
                 child: Transform.rotate(
                   angle: 180 * math.pi / 180,
                   child: Text(

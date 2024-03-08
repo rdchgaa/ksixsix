@@ -8,7 +8,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 class DioUtils {
   static final DioUtils _singleton = DioUtils._internal();
@@ -36,7 +36,7 @@ class DioUtils {
       },
       // baseUrl: 'https://api.pub.flutter-io.cn/'
       //   baseUrl: 'http://192.168.6.117:12345/',//本地
-      baseUrl:'http://123.60.166.5:12345/',//阿里
+      baseUrl:'http://47.97.250.198:12345/',//阿里
 //      contentType: ContentType('application', 'x-www-form-urlencoded', charset: 'utf-8'),
     );
     _dio = Dio(options);

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fixnum/fixnum.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,8 +65,6 @@ void setDeviceId(String id) {
     _sharedPreferences.setString(deviceIdKey, id);
   }
 }
-
-Int64 _userId;
 
 void setUserId(int id) {
   // if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {

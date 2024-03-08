@@ -1,25 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:adobe_xd/pinned.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
-import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
 import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
-import 'package:ima2_habeesjobs/util/language.dart';
-import 'package:ima2_habeesjobs/util/other.dart';
-import 'package:ima2_habeesjobs/util/soundpool_Util.dart';
-import 'package:ima2_habeesjobs/widget/app_bar.dart';
-import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_button.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:ima2_habeesjobs/widget/ui_tabbar.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 
 ///扑克牌入场卡片
 class CardBackBuild extends StatefulWidget {
@@ -349,7 +338,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
   @override
   void initState() {
     super.initState();
-    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400))
       ..addListener(() {
         setState(() {});
       });
@@ -475,7 +464,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))
+    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400))
       ..addListener(() {
         setState(() {});
       });
@@ -548,24 +537,27 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                                 length: 11,
                                 child: Column(
                                   children: [
-                                    SizedBox(
-                                      height: 48,
-                                      width: double.infinity,
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: UiTabBar(tabs: [
-                                          Tab(text: '总览'),
-                                          Tab(text: '一轮'),
-                                          Tab(text: '二轮'),
-                                          Tab(text: '三轮'),
-                                          Tab(text: '四轮'),
-                                          Tab(text: '五轮'),
-                                          Tab(text: '六轮'),
-                                          Tab(text: '七轮'),
-                                          Tab(text: '八轮'),
-                                          Tab(text: '九轮'),
-                                          Tab(text: '十轮')
-                                        ]),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 50.0),
+                                      child: SizedBox(
+                                        height: 48,
+                                        width: double.infinity,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: UiTabBar(tabs: [
+                                            Tab(text: '总览'),
+                                            Tab(text: '一轮'),
+                                            Tab(text: '二轮'),
+                                            Tab(text: '三轮'),
+                                            Tab(text: '四轮'),
+                                            Tab(text: '五轮'),
+                                            Tab(text: '六轮'),
+                                            Tab(text: '七轮'),
+                                            Tab(text: '八轮'),
+                                            Tab(text: '九轮'),
+                                            Tab(text: '十轮')
+                                          ]),
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -1176,11 +1168,10 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
                 ],
               ),
             ),
-            ///TODO
-            // Padding(
-            //   padding: EdgeInsets.only(top: 10),
-            //   // child: getJifenBuild(gameFinalResultData['all_score']),
-            // ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: getJifenBuild(gameFinalResultData['all_score']),
+            ),
           ],
         ),
       ),

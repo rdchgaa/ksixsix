@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_change_poker_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
@@ -67,6 +68,10 @@ class _PageGameMainState extends State<PageGameMain> {
   bool isZhuang = false;   //自己是否是庄家
   int vocation_user_id = 0 ;// 庄家的用户id
 
+  bool isMaster = false;  //自己是否是房主
+
+  //重复点击
+  bool canClickFapai = true;
 
   /// 本地状态
   bool readying = false; //准备阶段
@@ -90,7 +95,7 @@ class _PageGameMainState extends State<PageGameMain> {
   int round = 1; //当前轮次  --共10轮
 
   int bettingCountdown = 10; //投注倒计时
-  int lookingCountdown = 10; //看牌倒计时
+  int lookingCountdown = 20; //看牌倒计时
   int singleResultCountdown = 10; //查看结果倒计时
 
   Timer bettingTimer;
@@ -113,6 +118,7 @@ class _PageGameMainState extends State<PageGameMain> {
 
   @override
   void dispose() {
+    // AudioPlayerUtilBackGround.stopSound();
     super.dispose();
     roomTimer.cancel();
     roomTimer = null;
@@ -124,7 +130,6 @@ class _PageGameMainState extends State<PageGameMain> {
       lookingTimer.cancel();
       lookingTimer = null;
     }
-    AudioPlayerUtilBackGround.stopSound();
     // leaveRoom();
   }
 
@@ -157,9 +162,11 @@ class _PageGameMainState extends State<PageGameMain> {
       } else {
         if(res['state']==-1){
           //游戏解散
-          if(mounted){
+          if(mounted && roomTimer != null){
             roomTimer.cancel();
             roomTimer = null;
+            setState(() {
+            });
             showToast(context, '房间已解散');
             Navigator.pop(context);
           }
@@ -289,7 +296,7 @@ class _PageGameMainState extends State<PageGameMain> {
       setState(() {});
 
       if(lookingCountdown == 1){
-        showMyPoker(6);
+        // showMyPoker(6);
         // toLookResult();
       }
       // if(lookingTimer == null){
@@ -309,6 +316,7 @@ class _PageGameMainState extends State<PageGameMain> {
     }else if(state==6||state==7){
       //结果阶段
       singleResultCountdown = remainder;
+      showMyPoker(6);
       setState(() {});
 
       // if(singleResultTimer == null){
@@ -331,6 +339,11 @@ class _PageGameMainState extends State<PageGameMain> {
     for (var i = 0; i < user_list.length; i++) {
       if (user_list[i]['user_id'] == getUserId()) {
         selfUserInfo = user_list[i];
+        if(user_list[i]['is_master']==1){
+          isMaster = true;
+          var user = context.read<SerUser>();
+          user.isRoomMaster = true;
+        }
       } else {
         playerList.add(user_list[i]);
       }
@@ -393,47 +406,6 @@ class _PageGameMainState extends State<PageGameMain> {
         });
       }
     }
-    //投注倒计时触发
-    // if (num == 3) {
-    //   bettingTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-    //     if (bettingCountdown <= 0) {
-    //       bettingTimer.cancel();
-    //       bettingTimer = null;
-    //       setCurentState(4);
-    //     }
-    //     bettingCountdown = bettingCountdown - 1;
-    //     setState(() {});
-    //   });
-    // }
-    //
-    // //看牌倒计时触发
-    // if (num == 4) {
-    //   lookingTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-    //     if(lookingCountdown == 1){
-    //       showMyPoker(6);
-    //     }
-    //     if (lookingCountdown <= 0) {
-    //       lookingTimer.cancel();
-    //       lookingTimer = null;
-    //       toLookResult();
-    //     }
-    //     lookingCountdown = lookingCountdown - 1;
-    //     setState(() {});
-    //   });
-    // }
-
-    //结果倒计时触发
-    // if (num == 5) {
-    //   singleResultTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-    //     if (singleResultCountdown <= 0) {
-    //       singleResultTimer.cancel();
-    //       singleResultTimer = null;
-    //       setCurentState(10);
-    //     }
-    //     singleResultCountdown = singleResultCountdown - 1;
-    //     setState(() {});
-    //   });
-    // }
 
   }
 
@@ -447,7 +419,7 @@ class _PageGameMainState extends State<PageGameMain> {
     showCard5 = false;
 
     bettingCountdown = 10; //投注倒计时
-    lookingCountdown = 10; //看牌倒计时
+    lookingCountdown = 20; //看牌倒计时
     singleResultCountdown = 10; //查看结果倒计时
     setState(() {
 
@@ -542,9 +514,25 @@ class _PageGameMainState extends State<PageGameMain> {
 
   pushPoker() async{
     Vibration.vibrate(duration: 200, amplitude: 50);
+
+
+    if(!canClickFapai){
+      return;
+    }
+    setState(() {
+      canClickFapai = false;
+    });
+    Future.delayed(Duration(milliseconds: 5000),(){
+      if(mounted){
+        setState(() {
+          canClickFapai = true;
+        });
+      }
+    });
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.deal(context, getUserId());
     }, isShowLoading: false);
+
     if (res != null && res != 1) {
       // setState(() {
       //   isZhuang = true;
@@ -562,7 +550,7 @@ class _PageGameMainState extends State<PageGameMain> {
       showToast(context, '最多投注10次');
       return;
     }
-    Vibration.vibrate(duration: 200, amplitude: 50);
+    Vibration.vibrate(duration: 50, amplitude: 128);
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.gameBet(context, getUserId(),num);
     }, isShowLoading: false);
@@ -897,6 +885,26 @@ class _PageGameMainState extends State<PageGameMain> {
                 ),
                 Text(
                   widget.roomId.toString(),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+              ],
+            ),
+          ),
+          if(round!=0)Padding(
+            padding: EdgeInsets.only(left:10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '第',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                ),
+                Text(
+                  round.toString(),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: roomMasterColor),
+                ),
+                Text(
+                  '局',
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
                 ),
               ],
@@ -1527,6 +1535,7 @@ class _PageGameMainState extends State<PageGameMain> {
         gerWaitPushPokerBuild(),
         getBettingTipBuild(),
         getlookingTipBuild(),
+        getLookingScrollBuild(),
         getResultTipBuild(),
         getFinalResultBuild(),
       ],
@@ -1605,17 +1614,33 @@ class _PageGameMainState extends State<PageGameMain> {
               child: MyButton.gradient(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   backgroundColor: [Color(0xffb3e6f9), Color(0xff005a97)],
-                  onPressed: (){
-                    showMyPoker(6);
-                  },
+                  // onPressed: (){
+                  //   showMyPoker(6);
+                  // },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('点击扑克牌\n看牌'+' ('+lookingCountdown.toString()+')', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                      Text('看牌阶段', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                      Text(lookingCountdown.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
                     ],
                   ))),
         ),
       );
+    }
+    return SizedBox();
+  }
+  getLookingScrollBuild(){
+    if (looking) {
+      if(myPoker==null){
+        return SizedBox();
+      }
+      var pokers = myPoker['poker'];
+      return LookPokerBuild(pokers:pokers,onClose: (){
+
+        showMyPoker(6);
+      },onDoubleTap: (){
+        vipDoubleTap();
+      },);
     }
     return SizedBox();
   }

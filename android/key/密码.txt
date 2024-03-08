@@ -1,6 +1,0 @@
-release {
-   storeFile file("keystore/keys.jks")
-   storePassword "bs9dqec6E8Z6"
-   keyAlias "habeesjoba"
-   keyPassword "bs9dqec6E8Z6"
-}

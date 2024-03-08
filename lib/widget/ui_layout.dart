@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
-import 'package:path/path.dart' as p;
 
 //有标题加按钮板块style
 class UiLayoutTitleAndButtonStyle {

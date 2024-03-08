@@ -1,7 +1,6 @@
-import 'package:ima2_habeesjobs/util/language.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 Future<DateTime> showTimeDialog(
   BuildContext context, {
@@ -119,7 +118,7 @@ class _TimeDialogState extends RouterDataWidgetState<TimeDialog> {
                       AutoRouter.of(context).pop(null);
                     },
                     child: Text(
-                      Languages.of(context).cancelButtonLabel,
+                      '取消',
                       style: TextStyle(fontSize: 16),
                     ),
                     style: ButtonStyle(
@@ -144,7 +143,7 @@ class _TimeDialogState extends RouterDataWidgetState<TimeDialog> {
                       AutoRouter.of(context).pop(nowTime);
                     },
                     child: Text(
-                      Languages.of(context).okButtonLabel,
+                      '确定',
                       style: TextStyle(fontSize: 16),
                     ),
                     style: ButtonStyle(

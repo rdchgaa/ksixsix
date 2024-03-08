@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:heqian_flutter_utils/heqian_flutter_utils.dart';
+import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 
 Future<bool> showAlertDialogRule(BuildContext context) {
   return showDialog(
@@ -126,12 +126,21 @@ class _DialogAlertRuleBoxState extends State<DialogAlertRuleBox> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 10.0),
+                                        child: Text('游戏轮次',style: TextStyle(fontSize: 14,color: Color(0xffffffff)),),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5.0,bottom: 10),
+                                        child: Text('10局为1轮，每局结果立即显示结果，10局后显示当轮总结果。首页对局记录显示每轮记录',style: TextStyle(fontSize: 12,color: Color(0xffcccccc)),),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10.0),
                                         child: Text('其他',style: TextStyle(fontSize: 14,color: Color(0xffffffff)),),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 5.0,bottom: 10),
                                         child: Text('若未投注，默认投注1',style: TextStyle(fontSize: 12,color: Color(0xffcccccc)),),
                                       ),
+
                                     ],
                                   ),
                                 ),
