@@ -212,7 +212,7 @@ class _AppState extends State<App> {
                 return Consumer<SerBase>(builder: (context, value, child) {
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,
-                    title: 'K牛牛',
+                    title: '炫牛',
                     navigatorKey: _navigatorKey,
                     theme: ThemeData(
                       fontFamily: _getFontFamily(),
@@ -296,7 +296,7 @@ class _AppState extends State<App> {
                 //         routerDelegate: appRouter,
                 //         routeInformationParser: appRouter,
                 //         routeInformationProvider: appRouter.provider,
-                //         title: 'K牛牛',
+                //         title: '炫牛',
                 //         theme: ThemeData(
                 //           fontFamily: _getFontFamily(),
                 //           scaffoldBackgroundColor: Color(0xffF8F8F8),

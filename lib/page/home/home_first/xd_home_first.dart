@@ -475,7 +475,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                                     Padding(
                                                       padding: const EdgeInsets.only(left: 5.0),
                                                       child: Text(
-                                                        'K牛牛',
+                                                        '炫牛',
                                                         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)),
                                                       ),
                                                     ),
