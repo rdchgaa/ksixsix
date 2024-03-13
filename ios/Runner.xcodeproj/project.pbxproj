@@ -356,17 +356,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				CURRENT_PROJECT_VERSION = 7236;
 				DEVELOPMENT_TEAM = 8QHZ5MM74T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "K牛牛";
+				INFOPLIST_KEY_CFBundleDisplayName = "炫牛";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.ksixsix;
+				MARKETING_VERSION = 2.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habeesjobs.ksixsix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -492,17 +492,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				CURRENT_PROJECT_VERSION = 7236;
 				DEVELOPMENT_TEAM = 8QHZ5MM74T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "K牛牛";
+				INFOPLIST_KEY_CFBundleDisplayName = "炫牛";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.ksixsix;
+				MARKETING_VERSION = 2.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habeesjobs.ksixsix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -522,17 +522,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				CURRENT_PROJECT_VERSION = 7236;
 				DEVELOPMENT_TEAM = 8QHZ5MM74T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "K牛牛";
+				INFOPLIST_KEY_CFBundleDisplayName = "炫牛";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.ksixsix;
+				MARKETING_VERSION = 2.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habeesjobs.ksixsix;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
