@@ -208,328 +208,342 @@ class _XdRegisterBuildState extends State<XdRegisterBuild> with SingleTickerProv
             return DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/login_back.webp'),
-                  fit: BoxFit.fill,
+                  image: AssetImage('assets/images/login_back3.webp'),
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  padding: EdgeInsets.only(top: 0),
-                  children: [
-                    SizedBox(
+              child: Stack(
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                        color: Color(0x44000000)
+                    ),
+                    child: SizedBox(
                       width: width,
                       height: height,
-                      child: Stack(
-                        children: <Widget>[
-                          Pinned.fromPins(
-                            Pin(start: 0.0, end: 0.0),
-                            Pin(size: 44.0, start: 0.0),
-                            child:
-                                // Adobe XD layer: '蒙版组 9' (shape)
-                                Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: const AssetImage(''),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.3108),
-                            child: SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: TextFormField(
-                                autofocus: true,
-                                onChanged: (val) {},
-                                controller: _unPhone,
-                                keyboardType: TextInputType.emailAddress,
-                                cursorColor: Color(0xFF21A27C),
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 18, fontWeight: FontWeight.bold),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  prefix: SizedBox(
-                                    width: 10,
-                                  ),
-                                  // prefixIconConstraints: BoxConstraints(),
-                                  // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
-                                  hintText: '账号',
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  // border: InputBorder.none
-                                ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.4114),
-                            child: SizedBox(
-                              height: 60,
-                              width: double.infinity,
-                              child: TextFormField(
-                                onChanged: (val) {
-                                  // widget.data._number = val;
-                                },
-                                cursorColor: Color(0xFF21A27C),
-                                controller: _unPassword,
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 18, fontWeight: FontWeight.bold),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  hintText: '密码',
-                                  prefix: SizedBox(
-                                    width: 10,
-                                  ),
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  suffixIcon: Padding(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: SizedBox(
-                                      width: 60,
-                                      height: 50,
-                                      child: InkWell(
-                                        //根据passwordVisible状态显示不同的图标
-                                        child: passwordVisible ? visibleBuild(true) : visibleBuild(false),
-                                        onTap: () {
-                                          //更新状态控制密码显示或隐藏
-                                          setState(() {
-                                            passwordVisible = !passwordVisible;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                obscureText: passwordVisible,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.5119),
-                            child: SizedBox(
-                              height: 60,
-                              width: double.infinity,
-                              child: TextFormField(
-                                onChanged: (val) {
-                                  // widget.data._number = val;
-                                },
-                                cursorColor: Color(0xFF21A27C),
-                                controller: _unConfirmPassword,
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 18, fontWeight: FontWeight.bold),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  hintText: '确认密码',
-                                  prefix: SizedBox(
-                                    width: 10,
-                                  ),
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  suffixIcon: Padding(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: SizedBox(
-                                      width: 60,
-                                      height: 50,
-                                      child: InkWell(
-                                        //根据passwordVisible状态显示不同的图标
-                                        child: passwordComVisible ? visibleBuild(true) : visibleBuild(false),
-                                        onTap: () {
-                                          //更新状态控制密码显示或隐藏
-                                          setState(() {
-                                            passwordComVisible = !passwordComVisible;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                obscureText: passwordComVisible,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
-                                validator: (v) {
-                                  if (v.trim().length > 0) {
-                                    if (v != _unPassword.text) {
-                                      return '两次输入密码不一致';
-                                    }
-                                    return null;
-                                  }
-                                  return '密码不能为空';
-                                },
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.5119 + 0.1005),
-                            child: SizedBox(
-                              height: 60,
-                              width: double.infinity,
-                              child: TextFormField(
-                                onChanged: (val) {
-                                  // widget.data._number = val;
-                                },
-                                keyboardType: TextInputType.text,
-                                cursorColor: Color(0xFF21A27C),
-                                controller: _unName,
-                                // maxLength: 10,
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 20),
-                                decoration: InputDecoration(
-                                  prefixIconConstraints: BoxConstraints(),
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  hintText: '昵称',
-                                  prefix: SizedBox(
-                                    width: 10,
-                                  ),
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  suffixIconConstraints: BoxConstraints(),
-                                ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(8),
-                                ],
-                                // obscureText: passwordComVisible,
-                                validator: (v) {
-                                  if (v.trim().length > 0) {
-                                    return null;
-                                  }
-                                  return '’请输入昵称';
-                                },
-                                // inputFormatters: [
-                                //   LengthLimitingTextInputFormatter(15),
-                                // ],
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(size: 124.0, start: 20.0),
-                            Pin(size: 46.0, middle: 0.1862),
-                            child: Text(
-                              '注册',
-                              style: TextStyle(
-                                fontFamily: 'Source Han Sans CN',
-                                fontSize: 32,
-                                color: const Color(0xff0e0f0f),
-                                fontWeight: FontWeight.w800,
-                              ),
-                              softWrap: false,
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 0.0, end: 0.0),
-                            Pin(size: 44.0, start: 44.0),
-                            child:
-                                // Adobe XD layer: 'tit' (group)
-                                Stack(
-                              children: <Widget>[
-                                // Adobe XD layer: '矩形' (shape)
-                                Container(
-                                  decoration: BoxDecoration(),
-                                ),
-                                Pinned.fromPins(
-                                  Pin(size: 26.0, start: 20.0),
-                                  Pin(size: 26.0, middle: 0.5),
-                                  child: InkWell(
-                                    onTap: () {
-                                      // AutoRouter.of(context).pop();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Pinned.fromPins(
-                                          Pin(start: 1.9, end: 1.4),
-                                          Pin(size: 14.4, middle: 0.5864),
-                                          child: SvgPicture.string(
-                                            _svg_i3q6wh,
-                                            allowDrawingOutsideViewBox: true,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 80.0, middle: 0.7500),
-                            child: InkWell(
-                              onTap: ()  async {
-                                _onSubmit(context);
-                              },
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                                    ),
-                                    child: SizedBox(
-                                      width: 300,
-                                      height: 80,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                          child: Text(
-                                            '注册',
-                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: ListView(
+                      padding: EdgeInsets.only(top: 0),
+                      children: [
+                        SizedBox(
+                          width: width,
+                          height: height,
+                          child: Stack(
+                            children: <Widget>[
+                              Pinned.fromPins(
+                                Pin(start: 0.0, end: 0.0),
+                                Pin(size: 44.0, start: 0.0),
+                                child:
+                                    // Adobe XD layer: '蒙版组 9' (shape)
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: const AssetImage(''),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.3108),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    autofocus: true,
+                                    onChanged: (val) {},
+                                    controller: _unPhone,
+                                    keyboardType: TextInputType.emailAddress,
+                                    cursorColor: Color(0xFF21A27C),
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 18, fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      prefix: SizedBox(
+                                        width: 10,
+                                      ),
+                                      // prefixIconConstraints: BoxConstraints(),
+                                      // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
+                                      hintText: '账号',
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      // border: InputBorder.none
+                                    ),
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.4114),
+                                child: SizedBox(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    onChanged: (val) {
+                                      // widget.data._number = val;
+                                    },
+                                    cursorColor: Color(0xFF21A27C),
+                                    controller: _unPassword,
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 18, fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      hintText: '密码',
+                                      prefix: SizedBox(
+                                        width: 10,
+                                      ),
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      suffixIcon: Padding(
+                                        padding: EdgeInsets.only(right: 0),
+                                        child: SizedBox(
+                                          width: 60,
+                                          height: 50,
+                                          child: InkWell(
+                                            //根据passwordVisible状态显示不同的图标
+                                            child: passwordVisible ? visibleBuild(true) : visibleBuild(false),
+                                            onTap: () {
+                                              //更新状态控制密码显示或隐藏
+                                              setState(() {
+                                                passwordVisible = !passwordVisible;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    obscureText: passwordVisible,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.5119),
+                                child: SizedBox(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    onChanged: (val) {
+                                      // widget.data._number = val;
+                                    },
+                                    cursorColor: Color(0xFF21A27C),
+                                    controller: _unConfirmPassword,
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 18, fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      hintText: '确认密码',
+                                      prefix: SizedBox(
+                                        width: 10,
+                                      ),
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      suffixIcon: Padding(
+                                        padding: EdgeInsets.only(right: 0),
+                                        child: SizedBox(
+                                          width: 60,
+                                          height: 50,
+                                          child: InkWell(
+                                            //根据passwordVisible状态显示不同的图标
+                                            child: passwordComVisible ? visibleBuild(true) : visibleBuild(false),
+                                            onTap: () {
+                                              //更新状态控制密码显示或隐藏
+                                              setState(() {
+                                                passwordComVisible = !passwordComVisible;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    obscureText: passwordComVisible,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
+                                    validator: (v) {
+                                      if (v.trim().length > 0) {
+                                        if (v != _unPassword.text) {
+                                          return '两次输入密码不一致';
+                                        }
+                                        return null;
+                                      }
+                                      return '密码不能为空';
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.5119 + 0.1005),
+                                child: SizedBox(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    onChanged: (val) {
+                                      // widget.data._number = val;
+                                    },
+                                    keyboardType: TextInputType.text,
+                                    cursorColor: Color(0xFF21A27C),
+                                    controller: _unName,
+                                    // maxLength: 10,
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 20),
+                                    decoration: InputDecoration(
+                                      prefixIconConstraints: BoxConstraints(),
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      hintText: '昵称',
+                                      prefix: SizedBox(
+                                        width: 10,
+                                      ),
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      suffixIconConstraints: BoxConstraints(),
+                                    ),
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(8),
+                                    ],
+                                    // obscureText: passwordComVisible,
+                                    validator: (v) {
+                                      if (v.trim().length > 0) {
+                                        return null;
+                                      }
+                                      return '’请输入昵称';
+                                    },
+                                    // inputFormatters: [
+                                    //   LengthLimitingTextInputFormatter(15),
+                                    // ],
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(size: 124.0, start: 20.0),
+                                Pin(size: 46.0, middle: 0.1862),
+                                child: Text(
+                                  '注册',
+                                  style: TextStyle(
+                                    fontFamily: 'Source Han Sans CN',
+                                    fontSize: 20,
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  softWrap: false,
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 0.0, end: 0.0),
+                                Pin(size: 44.0, start: 44.0),
+                                child:
+                                    // Adobe XD layer: 'tit' (group)
+                                    Stack(
+                                  children: <Widget>[
+                                    // Adobe XD layer: '矩形' (shape)
+                                    Container(
+                                      decoration: BoxDecoration(),
+                                    ),
+                                    Pinned.fromPins(
+                                      Pin(size: 26.0, start: 20.0),
+                                      Pin(size: 26.0, middle: 0.5),
+                                      child: InkWell(
+                                        onTap: () {
+                                          // AutoRouter.of(context).pop();
+                                          Navigator.pop(context);
+                                        },
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Pinned.fromPins(
+                                              Pin(start: 1.9, end: 1.4),
+                                              Pin(size: 14.4, middle: 0.5864),
+                                              child: SvgPicture.string(
+                                                _svg_i3q6wh,
+                                                allowDrawingOutsideViewBox: true,
+                                                fit: BoxFit.fill,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 80.0, middle: 0.7500),
+                                child: InkWell(
+                                  onTap: ()  async {
+                                    _onSubmit(context);
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(image: AssetImage("assets/images/ok.png"), fit: BoxFit.fill),
+                                        ),
+                                        child: SizedBox(
+                                          width: 150,
+                                          height: 80,
+                                          child: Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              // child: Text(
+                                              //   '注册',
+                                              //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                              // ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
           }

@@ -119,14 +119,14 @@ class _PageDepositState extends State<PageDeposit> {
               return Stack(
                 children: [
                   Scaffold(
-                    backgroundColor: Color(0x00ffffff),
+                    backgroundColor: Color(0x99000000),
                     appBar: MyAppBar(
                       title: Text(
                         '获取门票',
                         style: TextStyle(
                           fontFamily: 'Source Han Sans CN',
                           fontSize: 16,
-                          color: const Color(0xff292929),
+                          color: const Color(0xffffffff),
                           fontWeight: FontWeight.w700,
                         ),
                         textAlign: TextAlign.center,
@@ -145,6 +145,7 @@ class _PageDepositState extends State<PageDeposit> {
                               _svg_i3q6wh,
                               allowDrawingOutsideViewBox: true,
                               fit: BoxFit.fill,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -195,7 +196,7 @@ class _PageDepositState extends State<PageDeposit> {
                                       style: TextStyle(
                                         fontFamily: 'Source Han Sans CN',
                                         fontSize: 16,
-                                        color: const Color(0xff0e0f0f),
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w700,
                                       ),
                                       softWrap: false,
@@ -597,14 +598,19 @@ class _PageDepositState extends State<PageDeposit> {
               children: [
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tuichu.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [BoxShadow(color: Color(0xff000000), blurRadius: 33, offset: Offset(0, 0))],
                   ),
                   child: SizedBox(
-                    width: 300,
-                    height: 80,
+                    width: 100,
+                    height: 50,
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 0.0),
                         child: Text(
                           '提交',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
@@ -617,9 +623,9 @@ class _PageDepositState extends State<PageDeposit> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(top: 10,bottom: 10),
             child: Text(
-              '提交后通常立即审核通过，0点到9点审核有所延迟',
+              '提交后通常几分钟内审核，0点到9点审核有所延迟',
               style: TextStyle(
                 fontFamily: 'Source Han Sans CN',
                 fontSize: 12,

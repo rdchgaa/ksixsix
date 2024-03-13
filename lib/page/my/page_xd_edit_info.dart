@@ -54,10 +54,10 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.landscapeLeft
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   // 强制竖屏
+    //   DeviceOrientation.landscapeLeft
+    // ]);
   }
 
   onSubmit() async{
@@ -166,11 +166,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                 Navigator.pop(context);
               },
               child: Center(
-                child: SvgPicture.string(
-                  _svg_i3q6wh,
-                  allowDrawingOutsideViewBox: true,
-                  fit: BoxFit.fill,
-                ),
+                child: Icon(Icons.turn_slight_left),
               ),
             ),
           ),
@@ -186,7 +182,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                     padding: EdgeInsets.fromLTRB(6.4, 6.0, 6.4, 6.8),
                     child: Text(
                       '保存',
-                      style: TextStyle(fontFamily: 'Source Han Sans CN', fontSize: 16, color: Color(0xFF21A27C), fontWeight: FontWeight.bold),
+                      style: TextStyle(fontFamily: 'Source Han Sans CN', fontSize: 16, color: Color(0xFF000000), fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                       softWrap: false,
                     ),
@@ -232,7 +228,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                         style: TextStyle(
                           fontFamily: 'Source Han Sans CN',
                           fontSize: 14,
-                          color: const Color(0xFF21A27C),
+                          color: const Color(0xFF333333),
                           fontWeight: FontWeight.w700,
                         ),
                         softWrap: false,
@@ -249,7 +245,7 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                   style: TextStyle(
                     fontFamily: 'Source Han Sans CN',
                     fontSize: 16,
-                    color: const Color(0xff0e0f0f),
+                    color: const Color(0xffffffff),
                     fontWeight: FontWeight.w700,
                   ),
                   softWrap: false,

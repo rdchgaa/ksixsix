@@ -124,7 +124,7 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     Widget child;
     if (widget._image != null) {
-      child = Image.memory(widget._image);
+      child = Image.memory(widget._image,fit: widget.fit);
       // child = ImageUtil.networkImage(
       //     url: widget._url ?? '',
       //     errorWidget: ("assets/images2/icon-touxiang.webp".toImage
@@ -132,7 +132,7 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
       //       ..height = widget.height));
     } else if (widget._url != null) {
       var url = (widget._url) ?? '';
-      url = url.replaceAll('http:/192', 'http://192');
+      // url = url.replaceAll('http:/192', 'http://192');
       child = ImageUtil.networkImage(
           url: url,
           // errorWidget: (Image.asset('assets/images2/icon-touxiang.webp',width: widget.width,height: widget.height,)));
@@ -140,7 +140,8 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
             'assets/images/default_head.png',
             width: widget.width,
             height: widget.height,
-          )));
+            fit: widget.fit,
+          )),fit: widget.fit);
     }
     child = ClipRRect(
       borderRadius: widget.borderRadius,
@@ -236,7 +237,7 @@ Widget getNiuTypeIcon(var pokerResult, {double width = 25}) {
   if (type == 6) {
     child = DecoratedBox(
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xffff0000), border: Border.all(width: 1, color: Color(0xffffffff))),
+          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(4)), color: Color(0xff13ab5b), border: Border.all(width: 1, color: Color(0xffffffff))),
       child: SizedBox(
         width: width,
         height: width,
@@ -255,7 +256,7 @@ Widget getNiuTypeIcon(var pokerResult, {double width = 25}) {
     child = Image.asset('assets/images/yinniu.png');
   }
   if (type == 3) {
-    child = Image.asset('assets/images/niuniu.png', color: Color(0xff00a2ff));
+    child = Image.asset('assets/images/niuniu.png', color: Color(0xff3900d5));
   }
   if (type == 2) {
     //有牛
@@ -265,7 +266,7 @@ Widget getNiuTypeIcon(var pokerResult, {double width = 25}) {
     }
     child = Row(
       children: [
-        Center(child: Image.asset('assets/images/youniu.png', width: 20, height: 20,)),
+        Center(child: Image.asset('assets/images/youniu.png', width: 20, height: 20,color: Color(0xffec6553),)),
         Padding(
           padding: EdgeInsets.only(left: 2),
           child: Text(pokerResult['niu_num'].toString(), style: TextStyle(fontSize: 18, color: textColor, fontWeight: FontWeight.bold)),

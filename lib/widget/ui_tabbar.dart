@@ -179,7 +179,7 @@ UiTabBarStyle get uiTabBarStyle => UiTabBarStyle(
   labelPadding: const EdgeInsets.symmetric(
     horizontal: 12,
   ),
-  indicatorPadding: const EdgeInsets.only(bottom: 2, left: 10, right: 10),
+  indicatorPadding: const EdgeInsets.only(bottom: 2, left: 3, right: 3),
   constraints: BoxConstraints(minWidth: 80),
 );
 

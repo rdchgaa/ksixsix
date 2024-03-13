@@ -95,7 +95,7 @@ class _PageGameMainState extends State<PageGameMain> {
   int round = 1; //当前轮次  --共10轮
 
   int bettingCountdown = 10; //投注倒计时
-  int lookingCountdown = 20; //看牌倒计时
+  int lookingCountdown = 30; //看牌倒计时
   int singleResultCountdown = 10; //查看结果倒计时
 
   Timer bettingTimer;
@@ -110,6 +110,10 @@ class _PageGameMainState extends State<PageGameMain> {
   void initState() {
     super.initState();
     // SoundpoolUtil.playSound();
+    SystemChrome.setPreferredOrientations([
+      // 强制竖屏
+      DeviceOrientation.landscapeLeft
+    ]);
   }
 
   Future<void> playSound() async {
@@ -119,6 +123,10 @@ class _PageGameMainState extends State<PageGameMain> {
   @override
   void dispose() {
     // AudioPlayerUtilBackGround.stopSound();
+    SystemChrome.setPreferredOrientations([
+      // 强制竖屏
+      DeviceOrientation.portraitUp
+    ]);
     super.dispose();
     roomTimer.cancel();
     roomTimer = null;
@@ -419,7 +427,7 @@ class _PageGameMainState extends State<PageGameMain> {
     showCard5 = false;
 
     bettingCountdown = 10; //投注倒计时
-    lookingCountdown = 20; //看牌倒计时
+    lookingCountdown = 30; //看牌倒计时
     singleResultCountdown = 10; //查看结果倒计时
     setState(() {
 
@@ -645,12 +653,12 @@ class _PageGameMainState extends State<PageGameMain> {
                                   children: [
                                     SizedBox(
                                       width: 180,
-                                      child: getMethodBuild(),
+                                      child: getTopLeftBuild(),
                                     ),
                                     Expanded(child: SizedBox()),
                                     SizedBox(
                                       width: 180,
-                                      child: leaveGameBuild(),
+                                      child: getTopRightBuild(),
                                     )
                                   ],
                                 ),
@@ -804,145 +812,114 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-  leaveGameBuild() {
+  getTopRightBuild() {
     var user = context.watch<SerUser>();
-    if (user.isRoomMaster){
-      if(readying||qiangZhuanging){
-        return Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: InkWell(
-                onTap: () async {
-                  endGame();
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                      ),
-                      child: SizedBox(
-                        width: 120,
-                        height: 40,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 5.0),
-                            child: Text(
-                              '结束游戏',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      }
-    }
-    return SizedBox();
-  }
-
-  getMethodBuild() {
     return Padding(
-      padding: EdgeInsets.only(left:10,top: 5),
+      padding: const EdgeInsets.only(right: 20.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          InkWell(
-            onTap: () async {
-              showAlertDialogRule(context);
-            },
-            child: Stack(
-              alignment: Alignment.center,
+          if(round!=0)Padding(
+            padding: EdgeInsets.only(left:0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  children: [
-                    Center(child: Image.asset('assets/images/rule.png',width: 30,height: 30,)),
-                    Text(
-                      '游戏规则',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                    ),
-                  ],
+                // Text(
+                //   '第',
+                //   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                // ),
+                Text(
+                  round.toString(),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: roomMasterColor),
+                ),
+                Text(
+                  '回合',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
                 ),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left:10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '房间号',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                ),
-                Text(
-                  widget.roomId.toString(),
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                ),
-              ],
+            padding: const EdgeInsets.only(left: 10.0),
+            child: InkWell(
+              onTap: () async {
+                showAlertDialogRule(context);
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Center(child: Image.asset('assets/images/shoubin.png',width: 30,height: 30,)),
+                      Text(
+                        '规则',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          if(round!=0)Padding(
-            padding: EdgeInsets.only(left:10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '第',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+        ],
+      ),
+    );
+    // return SizedBox();
+  }
+
+  getTopLeftBuild() {
+    var user = context.watch<SerUser>();
+    return Padding(
+      padding: EdgeInsets.only(left:0,top: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Color(0x44E3B900),
+                borderRadius: BorderRadius.all(Radius.circular(30))
+              ),
+              child: SizedBox(
+                width: 45,height: 45,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '队伍',
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                    ),
+                    Text(
+                      widget.roomId.toString(),
+                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                    ),
+                  ],
                 ),
-                Text(
-                  round.toString(),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: roomMasterColor),
-                ),
-                Text(
-                  '局',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                ),
-              ],
+              ),
             ),
           ),
-          // Padding(
-          //   padding: EdgeInsets.only(top: 10),
-          //   child: InkWell(
-          //     onTap: () async {
-          //       setState(() {
-          //         showCard1 = showCard2 = showCard3 = showCard4 = showCard5 = true;
-          //       });
-          //     },
-          //     child: Stack(
-          //       alignment: Alignment.center,
-          //       children: [
-          //         DecoratedBox(
-          //           decoration: BoxDecoration(
-          //             image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-          //           ),
-          //           child: SizedBox(
-          //             width: 60,
-          //             height: 25,
-          //             child: Center(
-          //               child: Padding(
-          //                 padding: const EdgeInsets.only(bottom: 3.0),
-          //                 child: Text(
-          //                   '看牌',
-          //                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-          //                 ),
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          (user.isRoomMaster && (readying||qiangZhuanging||resulting||waitPushPoker))?Padding(
+            padding: EdgeInsets.only(top: 0,left: 10),
+            child: InkWell(
+              onTap: () async {
+                endGame();
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                      width: 60,
+                      height: 40,
+                      child: MyButton.gradient(
+                          backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
+                          child: Text('结束', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Color(0xffffffff)))))
+                ],
+              ),
+            ),
+          ):SizedBox(width: 70,),
         ],
       ),
     );
@@ -1022,7 +999,7 @@ class _PageGameMainState extends State<PageGameMain> {
         width: 70,
         height: 70,
         child: MyButton.gradient(
-            backgroundColor: [Color(0xff70d9fe), Color(0xff2933e0)],
+            backgroundColor: [Color(0xff70d9fe), Color(0xff2933e0),Color(0xff9ce0a5)],
             onPressed: () {
               readyGame();
             },
@@ -1039,11 +1016,11 @@ class _PageGameMainState extends State<PageGameMain> {
         width: 70,
         height: 70,
         child: MyButton.gradient(
-            backgroundColor: [Color(0xffcbffc0), Color(0xff056910)],
+            backgroundColor: [Color(0xffBF8A08), Color(0xff08BF28)],
             onPressed: () {
               startTheGame();
             },
-            child: Text('开始', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))));
+            child: Text('启动', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))));
 
     bool allReady = true;
     for (var i = 0; i < playerList.length; i++) {
@@ -1057,8 +1034,20 @@ class _PageGameMainState extends State<PageGameMain> {
           width: 70,
           height: 70,
           child: MyButton.gradient(
-              backgroundColor: [Color(0xffffffff), Color(0xff000000)],
-              child: Text('待玩家\n准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff)))));
+              backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('待队友', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Text('准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+                    Image.asset('assets/images/dengdai.png',width: 15,height: 15,fit: BoxFit.contain,color: Color(0xffa0e7a2),)
+                  ],)
+
+                ],
+              )));
     }
 
     return Padding(
@@ -1329,25 +1318,30 @@ class _PageGameMainState extends State<PageGameMain> {
       }
     }
 
-    Widget readyButton = SizedBox(
-        width: 40,
-        height: 16,
-        child: MyButton.gradient(
-            backgroundColor: [Color(0xffffffff), Color(0xff000000)],
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 1.0),
-              child: Text('未准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
-            )));
-    if (1 == player['is_ready']) {
+    // Widget readyButton = SizedBox(
+    //     width: 40,
+    //     height: 16,
+    //     child: MyButton.gradient(
+    //         backgroundColor: [Color(0xffffffff), Color(0xff000000)],
+    //         child: Padding(
+    //           padding: const EdgeInsets.only(bottom: 1.0),
+    //           child: Text('未准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
+    //         )));
+    Widget readyButton = SizedBox();
+    if (1 == player['is_ready'] && readying) {
       readyButton = SizedBox(
-          width: 40,
-          height: 16,
-          child: MyButton.gradient(
-              backgroundColor: [Color(0xff70d9fe), Color(0xff2933e0)],
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 1.0),
-                child: Text('已准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
-              )));
+          width: 15,
+          height: 15,
+          child: Image.asset('assets/images/dengdai.png',width: 15,height: 15,fit: BoxFit.contain,color: Color(0xffa0e7a2),));
+      // readyButton = SizedBox(
+      //     width: 40,
+      //     height: 16,
+      //     child: MyButton.gradient(
+      //         backgroundColor: [Color(0xff70d9fe), Color(0xff2933e0)],
+      //         child: Padding(
+      //           padding: const EdgeInsets.only(bottom: 1.0),
+      //           child: Text('已准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
+      //         )));
     }
     var zhuangBuild = ZhuangIconBuild(width: 16,);
 
@@ -1391,15 +1385,19 @@ class _PageGameMainState extends State<PageGameMain> {
                     if (1 == player['is_master'])
                       Text(
                         '(房主)',
-                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
-                      )
+                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940),fontWeight: FontWeight.bold),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [if (!(1 == player['is_master'])) readyButton],
+                    ),
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [if (!(1 == player['is_master'])) readyButton],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [if (!(1 == player['is_master'])) readyButton],
+              // ),
               getJifenBuild(fen),
             ],
           ),
@@ -1465,7 +1463,7 @@ class _PageGameMainState extends State<PageGameMain> {
                       if (user.isRoomMaster)
                         Text(
                           '(房主)',
-                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940)),
+                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940),fontWeight: FontWeight.bold),
                         )
                     ],
                   ),
@@ -1486,7 +1484,7 @@ class _PageGameMainState extends State<PageGameMain> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            "assets/images/jifen.png",
+            "assets/images/jinbi.png",
             width: 14,
             height: 14,
           ),
@@ -1551,21 +1549,30 @@ class _PageGameMainState extends State<PageGameMain> {
             boxShadow: [BoxShadow(color: Color(0xffffffff), blurRadius: 33, offset: Offset(0, 0))],
           ),
           child: SizedBox(
-              width: isZhuang?100:200,
-              height: 100,
-              child: MyButton.gradient(
-                  borderRadius: BorderRadius.all(Radius.circular(isZhuang?50:20)),
-                  backgroundColor: isZhuang?[Color(0xfff2b8e4), Color(0xffb20084)]:[Color(0xffcccccc), Color(0xff333333)],
-                  onPressed: isZhuang?(){
+              width: isZhuang?120:120,
+              height: 120,
+              child: InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(isZhuang?60:60)),
+                  onTap: isZhuang?(){
                     pushPoker();
                   }:null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      isZhuang?Text('发牌', textAlign: TextAlign.center, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
-                          :Text('等待发牌...', textAlign: TextAlign.center, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(isZhuang?60:60)),
+                      image: DecorationImage(
+                        image: AssetImage(isZhuang?'assets/images/xingqiu5.png':'assets/images/xingqiu5.png'),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        isZhuang?Text('发牌', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
+                            :
+                        Text('待发牌...', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
 
-                    ],
+                      ],
+                    ),
                   ))),
         ),
       );
@@ -1612,8 +1619,8 @@ class _PageGameMainState extends State<PageGameMain> {
               width: 200,
               height: 100,
               child: MyButton.gradient(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  backgroundColor: [Color(0xffb3e6f9), Color(0xff005a97)],
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  backgroundColor: [Color(0x99b3e6f9), Color(0xff9a16b6),Color(0xff9a16b6),Color(0x99e37800)],
                   // onPressed: (){
                   //   showMyPoker(6);
                   // },
@@ -1655,9 +1662,15 @@ class _PageGameMainState extends State<PageGameMain> {
           child: SizedBox(
               width: 200,
               height: 100,
-              child: MyButton.gradient(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  backgroundColor: [Color(0xfffdefabb), Color(0xff008b00)],
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: bettingCountdown > 0?[Color(0xfffdefabb), Color(0xff0383d3),Color(0x99ef4d80)]:[Color(0xff7fd1fc), Color(0xff666666)],
+                    ),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

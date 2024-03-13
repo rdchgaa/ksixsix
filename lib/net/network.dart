@@ -17,6 +17,30 @@ import 'package:provider/provider.dart';
 
 class NetWork {
 
+  //版本更新  说明: 游戏客户端打开获取配置信息，可以得到版本更新，公告这些内容
+  static getVersionInfo(BuildContext context,String info,) async{
+    var res = await DioUtils.instance.getRequest(Method.get, 'conf/',
+      options: Options(headers: {'token':getToken()}),
+    );
+    if(res!=null){
+      var value = json.decode(res.data);
+      if(value['code']==0){
+        var data = value['data'];
+        // showToast(context, data['tip']);
+
+        if(data['apk_version']!=null){
+          if(info!=data['apk_version']){
+            return data;
+          }
+        }
+      }else{
+        // showToast(context, '获取房间信息失败，请稍后再试');
+        return null;
+      }
+    }
+    return null;
+  }
+
   static toLogin(BuildContext context,String account,String password) async{
     var res = await DioUtils.instance.getRequest(Method.post, 'login',
       queryParameters: {

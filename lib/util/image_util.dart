@@ -84,7 +84,7 @@ class ImageUtil {
               // remove memory cached
               state.imageProvider.evict();
               return errorWidget ??
-                  Image.asset('assets/images2/icon_default_icon.webp',width: width,height: height,fit: BoxFit.fill,);
+                  Image.asset('assets/images/default_head.png',width: width,height: height,fit: BoxFit.fill,);
           }
         },
       );

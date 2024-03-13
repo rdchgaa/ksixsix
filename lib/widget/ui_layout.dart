@@ -242,7 +242,7 @@ UiLayoutTitleAndIconItemStyle get layoutItemStyle2 => UiLayoutTitleAndIconItemSt
 
 //H3：14；0xffFFFFFF
 TextStyle get textStyleH3White => const TextStyle(fontSize: 14, color: Color(0xffffffff), fontWeight: FontWeight.normal);
-TextStyle get textStyleBody4 => const TextStyle(fontSize: 14, color: Color(0xff707070), fontWeight: FontWeight.normal);
+TextStyle get textStyleBody4 => const TextStyle(fontSize: 14, color: Color(0xffdddddd), fontWeight: FontWeight.normal);
 //H3：14；0xffFFFFFF
 TextStyle get textStyleH3 => TextStyle(fontSize: 14, color: Color(0xff3A4052), fontWeight: FontWeight.normal);
 //H4：12；0xff6A768D
