@@ -32,19 +32,19 @@ class _LoginBuildState extends State<LoginBuild> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.portraitUp
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   // 强制竖屏
+    //   DeviceOrientation.portraitUp
+    // ]);
   }
 
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.landscapeLeft
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   // 强制竖屏
+    //   DeviceOrientation.landscapeLeft
+    // ]);
   }
 
 
@@ -172,277 +172,294 @@ class _LoginBuildState extends State<LoginBuild> with SingleTickerProviderStateM
             return DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/login_back.webp'),
-                  fit: BoxFit.fill,
+                  image: AssetImage('assets/images/login_back2.webp'),
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  padding: EdgeInsets.only(top: 0),
-                  children: [
-                    SizedBox(
+              child: Stack(
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Color(0x44000000)
+                    ),
+                    child: SizedBox(
                       width: width,
                       height: height,
-                      child: Stack(
-                        children: <Widget>[
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.3757),
-                            child: SizedBox(
-                              height: 50,
-                              width: double.infinity,
-                              child: TextFormField(
-                                autofocus: true,
-                                onChanged: (val) {},
-                                controller: _unPhone,
-                                keyboardType: TextInputType.emailAddress,
-                                cursorColor: Color(0xFF21A27C),
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 18,fontWeight: FontWeight.bold),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  prefix: SizedBox(width: 10,),
-                                  // prefixIconConstraints: BoxConstraints(),
-                                  // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
-                                  hintText: '账号',
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  // border: InputBorder.none
-                                ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 56.0, middle: 0.4762),
-                            child: SizedBox(
-                              height: 60,
-                              width: double.infinity,
-                              child: TextFormField(
-                                onChanged: (val) {
-                                  // widget.data._number = val;
-                                },
-                                cursorColor: Color(0xFF21A27C),
-                                controller: _unPassword,
-                                style: TextStyle(color: Color(0xFF333333), fontSize: 18,fontWeight: FontWeight.bold),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x22000000),
-                                  hintText: '密码',
-                                  prefix: SizedBox(
-                                    width: 10,
-                                  ),
-                                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    borderSide: BorderSide(style: BorderStyle.none),
-                                  ),
-                                  suffixIcon: Padding(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: SizedBox(
-                                      width: 60,
-                                      height: 50,
-                                      child: InkWell(
-                                        //根据passwordVisible状态显示不同的图标
-                                        child: passwordVisible
-                                            ? visibleBuild(true)
-                                            : visibleBuild(false),
-                                        onTap: () {
-                                          //更新状态控制密码显示或隐藏
-                                          setState(() {
-                                            passwordVisible = !passwordVisible;
-                                          });
-                                        },
+                    ),
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: ListView(
+                      padding: EdgeInsets.only(top: 0),
+                      children: [
+                        SizedBox(
+                          width: width,
+                          height: height,
+                          child: Stack(
+                            children: <Widget>[
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.3757),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    autofocus: true,
+                                    onChanged: (val) {},
+                                    controller: _unPhone,
+                                    keyboardType: TextInputType.emailAddress,
+                                    cursorColor: Color(0xFF21A27C),
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 18,fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      prefix: SizedBox(width: 10,),
+                                      // prefixIconConstraints: BoxConstraints(),
+                                      // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
+                                      hintText: '账号',
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
                                       ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      // border: InputBorder.none
                                     ),
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
                                   ),
                                 ),
-                                obscureText: passwordVisible,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
                               ),
-                            ),
-                          ),
-
-                          Pinned.fromPins(
-                            Pin(size: 98.0, start: 20.0),
-                            Pin(size: 46.0, middle: 0.2807),
-                            child: Text(
-                              '登录',
-                              style: TextStyle(
-                                fontFamily: 'Source Han Sans CN',
-                                fontSize: 32,
-                                color: const Color(0xff0e0f0f),
-                                fontWeight: FontWeight.w800,
-                              ),
-                              softWrap: false,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment(0.0, 0.086),
-                            child: InkWell(
-                              onTap: (){
-                                // AutoRouter.of(context).pushNamed(
-                                //   "/login_register",
-                                // );
-                                PageRegister().push(context);
-                              },
-                              child: SizedBox(
-                                width: 89.0,
-                                height: 24.0,
-                                child: Stack(
-                                  children: <Widget>[
-                                    Pinned.fromPins(
-                                      Pin(size: 61.0, start: 0.0),
-                                      Pin(start: 0.0, end: 0.0),
-                                      child: Text(
-                                        '     注册',
-                                        style: TextStyle(
-                                          fontFamily: 'Source Han Sans CN',
-                                          fontSize: 16,
-                                          color: const Color(0xff0e0f0f),
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        softWrap: false,
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 56.0, middle: 0.4762),
+                                child: SizedBox(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: TextFormField(
+                                    onChanged: (val) {
+                                      // widget.data._number = val;
+                                    },
+                                    cursorColor: Color(0xFF21A27C),
+                                    controller: _unPassword,
+                                    style: TextStyle(color: Color(0xFFffffff), fontSize: 18,fontWeight: FontWeight.bold),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0x33ffffff),
+                                      hintText: '密码',
+                                      prefix: SizedBox(
+                                        width: 10,
                                       ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: SizedBox(
-                                        width: 20.0,
-                                        height: 20.0,
-                                        child: Stack(
-                                          children: <Widget>[
-                                            Pinned.fromPins(
-                                              Pin(start: 1.0, end: 1.1),
-                                              Pin(size: 11.3, middle: 0.5769),
-                                              child: SvgPicture.string(
-                                                _svg_dahhp4,
-                                                allowDrawingOutsideViewBox: true,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                      hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 16),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 20.0, end: 20.0),
-                            Pin(size: 70.0, middle: 0.6402),
-                            child: InkWell(
-                              onTap: ()  async {
-                                _onSubmit(context);
-                              },
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(image: AssetImage("assets/images/button1.webp"), fit: BoxFit.fill),
-                                    ),
-                                    child: SizedBox(
-                                      width: 300,
-                                      height: 80,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                          child: Text(
-                                            '登录',
-                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderSide: BorderSide(style: BorderStyle.none),
+                                      ),
+                                      suffixIcon: Padding(
+                                        padding: EdgeInsets.only(right: 0),
+                                        child: SizedBox(
+                                          width: 60,
+                                          height: 50,
+                                          child: InkWell(
+                                            //根据passwordVisible状态显示不同的图标
+                                            child: passwordVisible
+                                                ? visibleBuild(true)
+                                                : visibleBuild(false),
+                                            onTap: () {
+                                              //更新状态控制密码显示或隐藏
+                                              setState(() {
+                                                passwordVisible = !passwordVisible;
+                                              });
+                                            },
                                           ),
                                         ),
                                       ),
                                     ),
+                                    obscureText: passwordVisible,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 0.0, end: 0.0),
-                            Pin(size: 34.0, end: 0.0),
-                            child:
-                                // Adobe XD layer: 'lit' (shape)
-                                Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: const AssetImage(''),
-                                  fit: BoxFit.fill,
                                 ),
                               ),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(size: 100.0, middle: 0.5018),
-                            Pin(size: 100.0, start: 84.0),
-                            child: Container(
-                              width: 100.0,
-                              height: 100.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/new_logo.webp'),
-                                  fit: BoxFit.fill,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0x33b3b3b3),
-                                    offset: Offset(0, 0),
-                                    blurRadius: 24,
+
+                              Pinned.fromPins(
+                                Pin(size: 98.0, start: 20.0),
+                                Pin(size: 46.0, middle: 0.2807),
+                                child: Text(
+                                  '登录',
+                                  style: TextStyle(
+                                    fontFamily: 'Source Han Sans CN',
+                                    fontSize: 20,
+                                    color: const Color(0xffffffff),
+                                    fontWeight: FontWeight.w800,
                                   ),
-                                ],
+                                  softWrap: false,
+                                ),
                               ),
-                            ),
-                          ),
-                          if(Navigator.canPop(context))
-                          Pinned.fromPins(
-                            Pin(size: 26.0, start: 20.0),
-                            Pin(size: 26.0, middle: 0.07),
-                            child: InkWell(
-                              onTap: () {
-                                // AutoRouter.of(context).pop();
-                                Navigator.pop(context);
-                              },
-                              child: Stack(
-                                children: <Widget>[
-                                  Pinned.fromPins(
-                                    Pin(start: 1.9, end: 1.4),
-                                    Pin(size: 14.4, middle: 0.5864),
-                                    child: SvgPicture.string(
-                                      _svg_i3q6wh,
-                                      allowDrawingOutsideViewBox: true,
+                              Align(
+                                alignment: Alignment(0.0, 0.086),
+                                child: InkWell(
+                                  onTap: (){
+                                    // AutoRouter.of(context).pushNamed(
+                                    //   "/login_register",
+                                    // );
+                                    PageRegister().push(context);
+                                  },
+                                  child: SizedBox(
+                                    width: 89.0,
+                                    height: 24.0,
+                                    child: Stack(
+                                      alignment: Alignment.centerLeft,
+                                      children: <Widget>[
+                                        Pinned.fromPins(
+                                          Pin(size: 61.0, start: 0.0),
+                                          Pin(start: 0.0, end: 0.0),
+                                          child: Text(
+                                            '     注册',
+                                            style: TextStyle(
+                                              fontFamily: 'Source Han Sans CN',
+                                              fontSize: 16,
+                                              color: const Color(0xffffffff),
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            softWrap: false,
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: SizedBox(
+                                            width: 20.0,
+                                            height: 20.0,
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Pinned.fromPins(
+                                                  Pin(start: 1.0, end: 1.1),
+                                                  Pin(size: 11.3, middle: 0.5769),
+                                                  child: SvgPicture.string(
+                                                    _svg_dahhp4,
+                                                    color: Color(0xffffffff),
+                                                    allowDrawingOutsideViewBox: true,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 20.0, end: 20.0),
+                                Pin(size: 70.0, middle: 0.6402),
+                                child: InkWell(
+                                  onTap: ()  async {
+                                    _onSubmit(context);
+                                  },
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(image: AssetImage("assets/images/ok.png"), fit: BoxFit.fill),
+                                          borderRadius: BorderRadius.all(Radius.circular(20))
+                                        ),
+                                        child: SizedBox(
+                                          width: 150,
+                                          height: 80,
+                                          child: Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              // child: Text(
+                                              //   '登录',
+                                              //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                              // ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Pinned.fromPins(
+                                Pin(start: 0.0, end: 0.0),
+                                Pin(size: 34.0, end: 0.0),
+                                child:
+                                    // Adobe XD layer: 'lit' (shape)
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: const AssetImage(''),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                              Pinned.fromPins(
+                                Pin(size: 100.0, middle: 0.5018),
+                                Pin(size: 100.0, start: 84.0),
+                                child: Container(
+                                  width: 100.0,
+                                  height: 100.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/new_logo.webp'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xaaffffff),
+                                        offset: Offset(0, 0),
+                                        blurRadius: 24,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if(Navigator.canPop(context))
+                              Pinned.fromPins(
+                                Pin(size: 26.0, start: 20.0),
+                                Pin(size: 26.0, middle: 0.07),
+                                child: InkWell(
+                                  onTap: () {
+                                    // AutoRouter.of(context).pop();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Pinned.fromPins(
+                                        Pin(start: 1.9, end: 1.4),
+                                        Pin(size: 14.4, middle: 0.5864),
+                                        child: SvgPicture.string(
+                                          _svg_i3q6wh,
+                                          allowDrawingOutsideViewBox: true,
+                                          fit: BoxFit.fill,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           }

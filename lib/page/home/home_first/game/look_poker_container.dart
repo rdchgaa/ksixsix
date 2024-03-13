@@ -48,7 +48,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
 
   Duration duration= Duration(milliseconds: 300);
 
-  int lookingCountdown = 19; //看牌倒计时
+  int lookingCountdown = 29; //看牌倒计时
   Timer lookingTimer;
 
   @override
@@ -111,7 +111,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
   }
 
   ScrollListener1(){
-    if(controller1.offset>=(pokerWidth/2)){
+    if(controller1.offset>=(pokerWidth/2+10)){
       // controller1.removeListener(ScrollListener1());
       controller1.animateTo(controller1.position.maxScrollExtent, duration: duration, curve: Curves.linear);
       setState(() {
@@ -120,7 +120,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     }
   }
   ScrollListener2(){
-    if(controller2.offset>=(pokerWidth/2)){
+    if(controller2.offset>=(pokerWidth/2+10)){
       // controller1.removeListener(ScrollListener1());
       controller2.animateTo(controller2.position.maxScrollExtent, duration: duration, curve: Curves.linear);
       setState(() {
@@ -129,7 +129,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     }
   }
   ScrollListener3(){
-    if(controller3.offset>=(pokerWidth/2)){
+    if(controller3.offset>=(pokerWidth/2+10)){
       // controller1.removeListener(ScrollListener1());
       controller3.animateTo(controller3.position.maxScrollExtent, duration: duration, curve: Curves.linear);
       setState(() {
@@ -138,7 +138,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     }
   }
   ScrollListener4(){
-    if(controller4.offset>=(pokerWidth/2)){
+    if(controller4.offset>=(pokerWidth/2+10)){
       // controller1.removeListener(ScrollListener1());
       controller4.animateTo(controller4.position.maxScrollExtent, duration: duration, curve: Curves.linear);
       setState(() {
@@ -147,7 +147,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
     }
   }
   ScrollListener5(){
-    if(controller5.offset>=(pokerWidth/2)){
+    if(controller5.offset>=(pokerWidth/2+10)){
       // controller1.removeListener(ScrollListener1());
       controller5.animateTo(controller5.position.maxScrollExtent, duration: duration, curve: Curves.linear);
       setState(() {
@@ -233,15 +233,20 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
       padding: EdgeInsets.only(left:10,top:10 ,bottom: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xcc0f7357),Color(0xcc011713)],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            //   colors: [Color(0xcc0f7357),Color(0xcc011713)],
+            // ),
             // color: Color(0xcc555555),
+            image: DecorationImage(
+              image: AssetImage('assets/images/xingkong.png'),
+              fit: BoxFit.cover,
+            ) ,
             boxShadow: [BoxShadow(color: Color(0xffeeb202), blurRadius: 33, offset: Offset(0, 0))],
             borderRadius: BorderRadius.all(Radius.circular(6)),
-            border: Border.all(color: Color(0xffb68a08), width: 2)),
+            // border: Border.all(color: Color(0xff6ec465), width: 2)
+        ),
         child: SizedBox(
           width: pokerWidth,
           height: pokerHeight+0,
@@ -402,8 +407,8 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/zuola.png',width: 40,height: 40,fit: BoxFit.contain,),
-              Text('拉出扑克',style: TextStyle(fontSize: 16,color: Color(0xffe19b4b)),),
+              Image.asset('assets/images/turn_left.png',width: 25,height: 25,fit: BoxFit.contain,color: Color(0xff00c2c9),),
+              Text('滑动卡片',style: TextStyle(fontSize: 14,color: Color(0xff00c2c9)),),
             ],
           ),
         ),

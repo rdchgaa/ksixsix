@@ -75,7 +75,7 @@ Future<void> run(AppConfig config) async {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     SystemChrome.setPreferredOrientations([
       // 强制竖屏
-      DeviceOrientation.landscapeLeft
+      DeviceOrientation.portraitUp
     ]);
   }
   try {

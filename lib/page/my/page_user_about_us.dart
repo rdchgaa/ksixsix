@@ -99,36 +99,43 @@ class _PageUserAboutUsState extends State<PageUserAboutUs> {
                         padding: EdgeInsets.only(bottom: 15),
                         child: Text('版本'+' ${_info.version}'),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 24, bottom: 15,left: 20,right: 20),
-                       child: Text.rich(
-                         TextSpan(
-                           style: TextStyle(
-                             fontFamily: 'Source Han Sans CN',
-                             fontSize: 14,
-                             color: const Color(0xff4f4f4f),
-                             height: 1.5714285714285714,
-                           ),
-                           children: [
-                             TextSpan(
-                               text:
-                               '炫牛是一家专注于游戏服务的公司。我们致力于为用户提供安全可靠的娱乐应用。\n本产品为炫牛，进入游戏前需出示门票，游戏内不含任何交易行为，仅供娱乐。是我们相信，通过我们的专业团队和创新技术，K1.GAME将帮助您获得极佳的游玩体验。\n如果您对我们的团队有任何问题或建议，请访问',
-                             ),
-                             TextSpan(
-                               text: 'https://k1.game',
-                               style: TextStyle(
-                                 color: const Color(0xff21a27c),
-                               ),
-                             ),
-                           ],
-                         ),
-                         textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
-                       ),),
+                      Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10,left: 10,right: 10),
+                        margin: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Color(0x66000000),
+                          borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        child: Text.rich(
+                          TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Source Han Sans CN',
+                              fontSize: 14,
+                              color: const Color(0xffdddddd),
+                              height: 1.5714285714285714,
+                            ),
+                            children: [
+                              TextSpan(
+                                text:
+                                '我们致力于为用户提供安全可靠的娱乐应用。\n本产品为炫牛，进入游戏前需出示门票，游戏内不含任何交易行为，仅供娱乐。是我们相信，通过我们的专业团队和创新技术，K1.GAME将帮助您获得极佳的游玩体验。\n如果您对我们的团队有任何问题或建议，请访问',
+                              ),
+                              TextSpan(
+                                text: 'https://k1.game',
+                                style: TextStyle(
+                                  color: const Color(0xff21a27c),
+                                ),
+                              ),
+                            ],
+                          ),
+                          textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                        ),
+                      ),
 
 
                       // Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(top:50,bottom: 0),
+                      Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10,left: 10,right: 10),
+                        margin: EdgeInsets.all(12),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -140,6 +147,7 @@ class _PageUserAboutUsState extends State<PageUserAboutUs> {
                                 '用户协议',
                                 style: textStyleH4.copyWith(
                                   fontSize: 14,
+                                  color: Color(0xffdddddd),
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -154,6 +162,7 @@ class _PageUserAboutUsState extends State<PageUserAboutUs> {
                                   '隐私政策',
                                   style: textStyleH4.copyWith(
                                     fontSize: 14,
+                                    color: Color(0xffdddddd),
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

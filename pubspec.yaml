@@ -3,7 +3,7 @@ description: A new Flutter IM application.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.3.5+7235
+version: 2.3.6+7236
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
