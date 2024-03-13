@@ -183,162 +183,159 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultAssetBundle(
-      bundle: _bundle ?? rootBundle,
-      child: Network(create: (context) {
-        return [
-          NetFile(
-            scheme: widget.config.fileScheme,
-            host: widget.config.fileHost,
-          ),
-        ];
-      }, builder: (context) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => SerBase(() => _navigatorKey.currentState.overlay.context, serverUrl: widget.config.socketHost)),
-            ChangeNotifierProvider(create: (_) => SerUser(_navigatorKey.currentState.overlay.context)),
-          ],
-          child: ToastTheme(
-            data: ToastThemeData(textStyle: TextStyle(fontFamily: _getFontFamily())),
-            child: LoadingCall(
-              data: LoadingThemeData(
-                color: Colors.white.withOpacity(0.3),
-                indicatorBuilder: (context, value) {
-                  return CupertinoActivityIndicator();
-                },
-              ),
-              onError: _onError,
-              builder: (context) {
-                return Consumer<SerBase>(builder: (context, value, child) {
-                  return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: '炫牛',
-                    navigatorKey: _navigatorKey,
-                    theme: ThemeData(
-                      fontFamily: _getFontFamily(),
-                      scaffoldBackgroundColor: Color(0xffF8F8F8),
-                      primarySwatch: primarySwatch,
-                      navigationRailTheme: NavigationRailThemeData(backgroundColor: primarySwatch),
-                      dividerColor: Color(0xffEBEBEB),
-                      visualDensity: VisualDensity(),
-                      appBarTheme: AppBarTheme(
-                        elevation: 0,
-                        iconTheme: IconThemeData(),
-                      ),
-                      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                        backgroundColor: Color(0xffF8F8F8),
-                      ),
-                      inputDecorationTheme: InputDecorationTheme(
-                        focusColor: Color(0xff009FE8),
-                      ),
-                    ),
-                    localeResolutionCallback: _onLocaleResolutionCallback,
-                    locale: _locale,
-                    supportedLocales: _supportedLocales,
-                    localizationsDelegates: [
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      // Languages.delegate,
-                      Languages.getDelegate(context),
-                    ],
-                    builder: (context, Widget child) {
-                      return _BindingObserver(child: child);
-                    },
-                    home: PageInit(),
-                  );
-                });
-                // return AutoRouter(
-                //   home: "/",
-                //   routers: {
-                //     //base
-                //     AutoPath("/"): (context, param) => PageInit(param: param),
-                //     AutoPath("/login_username"): (context, param) => PageLogin(),
-                //     AutoPath("/login_register"): (context, param) => PageRegister(),
-                //     AutoPath("/set"): (context, param) => PageMy(param: param),
-                //     AutoPath("/home/webview"): (context, param) => PageWebView(param: param),
-                //     AutoPath("/user_agreement", _onlyPcDialog): (context, param) => PageUserAgreement(),
-                //     AutoPath("/user_privacy_policy", _onlyPcDialog): (context, param) => PageUserPrivacyPolicy(),
-                //     AutoPath("/edit_image", _onlyPcDialog): (context, param) => PageEditImage(param: param),
-                //     AutoPath("/home"): (context, param) => PageHome(),
-                //     AutoPath("/home/aboutus", _onlyPcDialog): (context, param) => PageUserAboutUs(),
-                //     AutoPath("/self_info", _onlyPcDialog): (context, param) => PageUserInfo(),
-                //     AutoPath("/dialog_alert", _alwaysDialog): (context, param) => DialogAlertBox(param: param),
-                //     AutoPath("/dialog_select_image", _alwaysDialog): (context, param) => DialogSelectImageBox(),
-                //     AutoPath("/dialog_time", _alwaysDialog): (context, param) => TimeDialog(param: param),
-                //     AutoPath("/dialog_policy", _alwaysDialog): (context, param) => PolicyDialog(),
-                //
-                //     //page
-                //     AutoPath("/job_details"): (context, param) => PageXdJobDetails(
-                //           param: param,
-                //         ),
-                //     AutoPath("/company_details"): (context, param) => PageXdCompanyDetails(param: param),
-                //     AutoPath("/search"): (context, param) => PageXdSearch(),
-                //     AutoPath("/all_job"): (context, param) => PageXdAllJob(),
-                //     AutoPath("/all_company"): (context, param) => PageXdAllCompany(),
-                //     AutoPath("/my_edit_info"): (context, param) => PageXdEditInfo(),
-                //     AutoPath("/my_collection"): (context, param) => PageXdMyCollection(),
-                //
-                //     //房间页面
-                //     //加人房间
-                //     AutoPath("/room_main"): (context, param) => PageRoomMain(param: param),
-                //     //游戏页面
-                //     AutoPath("/game_main"): (context, param) => PageGameMain(param: param),
-                //   },
-                //   builder: (context, appRouter) {
-                //     if (null == _navigatorKey) {
-                //       _navigatorKey = appRouter.navigatorKey;
-                //     }
-                //
-                //     return Consumer<SerBase>(builder: (context, value, child) {
-                //       return MaterialApp.router(
-                //         debugShowCheckedModeBanner: false,
-                //         routerDelegate: appRouter,
-                //         routeInformationParser: appRouter,
-                //         routeInformationProvider: appRouter.provider,
-                //         title: '炫牛',
-                //         theme: ThemeData(
-                //           fontFamily: _getFontFamily(),
-                //           scaffoldBackgroundColor: Color(0xffF8F8F8),
-                //           primarySwatch: primarySwatch,
-                //           navigationRailTheme: NavigationRailThemeData(backgroundColor: primarySwatch),
-                //           dividerColor: Color(0xffEBEBEB),
-                //           visualDensity: VisualDensity(),
-                //           appBarTheme: AppBarTheme(
-                //             elevation: 0,
-                //             iconTheme: IconThemeData(),
-                //           ),
-                //           bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                //             backgroundColor: Color(0xffF8F8F8),
-                //           ),
-                //           inputDecorationTheme: InputDecorationTheme(
-                //             focusColor: Color(0xff009FE8),
-                //           ),
-                //         ),
-                //         localeResolutionCallback: _onLocaleResolutionCallback,
-                //         locale: _locale,
-                //         supportedLocales: _supportedLocales,
-                //         localizationsDelegates: [
-                //           GlobalMaterialLocalizations.delegate,
-                //           GlobalCupertinoLocalizations.delegate,
-                //           GlobalWidgetsLocalizations.delegate,
-                //           // Languages.delegate,
-                //           Languages.getDelegate(context),
-                //           FlutterAppUpdateLanguages.delegate,
-                //         ],
-                //         builder: (context, Widget child) {
-                //           return _BindingObserver(child: child);
-                //         },
-                //       );
-                //     });
-                //   },
-                // );
+    return Network(create: (context) {
+      return [
+        NetFile(
+          scheme: widget.config.fileScheme,
+          host: widget.config.fileHost,
+        ),
+      ];
+    }, builder: (context) {
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SerBase(() => _navigatorKey.currentState.overlay.context, serverUrl: widget.config.socketHost)),
+          ChangeNotifierProvider(create: (_) => SerUser(_navigatorKey.currentState.overlay.context)),
+        ],
+        child: ToastTheme(
+          data: ToastThemeData(textStyle: TextStyle(fontFamily: _getFontFamily())),
+          child: LoadingCall(
+            data: LoadingThemeData(
+              color: Colors.white.withOpacity(0.3),
+              indicatorBuilder: (context, value) {
+                return CupertinoActivityIndicator();
               },
             ),
+            onError: _onError,
+            builder: (context) {
+              return Consumer<SerBase>(builder: (context, value, child) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: '炫牛',
+                  navigatorKey: _navigatorKey,
+                  theme: ThemeData(
+                    fontFamily: _getFontFamily(),
+                    scaffoldBackgroundColor: Color(0xffF8F8F8),
+                    primarySwatch: primarySwatch,
+                    navigationRailTheme: NavigationRailThemeData(backgroundColor: primarySwatch),
+                    dividerColor: Color(0xffEBEBEB),
+                    visualDensity: VisualDensity(),
+                    appBarTheme: AppBarTheme(
+                      elevation: 0,
+                      iconTheme: IconThemeData(),
+                    ),
+                    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                      backgroundColor: Color(0xffF8F8F8),
+                    ),
+                    inputDecorationTheme: InputDecorationTheme(
+                      focusColor: Color(0xff009FE8),
+                    ),
+                  ),
+                  localeResolutionCallback: _onLocaleResolutionCallback,
+                  locale: _locale,
+                  supportedLocales: _supportedLocales,
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    // Languages.delegate,
+                    Languages.getDelegate(context),
+                  ],
+                  builder: (context, Widget child) {
+                    return _BindingObserver(child: child);
+                  },
+                  home: PageInit(),
+                );
+              });
+              // return AutoRouter(
+              //   home: "/",
+              //   routers: {
+              //     //base
+              //     AutoPath("/"): (context, param) => PageInit(param: param),
+              //     AutoPath("/login_username"): (context, param) => PageLogin(),
+              //     AutoPath("/login_register"): (context, param) => PageRegister(),
+              //     AutoPath("/set"): (context, param) => PageMy(param: param),
+              //     AutoPath("/home/webview"): (context, param) => PageWebView(param: param),
+              //     AutoPath("/user_agreement", _onlyPcDialog): (context, param) => PageUserAgreement(),
+              //     AutoPath("/user_privacy_policy", _onlyPcDialog): (context, param) => PageUserPrivacyPolicy(),
+              //     AutoPath("/edit_image", _onlyPcDialog): (context, param) => PageEditImage(param: param),
+              //     AutoPath("/home"): (context, param) => PageHome(),
+              //     AutoPath("/home/aboutus", _onlyPcDialog): (context, param) => PageUserAboutUs(),
+              //     AutoPath("/self_info", _onlyPcDialog): (context, param) => PageUserInfo(),
+              //     AutoPath("/dialog_alert", _alwaysDialog): (context, param) => DialogAlertBox(param: param),
+              //     AutoPath("/dialog_select_image", _alwaysDialog): (context, param) => DialogSelectImageBox(),
+              //     AutoPath("/dialog_time", _alwaysDialog): (context, param) => TimeDialog(param: param),
+              //     AutoPath("/dialog_policy", _alwaysDialog): (context, param) => PolicyDialog(),
+              //
+              //     //page
+              //     AutoPath("/job_details"): (context, param) => PageXdJobDetails(
+              //           param: param,
+              //         ),
+              //     AutoPath("/company_details"): (context, param) => PageXdCompanyDetails(param: param),
+              //     AutoPath("/search"): (context, param) => PageXdSearch(),
+              //     AutoPath("/all_job"): (context, param) => PageXdAllJob(),
+              //     AutoPath("/all_company"): (context, param) => PageXdAllCompany(),
+              //     AutoPath("/my_edit_info"): (context, param) => PageXdEditInfo(),
+              //     AutoPath("/my_collection"): (context, param) => PageXdMyCollection(),
+              //
+              //     //房间页面
+              //     //加人房间
+              //     AutoPath("/room_main"): (context, param) => PageRoomMain(param: param),
+              //     //游戏页面
+              //     AutoPath("/game_main"): (context, param) => PageGameMain(param: param),
+              //   },
+              //   builder: (context, appRouter) {
+              //     if (null == _navigatorKey) {
+              //       _navigatorKey = appRouter.navigatorKey;
+              //     }
+              //
+              //     return Consumer<SerBase>(builder: (context, value, child) {
+              //       return MaterialApp.router(
+              //         debugShowCheckedModeBanner: false,
+              //         routerDelegate: appRouter,
+              //         routeInformationParser: appRouter,
+              //         routeInformationProvider: appRouter.provider,
+              //         title: '炫牛',
+              //         theme: ThemeData(
+              //           fontFamily: _getFontFamily(),
+              //           scaffoldBackgroundColor: Color(0xffF8F8F8),
+              //           primarySwatch: primarySwatch,
+              //           navigationRailTheme: NavigationRailThemeData(backgroundColor: primarySwatch),
+              //           dividerColor: Color(0xffEBEBEB),
+              //           visualDensity: VisualDensity(),
+              //           appBarTheme: AppBarTheme(
+              //             elevation: 0,
+              //             iconTheme: IconThemeData(),
+              //           ),
+              //           bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              //             backgroundColor: Color(0xffF8F8F8),
+              //           ),
+              //           inputDecorationTheme: InputDecorationTheme(
+              //             focusColor: Color(0xff009FE8),
+              //           ),
+              //         ),
+              //         localeResolutionCallback: _onLocaleResolutionCallback,
+              //         locale: _locale,
+              //         supportedLocales: _supportedLocales,
+              //         localizationsDelegates: [
+              //           GlobalMaterialLocalizations.delegate,
+              //           GlobalCupertinoLocalizations.delegate,
+              //           GlobalWidgetsLocalizations.delegate,
+              //           // Languages.delegate,
+              //           Languages.getDelegate(context),
+              //           FlutterAppUpdateLanguages.delegate,
+              //         ],
+              //         builder: (context, Widget child) {
+              //           return _BindingObserver(child: child);
+              //         },
+              //       );
+              //     });
+              //   },
+              // );
+            },
           ),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 
   Locale _onLocaleResolutionCallback(Locale locale, Iterable<Locale> supported) {
