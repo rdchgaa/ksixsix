@@ -199,7 +199,7 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
                     ),
 
                     Positioned(
-                      bottom: 10,right: 10,
+                      bottom: 10,right: 20,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 20.0, right: 20),
                         child: InkWell(

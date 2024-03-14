@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -174,7 +176,7 @@ class _PageSetUpState extends State<PageSetUp> {
                       ),
                       onTap: () async {
                         // showAlertDialogUpdate(context, enterType: 1);
-                        appLaunch(context, 'http://47.97.250.198');
+                        toUpdate(context);
                       },
                     ),
                   ],

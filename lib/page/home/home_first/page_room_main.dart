@@ -284,7 +284,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                     ],
                                   ),
                                    Padding(
-                                    padding: const EdgeInsets.only(bottom: 20.0),
+                                    padding: const EdgeInsets.only(top:10,bottom: 20.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [

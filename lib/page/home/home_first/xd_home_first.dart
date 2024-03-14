@@ -104,17 +104,15 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   goRoom(int roomId) async {
-    if (checkCanUse()) {
-      hideTextInput();
-      await PageRoomMain(
-        roomId: roomId,
-      ).push(context);
-      var user = context.read<SerUser>();
-      user.gameId = null;
-      hideTextInput();
-      leaveRoom(roomId);
-      _onRefresh(context, OnRefreshType.Refresh);
-    }
+    hideTextInput();
+    await PageRoomMain(
+      roomId: roomId,
+    ).push(context);
+    var user = context.read<SerUser>();
+    user.gameId = null;
+    hideTextInput();
+    leaveRoom(roomId);
+    _onRefresh(context, OnRefreshType.Refresh);
   }
 
   leaveRoom(int roomId) async {
@@ -134,10 +132,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   bool checkCanUse() {
     if (versionInfo!=null) {
-      ///TODO 请更新或下载新版本后使用
-      showToast(context, '请更新或下载新版本后使用。');
-      // showAlertDialogUpdate(context, enterType: 2);
-      // appLaunch(context, 'http://47.97.250.198');
+      toUpdate(context);
       return false;
     }
     return true;
