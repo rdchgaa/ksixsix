@@ -14,10 +14,11 @@ class AudioPlayerUtilBackGround {
   }
   static Future<void> playSound() async {
     audioPlayer.setReleaseMode(ReleaseMode.loop); // 设置循环模式
-    audioPlayer.play(AssetSource('images/doudizhu3.mp3'));
+    audioPlayer.play(AssetSource('images/mp3_xinzhishouweizhe.mp3'));
   }
 
 }
+
 
 class AudioPlayerUtilFapai {
   static AudioPlayer audioPlayer = AudioPlayer();
@@ -32,6 +33,24 @@ class AudioPlayerUtilFapai {
   static Future<void> playSound() async {
     // audioPlayer.setReleaseMode(ReleaseMode.loop); // 设置循环模式
     audioPlayer.play(AssetSource('images/fapai.mp3'));
+  }
+
+}
+
+
+class AudioPlayerUtilTaikong {
+  static AudioPlayer audioPlayer = AudioPlayer();
+  static Future<void> stopSound() async {
+    // audioCache.clearAll();
+    // audioPlayer.pause(); // 暂停播放
+    // audioPlayer.resume(); // 恢复播放
+    audioPlayer.stop(); // 停止播放
+    audioPlayer.release();
+    audioPlayer.dispose();
+  }
+  static Future<void> playSound() async {
+    // audioPlayer.setReleaseMode(ReleaseMode.loop); // 设置循环模式
+    audioPlayer.play(AssetSource('images/mp3_taikong.mp3'));
   }
 
 }
