@@ -28,6 +28,7 @@ class AudioPlayerUtilFapai {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_fapai.mp3'));
   }
 
@@ -42,6 +43,7 @@ class AudioPlayerUtilZuoqiu {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_zuoqiu.mp3'));
   }
 
@@ -55,6 +57,7 @@ class AudioPlayerUtilTaikong {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_taikong.mp3'));
   }
 
@@ -69,6 +72,7 @@ class AudioPlayerUtilKeji {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_keji.mp3'));
   }
 }
@@ -81,6 +85,7 @@ class AudioPlayerUtilJinshu {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_jinshu.mp3'));
   }
 }
@@ -93,6 +98,7 @@ class AudioPlayerUtilDalian {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_dalian.mp3'));
   }
 }
@@ -106,6 +112,7 @@ class AudioPlayerUtilChe {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_che.mp3'));
   }
 }
@@ -118,6 +125,7 @@ class AudioPlayerUtilBoli {
     audioPlayer.dispose();
   }
   static Future<void> playSound() async {
+    audioPlayer.setVolume(1);
     audioPlayer.play(AssetSource('images/mp3_boli.mp3'));
   }
 }
