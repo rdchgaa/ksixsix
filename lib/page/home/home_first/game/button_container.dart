@@ -39,7 +39,7 @@ class _EnterButtonBuildState extends State<EnterButtonBuild> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _scaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000), lowerBound: 0, upperBound: widget.width)
+    _scaleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500), lowerBound: 0, upperBound: widget.width)
       ..addListener(() {
         setState(() {
           _size = _scaleController.value;

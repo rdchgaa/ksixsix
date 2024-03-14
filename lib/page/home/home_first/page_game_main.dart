@@ -51,24 +51,26 @@ class _PageGameMainState extends State<PageGameMain> {
 
   Timer roomTimer = null;
 
-  var selfUserInfo = null;  //自己信息
-  List playerList = [];   //其他玩家信息
+  var selfUserInfo = null; //自己信息
+  List playerList = []; //其他玩家信息
 
-  List scoreboard = [];   // 计分牌 当前局每个玩家的分
-  List user_bet = [];     // 当前轮是下注信息
-  List user_poker = [];   // 玩家的牌
+  List scoreboard = []; // 计分牌 当前局每个玩家的分
+  List user_bet = []; // 当前轮是下注信息
+  List user_poker = []; // 玩家的牌
   var myPoker = null;
 
   List<int> myBetting = []; //我的投注信息
 
   var resultData = null; //当轮结果
-  var finalResultData = null; ///最终10轮结果
+  var finalResultData = null;
 
-  bool selfReady = false;  //自己是否准备
-  bool isZhuang = false;   //自己是否是庄家
-  int vocation_user_id = 0 ;// 庄家的用户id
+  ///最终10轮结果
 
-  bool isMaster = false;  //自己是否是房主
+  bool selfReady = false; //自己是否准备
+  bool isZhuang = false; //自己是否是庄家
+  int vocation_user_id = 0; // 庄家的用户id
+
+  bool isMaster = false; //自己是否是房主
 
   //重复点击
   bool canClickFapai = true;
@@ -81,8 +83,9 @@ class _PageGameMainState extends State<PageGameMain> {
   bool resulting = false; //结算阶段，调取结算接口 --倒计时
   bool waitPushPoker = false; //等待发牌阶段
 
-  bool showFinalResult = false; ///展示10轮的最终结果
+  bool showFinalResult = false;
 
+  ///展示10轮的最终结果
 
   ///卡片显示
   bool showCard1 = false;
@@ -90,7 +93,6 @@ class _PageGameMainState extends State<PageGameMain> {
   bool showCard3 = false;
   bool showCard4 = false;
   bool showCard5 = false;
-
 
   int round = 1; //当前轮次  --共10轮
 
@@ -101,7 +103,6 @@ class _PageGameMainState extends State<PageGameMain> {
   Timer bettingTimer;
   Timer lookingTimer;
   Timer singleResultTimer;
-
 
   ///挂
   bool showChangePokerBuild = false;
@@ -160,7 +161,7 @@ class _PageGameMainState extends State<PageGameMain> {
   getGameState() async {
     var user = context.read<SerUser>();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.getGameState(context,widget.roomId,user.gameId);
+      return await NetWork.getGameState(context, widget.roomId, user.gameId);
     }, isShowLoading: false);
 
     if (res != null) {
@@ -168,13 +169,12 @@ class _PageGameMainState extends State<PageGameMain> {
         showToast(context, '房间已解散');
         Navigator.pop(context);
       } else {
-        if(res['state']==-1){
+        if (res['state'] == -1) {
           //游戏解散
-          if(mounted && roomTimer != null){
+          if (mounted && roomTimer != null) {
             roomTimer.cancel();
             roomTimer = null;
-            setState(() {
-            });
+            setState(() {});
             showToast(context, '房间已解散');
             Navigator.pop(context);
           }
@@ -183,21 +183,22 @@ class _PageGameMainState extends State<PageGameMain> {
       }
     } else {}
   }
-  setAllInfo(res){
+
+  setAllInfo(res) {
     var user = context.read<SerUser>();
     user.gameId = res['game_id'];
 
     getRightUserList(res['user_list_info']);
     checkRoomState(res['state']);
-    setTimerTime(res['state'],res['remainder']);
+    setTimerTime(res['state'], res['remainder']);
     round = res['item'];
     scoreboard = res['scoreboard'];
     user_bet = res['user_bet'];
     vocation_user_id = res['vocation_user_id'];
     user_poker = res['user_poker'];
     setSelfPoker(res['user_poker']);
-    if(vocation_user_id==getUserId()){
-      if(!isZhuang){
+    if (vocation_user_id == getUserId()) {
+      if (!isZhuang) {
         isZhuang = true;
       }
     }
@@ -218,66 +219,64 @@ class _PageGameMainState extends State<PageGameMain> {
 // EndStage                           // 8.本局游戏结束(本局游戏10轮结束)
 
     if (state == 1) {
-      setCurentState(1);// 1.待准备
-    }else  if (state == 2) {
-      setCurentState(2);// 2.未选庄闲
-    }else if (state == 3) {
-      setCurentState(6);// 3.等待发牌
-    }else if (state == 4) {
-      setCurentState(3);// 4.下注阶段
-    }else if (state == 5) {
-      setCurentState(4);// 5.看牌阶段
-    }else if (state == 6) {
+      setCurentState(1); // 1.待准备
+    } else if (state == 2) {
+      setCurentState(2); // 2.未选庄闲
+    } else if (state == 3) {
+      setCurentState(6); // 3.等待发牌
+    } else if (state == 4) {
+      setCurentState(3); // 4.下注阶段
+    } else if (state == 5) {
+      setCurentState(4); // 5.看牌阶段
+    } else if (state == 6) {
       // setCurentState(5);// 6.本轮结算
-    }else if (state == 7) {
-      setCurentState(5);// 7.本轮结束
+    } else if (state == 7) {
+      setCurentState(5); // 7.本轮结束
       getResultData();
-    }else if (state == 8) {
-      setCurentState(5);// 8.本局游戏结束(本局游戏10轮结束)
+    } else if (state == 8) {
+      setCurentState(5); // 8.本局游戏结束(本局游戏10轮结束)
       getFinalResultData();
     }
   }
 
-  setSelfPoker(userPokers){
-    if(userPokers!=null){
+  setSelfPoker(userPokers) {
+    if (userPokers != null) {
       for (var i = 0; i < userPokers.length; i++) {
         if (userPokers[i]['user_id'] == getUserId()) {
           myPoker = userPokers[i];
-          setState(() {
-
-          });
-        } else {
-        }
+          setState(() {});
+        } else {}
       }
     }
   }
 
-  getResultData() async{
-    if(resultData==null){
+  getResultData() async {
+    if (resultData == null) {
       var user = context.read<SerUser>();
       var res = await LoadingCall.of(context).call((state, controller) async {
-        return await NetWork.gameItemResult(context,getUserId());
+        return await NetWork.gameItemResult(context, getUserId());
       }, isShowLoading: false);
       setState(() {
-        resultData =res;
+        resultData = res;
       });
     }
   }
-  getFinalResultData() async{
-    if(finalResultData==null){
+
+  getFinalResultData() async {
+    if (finalResultData == null) {
       var user = context.read<SerUser>();
       var res = await LoadingCall.of(context).call((state, controller) async {
-        return await NetWork.gameFinalResult(context,getUserId(),user.gameId);
+        return await NetWork.gameFinalResult(context, getUserId(), user.gameId);
       }, isShowLoading: false);
       setState(() {
-        finalResultData =res;
+        finalResultData = res;
         selfReady = false;
       });
     }
   }
 
-  setTimerTime(state,remainder){
-    if(state==4){
+  setTimerTime(state, remainder) {
+    if (state == 4) {
       //投注阶段
       bettingCountdown = remainder;
       setState(() {});
@@ -298,12 +297,12 @@ class _PageGameMainState extends State<PageGameMain> {
       //     setState(() {});
       //   });
       // }
-    }else if(state==5){
+    } else if (state == 5) {
       //看牌阶段
       lookingCountdown = remainder;
       setState(() {});
 
-      if(lookingCountdown == 1){
+      if (lookingCountdown == 1) {
         // showMyPoker(6);
         // toLookResult();
       }
@@ -321,7 +320,7 @@ class _PageGameMainState extends State<PageGameMain> {
       //     setState(() {});
       //   });
       // }
-    }else if(state==6||state==7){
+    } else if (state == 6 || state == 7) {
       //结果阶段
       singleResultCountdown = remainder;
       showMyPoker(6);
@@ -341,13 +340,12 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-
   getRightUserList(List user_list) {
     playerList = [];
     for (var i = 0; i < user_list.length; i++) {
       if (user_list[i]['user_id'] == getUserId()) {
         selfUserInfo = user_list[i];
-        if(user_list[i]['is_master']==1){
+        if (user_list[i]['is_master'] == 1) {
           isMaster = true;
           var user = context.read<SerUser>();
           user.isRoomMaster = true;
@@ -361,11 +359,11 @@ class _PageGameMainState extends State<PageGameMain> {
   /// 开始游戏   1:选择庄闲  2(庄-发牌)  3:(闲-投注)  3:看牌  4:显示输赢
   startTheGame() async {
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilZuoqiu.playSound();
     selectZhuang();
   }
 
-
-  setCurentState(int num) async{
+  setCurentState(int num) async {
     /// 本地状态
 
     ///10轮为一局
@@ -375,49 +373,47 @@ class _PageGameMainState extends State<PageGameMain> {
     qiangZhuanging = num == 2; //抢庄阶段
     betting = num == 3; //投注阶段 -- 倒计时
     looking = num == 4; //看牌阶段 -- 倒计时
-    resulting = (num == 5||num == 10); //结算阶段，调取结算接口 --倒计时
-    waitPushPoker = (num ==6||num ==10); //等待发牌阶段
+    resulting = (num == 5 || num == 10); //结算阶段，调取结算接口 --倒计时
+    waitPushPoker = (num == 6 || num == 10); //等待发牌阶段
 
     ///TODO
-    showFinalResult = (num ==5||num ==6 ||num ==1 ||num ==10); ///查看最终结果 10轮
+    showFinalResult = (num == 5 || num == 6 || num == 1 || num == 10);
 
+    ///查看最终结果 10轮
 
-    if(num==1){
+    if (num == 1) {
       setState(() {
         isZhuang = false;
       });
     }
-    if(num==5){
+    if (num == 5) {
       showChangePokerBuild = false;
     }
     setState(() {});
 
     //等待发牌阶段  每轮开始  初始化扑克牌
-    if((num ==6)){
+    if ((num == 6)) {
       initPoker();
     }
 
     //抢庄阶段后 清楚finalResultData
-    if(num ==2||num ==3||num ==4){
-      if(finalResultData!=null){
+    if (num == 2 || num == 3 || num == 4) {
+      if (finalResultData != null) {
         finalResultData = null;
-        setState(() {
-        });
+        setState(() {});
       }
     }
 
     //抢庄阶段后 清楚resultData
-    if(num ==1||num ==2||num ==3||num ==4){
-      if(resultData!=null){
+    if (num == 1 || num == 2 || num == 3 || num == 4) {
+      if (resultData != null) {
         resultData = null;
-        setState(() {
-        });
+        setState(() {});
       }
     }
-
   }
 
-  initPoker(){
+  initPoker() {
     myBetting = [];
 
     showCard1 = false;
@@ -429,12 +425,10 @@ class _PageGameMainState extends State<PageGameMain> {
     bettingCountdown = 10; //投注倒计时
     lookingCountdown = 30; //看牌倒计时
     singleResultCountdown = 10; //查看结果倒计时
-    setState(() {
-
-    });
+    setState(() {});
   }
 
-  showMyPokerVip(){
+  showMyPokerVip() {
     setState(() {
       showCard1 = true;
       showCard2 = true;
@@ -444,13 +438,14 @@ class _PageGameMainState extends State<PageGameMain> {
     });
   }
 
-  showMyPoker(int num){ //0: 全部盖住, 12345:翻开单张 , 6:全部翻开
+  showMyPoker(int num) {
+    //0: 全部盖住, 12345:翻开单张 , 6:全部翻开
 
-    if(!looking){
+    if (!looking) {
       return;
     }
 
-    if(num==0){
+    if (num == 0) {
       setState(() {
         showCard1 = false;
         showCard2 = false;
@@ -459,27 +454,27 @@ class _PageGameMainState extends State<PageGameMain> {
         showCard5 = false;
       });
     }
-    if(num==1){
+    if (num == 1) {
       setState(() {
         showCard1 = true;
       });
-    }else if(num==2){
+    } else if (num == 2) {
       setState(() {
         showCard2 = true;
       });
-    }else if(num==3){
+    } else if (num == 3) {
       setState(() {
         showCard3 = true;
       });
-    }else if(num==4){
+    } else if (num == 4) {
       setState(() {
         showCard4 = true;
       });
-    }else if(num==5){
+    } else if (num == 5) {
       setState(() {
         showCard5 = true;
       });
-    }else if(num==6){
+    } else if (num == 6) {
       setState(() {
         showCard1 = true;
         showCard2 = true;
@@ -490,13 +485,11 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-  toLookResult(){
+  toLookResult() {
     // setCurentState(5);
-
   }
 
-  selectZhuang() async{
-
+  selectZhuang() async {
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.startSelectZhuang(context);
     }, isShowLoading: false);
@@ -506,8 +499,8 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   setZhuang() async {
-
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilKeji.playSound();
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.setZhuang(context, getUserId());
     }, isShowLoading: false);
@@ -519,19 +512,17 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-
-  pushPoker() async{
+  pushPoker() async {
     Vibration.vibrate(duration: 200, amplitude: 50);
 
-
-    if(!canClickFapai){
+    if (!canClickFapai) {
       return;
     }
     setState(() {
       canClickFapai = false;
     });
-    Future.delayed(Duration(milliseconds: 5000),(){
-      if(mounted){
+    Future.delayed(Duration(milliseconds: 5000), () {
+      if (mounted) {
         setState(() {
           canClickFapai = true;
         });
@@ -549,8 +540,8 @@ class _PageGameMainState extends State<PageGameMain> {
     }
   }
 
-  toBet(int num) async{
-    if(!betting){
+  toBet(int num) async {
+    if (!betting) {
       showToast(context, '非投注阶段');
       return;
     }
@@ -560,7 +551,7 @@ class _PageGameMainState extends State<PageGameMain> {
     }
     Vibration.vibrate(duration: 50, amplitude: 128);
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.gameBet(context, getUserId(),num);
+      return await NetWork.gameBet(context, getUserId(), num);
     }, isShowLoading: false);
     if (res != null && res != 1) {
       myBetting.add(num);
@@ -570,8 +561,13 @@ class _PageGameMainState extends State<PageGameMain> {
 
   readyGame() async {
     var user = context.read<SerUser>();
+    AudioPlayerUtilZuoqiu.playSound();
     var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.roomReady(context, getUserId(), user.gameId,);
+      return await NetWork.roomReady(
+        context,
+        getUserId(),
+        user.gameId,
+      );
     }, isShowLoading: false);
     if (res != null && res != 1) {
       setState(() {
@@ -599,7 +595,7 @@ class _PageGameMainState extends State<PageGameMain> {
         roomTimer.cancel();
         roomTimer = null;
         Navigator.pop(context);
-      }else{
+      } else {
         ///TODO
         roomTimer.cancel();
         roomTimer = null;
@@ -640,37 +636,41 @@ class _PageGameMainState extends State<PageGameMain> {
                       height: height,
                       fit: BoxFit.cover,
                     ),
-                    SafeArea(
+                    Padding(
+                      padding: EdgeInsets.only(top: 0),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 180,
-                                      child: getTopLeftBuild(),
-                                    ),
-                                    Expanded(child: SizedBox()),
-                                    SizedBox(
-                                      width: 180,
-                                      child: getTopRightBuild(),
-                                    )
-                                  ],
+                          Padding(
+                            padding: EdgeInsets.only(top: 25),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 180,
+                                        child: getTopLeftBuild(),
+                                      ),
+                                      Expanded(child: SizedBox()),
+                                      SizedBox(
+                                        width: 180,
+                                        child: getTopRightBuild(),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(child: getPlayersBuild()),
-                              getBetBuild(),
-                            ],
+                                Expanded(child: getPlayersBuild()),
+                                getBetBuild(),
+                              ],
+                            ),
                           ),
                           Positioned(bottom: 5, left: 60, child: getSelfInfoItemBuild()), //底部个人信息
-                          Positioned(top: 0, child: getMyCardBuild()),    //顶部我的排
-                          Positioned(bottom: 0, right: 0, child: getReadyBuild()),//准备 、开始按钮
-                          Positioned(child: getCenterInfoBuild()),  //中间 游戏中 提示按钮信息
+                          Positioned(top: 0, child: getMyCardBuild()), //顶部我的排
+                          Positioned(bottom: 0, right: 0, child: getReadyBuild()), //准备 、开始按钮
+                          Positioned(child: getCenterInfoBuild()), //中间 游戏中 提示按钮信息
                           Positioned(child: getChangePokerBuild()), // 变牌
                         ],
                       ),
@@ -683,32 +683,43 @@ class _PageGameMainState extends State<PageGameMain> {
     );
   }
 
-  getChangePokerBuild(){
-    if( showChangePokerBuild){
-      return ChangePokerBuild(userList:playerList,vocation_user_id:vocation_user_id,userPokers:user_poker,onClose: (){
-        setState(() {
-          showChangePokerBuild = false;
-        });
-      },onTap: (type){
-        changePorker(type);
-      },);
+  getChangePokerBuild() {
+    if (showChangePokerBuild) {
+      return ChangePokerBuild(
+        userList: playerList,
+        vocation_user_id: vocation_user_id,
+        userPokers: user_poker,
+        onClose: () {
+          setState(() {
+            showChangePokerBuild = false;
+          });
+        },
+        onTap: (type) {
+          changePorker(type);
+        },
+      );
     }
     return SizedBox();
   }
-  changePorker(type) async{
-    var res = await LoadingCall.of(context).call((state, controller) async {
-      return await NetWork.gameChangePoker(context,getUserId(),type);
-    }, isShowLoading: false);
 
+  changePorker(type) async {
+    var res = await LoadingCall.of(context).call((state, controller) async {
+      return await NetWork.gameChangePoker(context, getUserId(), type);
+    }, isShowLoading: false);
   }
 
   selfZhuangBuild() {
-    if(isZhuang){
+    if (isZhuang) {
       return SizedBox(
         height: 80,
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: ZhuangIconBuild(width: 35.0,),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: ZhuangIconBuild(
+              width: 35.0,
+            ),
+          ),
         ),
       );
       // return Align(
@@ -730,7 +741,6 @@ class _PageGameMainState extends State<PageGameMain> {
       // );
     }
     return SizedBox();
-
   }
 
   changeCard(int index) {
@@ -738,9 +748,8 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getMyCardBuild() {
-
-    if (betting || looking ||resulting) {
-      if(myPoker==null){
+    if (betting || looking || resulting) {
+      if (myPoker == null) {
         return SizedBox();
       }
       var poker1 = myPoker['poker'][0];
@@ -748,62 +757,67 @@ class _PageGameMainState extends State<PageGameMain> {
       var poker3 = myPoker['poker'][2];
       var poker4 = myPoker['poker'][3];
       var poker5 = myPoker['poker'][4];
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          !showCard1
-              ? CardBackBuild(
-              index: 0,
-              onTap: () {
-                showMyPoker(1);
-              })
-              : getCardBuild(poker1['hua_se'], poker1['poker_number']),
-          SizedBox(width: 10),
-          !showCard2
-              ? CardBackBuild(
-              index: 1,
-              onTap: () {
-                showMyPoker(2);
-              })
-              : getCardBuild(poker2['hua_se'], poker2['poker_number']),
-          SizedBox(width: 10),
-          !showCard3
-              ? CardBackBuild(
-              index: 2,
-              onTap: () {
-                showMyPoker(3);
-              })
-              : getCardBuild(poker3['hua_se'], poker3['poker_number']),
-          SizedBox(width: 10),
-          !showCard4
-              ? CardBackBuild(
-              index: 3,
-              onTap: () {
-                showMyPoker(4);
-              })
-              : getCardBuild(poker4['hua_se'], poker4['poker_number']),
-          SizedBox(width: 10),
-          !showCard5
-              ? CardBackBuild(
-              index: 4,
-              onTap: () {
-                showMyPoker(5);
-              },onDoubleTap: () {//最后一张双击改变
-            vipDoubleTap();
-          })
-              : getCardBuild(poker5['hua_se'], poker5['poker_number'], onDoubleTap: () {//最后一张双击改变
-            vipDoubleTap();
-          })
-        ],
+      return Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            !showCard1
+                ? CardBackBuild(
+                    index: 0,
+                    onTap: () {
+                      showMyPoker(1);
+                    })
+                : getCardBuild(poker1['hua_se'], poker1['poker_number']),
+            SizedBox(width: 10),
+            !showCard2
+                ? CardBackBuild(
+                    index: 1,
+                    onTap: () {
+                      showMyPoker(2);
+                    })
+                : getCardBuild(poker2['hua_se'], poker2['poker_number']),
+            SizedBox(width: 10),
+            !showCard3
+                ? CardBackBuild(
+                    index: 2,
+                    onTap: () {
+                      showMyPoker(3);
+                    })
+                : getCardBuild(poker3['hua_se'], poker3['poker_number']),
+            SizedBox(width: 10),
+            !showCard4
+                ? CardBackBuild(
+                    index: 3,
+                    onTap: () {
+                      showMyPoker(4);
+                    })
+                : getCardBuild(poker4['hua_se'], poker4['poker_number']),
+            SizedBox(width: 10),
+            !showCard5
+                ? CardBackBuild(
+                    index: 4,
+                    onTap: () {
+                      showMyPoker(5);
+                    },
+                    onDoubleTap: () {
+                      //最后一张双击改变
+                      vipDoubleTap();
+                    })
+                : getCardBuild(poker5['hua_se'], poker5['poker_number'], onDoubleTap: () {
+                    //最后一张双击改变
+                    vipDoubleTap();
+                  })
+          ],
+        ),
       );
-
     }
     return SizedBox();
   }
 
-  vipDoubleTap(){
+  vipDoubleTap() {
     var user = context.read<SerUser>();
-    if(user.canChange){
+    if (user.canChange) {
       ///是否有权限变牌
       setState(() {
         showChangePokerBuild = true;
@@ -820,26 +834,27 @@ class _PageGameMainState extends State<PageGameMain> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if(round!=0)Padding(
-            padding: EdgeInsets.only(left:0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Text(
-                //   '第',
-                //   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                // ),
-                Text(
-                  round.toString(),
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: roomMasterColor),
-                ),
-                Text(
-                  '回合',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                ),
-              ],
+          if (round != 0)
+            Padding(
+              padding: EdgeInsets.only(left: 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   '第',
+                  //   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                  // ),
+                  Text(
+                    round.toString(),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: roomMasterColor),
+                  ),
+                  Text(
+                    '回合',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                  ),
+                ],
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: InkWell(
@@ -851,7 +866,12 @@ class _PageGameMainState extends State<PageGameMain> {
                 children: [
                   Column(
                     children: [
-                      Center(child: Image.asset('assets/images/shoubin.png',width: 30,height: 30,)),
+                      Center(
+                          child: Image.asset(
+                        'assets/images/shoubin.png',
+                        width: 30,
+                        height: 30,
+                      )),
                       Text(
                         '规则',
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
@@ -871,7 +891,7 @@ class _PageGameMainState extends State<PageGameMain> {
   getTopLeftBuild() {
     var user = context.watch<SerUser>();
     return Padding(
-      padding: EdgeInsets.only(left:0,top: 5),
+      padding: EdgeInsets.only(left: 0, top: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -879,12 +899,10 @@ class _PageGameMainState extends State<PageGameMain> {
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Color(0x44E3B900),
-                borderRadius: BorderRadius.all(Radius.circular(30))
-              ),
+              decoration: BoxDecoration(color: Color(0x44E3B900), borderRadius: BorderRadius.all(Radius.circular(30))),
               child: SizedBox(
-                width: 45,height: 45,
+                width: 45,
+                height: 45,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -901,25 +919,29 @@ class _PageGameMainState extends State<PageGameMain> {
               ),
             ),
           ),
-          (user.isRoomMaster && (readying||qiangZhuanging||resulting||waitPushPoker))?Padding(
-            padding: EdgeInsets.only(top: 0,left: 10),
-            child: InkWell(
-              onTap: () async {
-                endGame();
-              },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                      width: 60,
-                      height: 40,
-                      child: MyButton.gradient(
-                          backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
-                          child: Text('结束', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Color(0xffffffff)))))
-                ],
-              ),
-            ),
-          ):SizedBox(width: 70,),
+          (user.isRoomMaster && (readying || qiangZhuanging || resulting || waitPushPoker))
+              ? Padding(
+                  padding: EdgeInsets.only(top: 0, left: 10),
+                  child: InkWell(
+                    onTap: () async {
+                      endGame();
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                            width: 60,
+                            height: 40,
+                            child: MyButton.gradient(
+                                backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
+                                child: Text('结束', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Color(0xffffffff)))))
+                      ],
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  width: 70,
+                ),
         ],
       ),
     );
@@ -929,17 +951,17 @@ class _PageGameMainState extends State<PageGameMain> {
     if (isZhuang) {
       return selfZhuangBuild();
     }
-    if(betting||looking){
+    if (betting || looking) {
       return getBetButtonBuild();
     }
     return SizedBox();
   }
 
-  getBetButtonBuild(){
+  getBetButtonBuild() {
     return SizedBox(
       height: 80,
       child: Padding(
-        padding: EdgeInsets.only(bottom: 10),
+        padding: EdgeInsets.only(bottom: 15),
         child: SizedBox(
           child: Column(
             children: [
@@ -995,15 +1017,22 @@ class _PageGameMainState extends State<PageGameMain> {
     }
     var user = context.watch<SerUser>();
 
-    Widget readyButton = SizedBox(
-        width: 70,
-        height: 70,
-        child: MyButton.gradient(
-            backgroundColor: [Color(0xff70d9fe), Color(0xff2933e0),Color(0xff9ce0a5)],
-            onPressed: () {
-              readyGame();
-            },
-            child: Text('准备', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))));
+    Widget readyButton = InkWell(
+        onTap: () {
+          readyGame();
+        },
+        child: Container(
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            image: DecorationImage(
+              image: AssetImage('assets/images/xingqiu2.png'),
+              fit: BoxFit.contain,
+            ),
+          ),
+          child: Center(child: Text('准备', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))),
+        ));
     if (selfReady) {
       //房主默认准备
       readyButton = SizedBox(
@@ -1012,15 +1041,21 @@ class _PageGameMainState extends State<PageGameMain> {
           child: MyButton.gradient(
               backgroundColor: [Color(0xffffffff), Color(0xff000000)], child: Text('已准备', style: TextStyle(fontSize: 15, color: Color(0xffffffff)))));
     }
-    Widget startButton = SizedBox(
+    Widget startButton = Container(
         width: 70,
         height: 70,
-        child: MyButton.gradient(
-            backgroundColor: [Color(0xffBF8A08), Color(0xff08BF28)],
-            onPressed: () {
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(35)),
+          image: DecorationImage(
+            image: AssetImage('assets/images/xingqiu2.png'),
+            fit: BoxFit.contain,
+          ),
+        ),
+        child: InkWell(
+            onTap: () {
               startTheGame();
             },
-            child: Text('启动', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))));
+            child: Center(child: Text('启动', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff))))));
 
     bool allReady = true;
     for (var i = 0; i < playerList.length; i++) {
@@ -1030,24 +1065,35 @@ class _PageGameMainState extends State<PageGameMain> {
       }
     }
     if (!allReady) {
-      startButton = SizedBox(
+      startButton = Container(
           width: 70,
           height: 70,
-          child: MyButton.gradient(
-              backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
-              child: Column(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(35)),
+            image: DecorationImage(
+              image: AssetImage('assets/images/xingqiu2.png'),
+              fit: BoxFit.contain,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('待队友', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('待队友', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                    Text('准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
-                    Image.asset('assets/images/dengdai.png',width: 15,height: 15,fit: BoxFit.contain,color: Color(0xffa0e7a2),)
-                  ],)
-
+                  Text('准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+                  Image.asset(
+                    'assets/images/dengdai.png',
+                    width: 15,
+                    height: 15,
+                    fit: BoxFit.contain,
+                    color: Color(0xffa0e7a2),
+                  )
                 ],
-              )));
+              )
+            ],
+          ));
     }
 
     return Padding(
@@ -1083,7 +1129,7 @@ class _PageGameMainState extends State<PageGameMain> {
     } else if (num == 1000) {
       image = 'assets/images/money1000.png';
       color = Color(0xffca14d4);
-    }else if (num == 5000) {
+    } else if (num == 5000) {
       image = 'assets/images/money5000.png';
       color = Color(0xffd81e06);
     }
@@ -1092,9 +1138,9 @@ class _PageGameMainState extends State<PageGameMain> {
       fontSize = 6.0;
     }
     var text = num.toString();
-    if(num==1000){
+    if (num == 1000) {
       text = '1千';
-    }else if(num==5000){
+    } else if (num == 5000) {
       text = '5千';
     }
     return Padding(
@@ -1102,7 +1148,6 @@ class _PageGameMainState extends State<PageGameMain> {
       child: InkWell(
         onTap: () {
           toBet(num);
-
         },
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -1119,7 +1164,7 @@ class _PageGameMainState extends State<PageGameMain> {
             height: imageWidth,
             child: Center(
                 child: Text(
-                  text,
+              text,
               style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: color),
             )),
           ),
@@ -1129,57 +1174,62 @@ class _PageGameMainState extends State<PageGameMain> {
   }
 
   getPlayerBettingBuild(int playerIndex, List<dynamic> list) {
-    if(betting||looking||resulting){
-
-    }else{
+    if (betting || looking || resulting) {
+    } else {
       return SizedBox();
     }
     List<Widget> listBuild = [];
-    var padding = const EdgeInsets.only(left: 40.0);
-    double imageWidth = 17.0;
+    var padding = const EdgeInsets.only(left: 50.0);
+    double imageWidth = 20.0;
     if (playerIndex == 0) {
-      padding = const EdgeInsets.only(left: 40.0);
-      imageWidth = 17.0;
+      padding = const EdgeInsets.only(left: 50.0);
+      imageWidth = 20.0;
     }
     if (playerIndex == 1) {
       list = list.reversed.toList();
-      padding = const EdgeInsets.only(right: 40.0);
-      imageWidth = 17.0;
+      padding = const EdgeInsets.only(right: 50.0);
+      imageWidth = 20.0;
     }
     if (playerIndex == 2) {
-      padding = const EdgeInsets.only(left: 12.0);
+      padding = const EdgeInsets.only(left: 50.0);
       imageWidth = 20.0;
     }
     if (playerIndex == 3) {
       list = list.reversed.toList();
-      padding = const EdgeInsets.only(right: 12.0);
+      padding = const EdgeInsets.only(right: 50.0);
       imageWidth = 20.0;
     }
     if (2 < 2) {
       if (playerIndex == 0) {
-        padding = const EdgeInsets.only(left: 30.0);
+        padding = const EdgeInsets.only(left: 50.0);
         imageWidth = 20.0;
       }
       if (playerIndex == 1) {
         list = list.reversed.toList();
-        padding = const EdgeInsets.only(right: 30.0);
+        padding = const EdgeInsets.only(right: 50.0);
         imageWidth = 20.0;
       }
     }
     for (var i = 0; i < list.length; i++) {
-      listBuild.add(Padding(
-        padding: EdgeInsets.only(left: 2),
-        child: Center(
-          child: getChoumaItemBuild(list[i], imageWidth: imageWidth, padding: EdgeInsets.only(left: 0)),
+      listBuild.add(SizedBox(
+        width: imageWidth+2,
+        child: Padding(
+          padding: EdgeInsets.only(left: 2,bottom: 2),
+          child: Center(
+            child: getChoumaItemBuild(list[i], imageWidth: imageWidth, padding: EdgeInsets.only(left: 0)),
+          ),
         ),
       ));
     }
     return Padding(
       padding: padding,
       child: SizedBox(
+        width: 120,
         height: 30,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          alignment: WrapAlignment.center,
+
           children: listBuild,
         ),
       ),
@@ -1233,8 +1283,8 @@ class _PageGameMainState extends State<PageGameMain> {
       return SizedBox();
     }
     List<dynamic> betList = [];
-    for(var i = 0;i<user_bet.length;i++){
-      if(user_bet[i]['user_id'] == playerList[0]['user_id']){
+    for (var i = 0; i < user_bet.length; i++) {
+      if (user_bet[i]['user_id'] == playerList[0]['user_id']) {
         betList = user_bet[i]['bet_list'];
       }
     }
@@ -1252,8 +1302,8 @@ class _PageGameMainState extends State<PageGameMain> {
       return SizedBox();
     }
     List<dynamic> betList = [];
-    for(var i = 0;i<user_bet.length;i++){
-      if(user_bet[i]['user_id'] == playerList[1]['user_id']){
+    for (var i = 0; i < user_bet.length; i++) {
+      if (user_bet[i]['user_id'] == playerList[1]['user_id']) {
         betList = user_bet[i]['bet_list'];
       }
     }
@@ -1272,15 +1322,15 @@ class _PageGameMainState extends State<PageGameMain> {
       return SizedBox();
     }
     List<dynamic> betList = [];
-    for(var i = 0;i<user_bet.length;i++){
-      if(user_bet[i]['user_id'] == playerList[1]['user_id']){
+    for (var i = 0; i < user_bet.length; i++) {
+      if (user_bet[i]['user_id'] == playerList[1]['user_id']) {
         betList = user_bet[i]['bet_list'];
       }
     }
     return Row(
       children: [
         getPlayerInfoItemBuild(2),
-        getPlayerBettingBuild(2,betList),
+        getPlayerBettingBuild(2, betList),
       ],
     );
   }
@@ -1290,8 +1340,8 @@ class _PageGameMainState extends State<PageGameMain> {
       return SizedBox();
     }
     List<dynamic> betList = [];
-    for(var i = 0;i<user_bet.length;i++){
-      if(user_bet[i]['user_id'] == playerList[1]['user_id']){
+    for (var i = 0; i < user_bet.length; i++) {
+      if (user_bet[i]['user_id'] == playerList[1]['user_id']) {
         betList = user_bet[i]['bet_list'];
       }
     }
@@ -1312,8 +1362,8 @@ class _PageGameMainState extends State<PageGameMain> {
     var player = playerList[index];
 
     var fen = 0;
-    for(var i = 0;i<scoreboard.length;i++){
-      if(scoreboard[i]['user_id'] == player['user_id']){
+    for (var i = 0; i < scoreboard.length; i++) {
+      if (scoreboard[i]['user_id'] == player['user_id']) {
         fen = scoreboard[i]['score'];
       }
     }
@@ -1332,7 +1382,13 @@ class _PageGameMainState extends State<PageGameMain> {
       readyButton = SizedBox(
           width: 15,
           height: 15,
-          child: Image.asset('assets/images/dengdai.png',width: 15,height: 15,fit: BoxFit.contain,color: Color(0xffa0e7a2),));
+          child: Image.asset(
+            'assets/images/dengdai.png',
+            width: 15,
+            height: 15,
+            fit: BoxFit.contain,
+            color: Color(0xffa0e7a2),
+          ));
       // readyButton = SizedBox(
       //     width: 40,
       //     height: 16,
@@ -1343,7 +1399,9 @@ class _PageGameMainState extends State<PageGameMain> {
       //           child: Text('已准备', style: TextStyle(fontSize: 10, color: Color(0xffffffff))),
       //         )));
     }
-    var zhuangBuild = ZhuangIconBuild(width: 16,);
+    var zhuangBuild = ZhuangIconBuild(
+      width: 16,
+    );
 
     return SizedBox(
       width: peopleWidth,
@@ -1385,7 +1443,7 @@ class _PageGameMainState extends State<PageGameMain> {
                     if (1 == player['is_master'])
                       Text(
                         '(房主)',
-                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940),fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 10, color: Color(0xff0ac940), fontWeight: FontWeight.bold),
                       ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1401,7 +1459,7 @@ class _PageGameMainState extends State<PageGameMain> {
               getJifenBuild(fen),
             ],
           ),
-          if(player['vocation']==1)zhuangBuild
+          if (player['vocation'] == 1) zhuangBuild
         ],
       ),
     );
@@ -1413,8 +1471,8 @@ class _PageGameMainState extends State<PageGameMain> {
     var peopleWidth = 100.0;
 
     var fen = 0;
-    for(var i = 0;i<scoreboard.length;i++){
-      if(scoreboard[i]['user_id'] == getUserId()){
+    for (var i = 0; i < scoreboard.length; i++) {
+      if (scoreboard[i]['user_id'] == getUserId()) {
         fen = scoreboard[i]['score'];
       }
     }
@@ -1463,7 +1521,7 @@ class _PageGameMainState extends State<PageGameMain> {
                       if (user.isRoomMaster)
                         Text(
                           '(房主)',
-                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940),fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940), fontWeight: FontWeight.bold),
                         )
                     ],
                   ),
@@ -1540,7 +1598,7 @@ class _PageGameMainState extends State<PageGameMain> {
     );
   }
 
-  gerWaitPushPokerBuild(){
+  gerWaitPushPokerBuild() {
     if (waitPushPoker) {
       return Padding(
         padding: EdgeInsets.only(top: 0),
@@ -1549,28 +1607,30 @@ class _PageGameMainState extends State<PageGameMain> {
             boxShadow: [BoxShadow(color: Color(0xffffffff), blurRadius: 33, offset: Offset(0, 0))],
           ),
           child: SizedBox(
-              width: isZhuang?120:120,
+              width: isZhuang ? 120 : 120,
               height: 120,
               child: InkWell(
-                  borderRadius: BorderRadius.all(Radius.circular(isZhuang?60:60)),
-                  onTap: isZhuang?(){
-                    pushPoker();
-                  }:null,
+                  borderRadius: BorderRadius.all(Radius.circular(isZhuang ? 60 : 60)),
+                  onTap: isZhuang
+                      ? () {
+                          pushPoker();
+                        }
+                      : null,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(isZhuang?60:60)),
+                      borderRadius: BorderRadius.all(Radius.circular(isZhuang ? 60 : 60)),
                       image: DecorationImage(
-                        image: AssetImage(isZhuang?'assets/images/xingqiu5.png':'assets/images/xingqiu5.png'),
+                        image: AssetImage(isZhuang ? 'assets/images/xingqiu5.png' : 'assets/images/xingqiu5.png'),
                         fit: BoxFit.fill,
                       ),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        isZhuang?Text('发牌', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
-                            :
-                        Text('待发牌...', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
-
+                        isZhuang
+                            ? Text('发牌', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
+                            : Text('待发牌...',
+                                textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
                       ],
                     ),
                   ))),
@@ -1580,29 +1640,33 @@ class _PageGameMainState extends State<PageGameMain> {
     return SizedBox();
   }
 
-  getFinalResultBuild(){
+  getFinalResultBuild() {
     if (showFinalResult) {
-      if(finalResultData==null){
+      if (finalResultData == null) {
         return SizedBox();
       }
-      return FinalResultBuild(finalResultData: finalResultData,onClose: (){},);
-
+      return FinalResultBuild(
+        finalResultData: finalResultData,
+        onClose: () {},
+      );
     }
     return SizedBox();
   }
 
-  getResultTipBuild(){
-    if (resulting||waitPushPoker) {
-      if(resultData==null){
+  getResultTipBuild() {
+    if (resulting || waitPushPoker) {
+      if (resultData == null) {
         return SizedBox();
       }
-      return ResultSingleBuild(resultData:resultData,onClose: (){
-        setState(() {
-          resulting = false;
-        });
-        setCurentState(6);
-      },);
-
+      return ResultSingleBuild(
+        resultData: resultData,
+        onClose: () {
+          setState(() {
+            resulting = false;
+          });
+          setCurentState(6);
+        },
+      );
     }
     return SizedBox();
   }
@@ -1620,7 +1684,7 @@ class _PageGameMainState extends State<PageGameMain> {
               height: 100,
               child: MyButton.gradient(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
-                  backgroundColor: [Color(0x99b3e6f9), Color(0xff9a16b6),Color(0xff9a16b6),Color(0x99e37800)],
+                  backgroundColor: [Color(0x99b3e6f9), Color(0xff9a16b6), Color(0xff9a16b6), Color(0x99e37800)],
                   // onPressed: (){
                   //   showMyPoker(6);
                   // },
@@ -1628,7 +1692,8 @@ class _PageGameMainState extends State<PageGameMain> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('看牌阶段', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
-                      Text(lookingCountdown.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
+                      Text(lookingCountdown.toString(),
+                          textAlign: TextAlign.center, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xffffffff))),
                     ],
                   ))),
         ),
@@ -1636,21 +1701,26 @@ class _PageGameMainState extends State<PageGameMain> {
     }
     return SizedBox();
   }
-  getLookingScrollBuild(){
+
+  getLookingScrollBuild() {
     if (looking) {
-      if(myPoker==null){
+      if (myPoker == null) {
         return SizedBox();
       }
       var pokers = myPoker['poker'];
-      return LookPokerBuild(pokers:pokers,onClose: (){
-
-        showMyPoker(6);
-      },onDoubleTap: (){
-        vipDoubleTap();
-      },);
+      return LookPokerBuild(
+        pokers: pokers,
+        onClose: () {
+          showMyPoker(6);
+        },
+        onDoubleTap: () {
+          vipDoubleTap();
+        },
+      );
     }
     return SizedBox();
   }
+
   getBettingTipBuild() {
     if (betting) {
       return Padding(
@@ -1668,15 +1738,16 @@ class _PageGameMainState extends State<PageGameMain> {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: bettingCountdown > 0?[Color(0xfffdefabb), Color(0xff0383d3),Color(0x99ef4d80)]:[Color(0xff7fd1fc), Color(0xff666666)],
+                      colors: bettingCountdown > 0 ? [Color(0xfffdefabb), Color(0xff0383d3), Color(0x99ef4d80)] : [Color(0xff7fd1fc), Color(0xff666666)],
                     ),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (bettingCountdown > 0)SizedBox(
-                        height: 10,
-                      ),
+                      if (bettingCountdown > 0)
+                        SizedBox(
+                          height: 10,
+                        ),
                       bettingCountdown > 0
                           ? Text('请开始下注', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff)))
                           : Text('停止下注', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffffffff))),

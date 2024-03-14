@@ -11,6 +11,7 @@ import 'package:ima2_habeesjobs/page/my/page_set_up.dart';
 import 'package:ima2_habeesjobs/page/my/page_xd_edit_info.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
@@ -104,17 +105,29 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   goRoom(int roomId) async {
-    if (checkCanUse()) {
-      hideTextInput();
-      await PageRoomMain(
-        roomId: roomId,
-      ).push(context);
-      var user = context.read<SerUser>();
-      user.gameId = null;
-      hideTextInput();
-      leaveRoom(roomId);
-      _onRefresh(context, OnRefreshType.Refresh);
-    }
+    hideTextInput();
+
+
+    AudioPlayerUtilTaikong.playSound();
+
+    // AudioPlayerUtilZuoqiu.playSound();
+    // AudioPlayerUtilTaikong.playSound();
+    // AudioPlayerUtilKeji.playSound();
+    // AudioPlayerUtilJinshu.playSound();
+    // AudioPlayerUtilDalian.playSound();
+    //
+    // AudioPlayerUtilChe.playSound();
+    // AudioPlayerUtilBoli.playSound();
+
+
+    await PageRoomMain(
+      roomId: roomId,
+    ).push(context);
+    var user = context.read<SerUser>();
+    user.gameId = null;
+    hideTextInput();
+    leaveRoom(roomId);
+    _onRefresh(context, OnRefreshType.Refresh);
   }
 
   leaveRoom(int roomId) async {
@@ -134,10 +147,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   bool checkCanUse() {
     if (versionInfo!=null) {
-      ///TODO 请更新或下载新版本后使用
-      showToast(context, '请更新或下载新版本后使用。');
-      // showAlertDialogUpdate(context, enterType: 2);
-      // appLaunch(context, 'http://47.97.250.198');
+      toUpdate(context);
       return false;
     }
     return true;

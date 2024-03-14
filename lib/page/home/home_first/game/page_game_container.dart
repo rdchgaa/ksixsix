@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
@@ -366,6 +367,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     Future.delayed(Duration(milliseconds: 100), () {
       _slideController.forward();
     });
+    AudioPlayerUtilJinshu.playSound();
   }
 
   onClose() async {
@@ -425,7 +427,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
                           alignment: Alignment.topRight,
                           children: [
                             SizedBox(
-                              width: con.maxWidth * 0.9,
+                              width: con.maxWidth * 0.85,
                               height: con.maxHeight * 0.8,
                               child: ResultSingleItemContainer(resultData: widget.resultData),
                             ),
@@ -495,6 +497,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
     Future.delayed(Duration(milliseconds: 100), () {
       _slideController.forward();
     });
+    AudioPlayerUtilBoli.playSound();
   }
 
   onClose() async {
@@ -558,8 +561,8 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                           alignment: Alignment.topRight,
                           children: [
                             SizedBox(
-                              width: con.maxWidth * 0.95,
-                              height: con.maxHeight * 0.95,
+                              width: con.maxWidth * 0.85,
+                              height: Platform.isIOS?con.maxHeight * 0.90:con.maxHeight * 0.85,
                               child: DefaultTabController(
                                 initialIndex: 0,
                                 length: 11,
@@ -571,7 +574,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                                         height: 48,
                                         width: double.infinity,
                                         child: Align(
-                                          alignment: Alignment.centerLeft,
+                                          alignment: Alignment.center,
                                           child: UiTabBar(tabs: [
                                             Tab(text: '战绩'),
                                             Tab(text: '一'),
@@ -1245,8 +1248,9 @@ class _ResultAllInfoItemContainerState extends State<ResultAllInfoItemContainer>
       decoration: isSelf
           ? BoxDecoration(
               // border: Border.all(width: 1, color: Color(0xffffffff)),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Color(0x66ffffff),
+              borderRadius: BorderRadius.all(Radius.circular(60)),
+               boxShadow: [BoxShadow(color: Color(0x66f484b1), blurRadius: 33, offset: Offset(0, 0))],
+              color: Color(0x66edd577),
             )
           : BoxDecoration(),
       child: Padding(

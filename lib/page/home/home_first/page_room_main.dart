@@ -161,6 +161,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
     }
 
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilTaikong.playSound();
     await PageGameMain(
       roomId: widget.roomId,
     ).push(context);
@@ -284,7 +285,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                     ],
                                   ),
                                    Padding(
-                                    padding: const EdgeInsets.only(bottom: 20.0),
+                                    padding: const EdgeInsets.only(top:10,bottom: 20.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [

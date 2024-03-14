@@ -147,3 +147,16 @@ Future<void> appLaunch(BuildContext context, String url, { String title}) async 
   //   return;
   // }
 }
+
+toUpdate(BuildContext context){
+  Clipboard.setData(ClipboardData(text: 'http://47.97.250.198'));
+  if(Platform.isIOS){
+    showToast(context, '下载链接已复制到剪切板，请在Safari浏览器中打开');
+    // appLaunch(context, 'http://47.97.250.198');
+  }else{
+    showToast(context, '下载链接已复制到剪切板，请在浏览器中打开');
+    Future.delayed(Duration(milliseconds: 1000),(){
+      appLaunch(context, 'http://47.97.250.198');
+    });
+  }
+}
