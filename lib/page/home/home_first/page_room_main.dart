@@ -161,6 +161,7 @@ class _PageRoomMainState extends State<PageRoomMain> {
     }
 
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilTaikong.playSound();
     await PageGameMain(
       roomId: widget.roomId,
     ).push(context);

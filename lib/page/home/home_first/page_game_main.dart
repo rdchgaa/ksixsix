@@ -359,6 +359,7 @@ class _PageGameMainState extends State<PageGameMain> {
   /// 开始游戏   1:选择庄闲  2(庄-发牌)  3:(闲-投注)  3:看牌  4:显示输赢
   startTheGame() async {
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilZuoqiu.playSound();
     selectZhuang();
   }
 
@@ -499,6 +500,7 @@ class _PageGameMainState extends State<PageGameMain> {
 
   setZhuang() async {
     Vibration.vibrate(duration: 200, amplitude: 50);
+    AudioPlayerUtilKeji.playSound();
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.setZhuang(context, getUserId());
     }, isShowLoading: false);
@@ -559,6 +561,7 @@ class _PageGameMainState extends State<PageGameMain> {
 
   readyGame() async {
     var user = context.read<SerUser>();
+    AudioPlayerUtilZuoqiu.playSound();
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.roomReady(
         context,
@@ -1072,29 +1075,25 @@ class _PageGameMainState extends State<PageGameMain> {
               fit: BoxFit.contain,
             ),
           ),
-          child: InkWell(
-              onTap: () {
-                startTheGame();
-              },
-              child: Column(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('待队友', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('待队友', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
-                      Image.asset(
-                        'assets/images/dengdai.png',
-                        width: 15,
-                        height: 15,
-                        fit: BoxFit.contain,
-                        color: Color(0xffa0e7a2),
-                      )
-                    ],
+                  Text('准备', textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Color(0xffffffff))),
+                  Image.asset(
+                    'assets/images/dengdai.png',
+                    width: 15,
+                    height: 15,
+                    fit: BoxFit.contain,
+                    color: Color(0xffa0e7a2),
                   )
                 ],
-              )));
+              )
+            ],
+          ));
     }
 
     return Padding(

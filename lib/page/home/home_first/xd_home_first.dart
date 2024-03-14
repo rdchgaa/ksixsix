@@ -11,6 +11,7 @@ import 'package:ima2_habeesjobs/page/my/page_set_up.dart';
 import 'package:ima2_habeesjobs/page/my/page_xd_edit_info.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
 import 'package:ima2_habeesjobs/service/ser_user.dart';
+import 'package:ima2_habeesjobs/util/audioplayer_utils.dart';
 import 'package:ima2_habeesjobs/util/navigator.dart';
 import 'package:ima2_habeesjobs/util/other.dart';
 import 'package:ima2_habeesjobs/widget/app_content.dart';
@@ -105,6 +106,20 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   goRoom(int roomId) async {
     hideTextInput();
+
+
+    AudioPlayerUtilTaikong.playSound();
+
+    // AudioPlayerUtilZuoqiu.playSound();
+    // AudioPlayerUtilTaikong.playSound();
+    // AudioPlayerUtilKeji.playSound();
+    // AudioPlayerUtilJinshu.playSound();
+    // AudioPlayerUtilDalian.playSound();
+    //
+    // AudioPlayerUtilChe.playSound();
+    // AudioPlayerUtilBoli.playSound();
+
+
     await PageRoomMain(
       roomId: roomId,
     ).push(context);

@@ -367,6 +367,7 @@ class _ResultSingleBuildState extends State<ResultSingleBuild> with TickerProvid
     Future.delayed(Duration(milliseconds: 100), () {
       _slideController.forward();
     });
+    AudioPlayerUtilJinshu.playSound();
   }
 
   onClose() async {
@@ -496,6 +497,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
     Future.delayed(Duration(milliseconds: 100), () {
       _slideController.forward();
     });
+    AudioPlayerUtilBoli.playSound();
   }
 
   onClose() async {
