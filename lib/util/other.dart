@@ -149,11 +149,12 @@ Future<void> appLaunch(BuildContext context, String url, { String title}) async 
 }
 
 toUpdate(BuildContext context){
-  Clipboard.setData(ClipboardData(text: 'http://47.97.250.198'));
   if(Platform.isIOS){
+    Clipboard.setData(ClipboardData(text: 'itms-services:///?action=download-manifest&url=https://gitcode.net/xxcapp/ksixsix/-/raw/master/X.plist'));
     showToast(context, '下载链接已复制到剪切板，请在Safari浏览器中打开');
     // appLaunch(context, 'http://47.97.250.198');
   }else{
+    Clipboard.setData(ClipboardData(text: 'http://47.97.250.198'));
     showToast(context, '下载链接已复制到剪切板，请在浏览器中打开');
     Future.delayed(Duration(milliseconds: 1000),(){
       appLaunch(context, 'http://47.97.250.198');
