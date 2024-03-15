@@ -140,15 +140,15 @@ class _LookPokerBuildShanglaState extends State<LookPokerBuildShangla> with Tick
                       }),
                       PokerShanglaItem(index:2,pokers: widget.pokers,height:con.maxHeight,onClose: (){
                         tabController.animateTo(2);
-                        widget.onOpen(1);
+                        widget.onOpen(2);
                       },onDoubleTap:(){}),
                       PokerShanglaItem(index:3,pokers: widget.pokers,height:con.maxHeight,onClose: (){
                         tabController.animateTo(3);
-                        widget.onOpen(1);
+                        widget.onOpen(3);
                       },onDoubleTap:(){}),
                       PokerShanglaItem(index:4,pokers: widget.pokers,height:con.maxHeight,onClose: (){
                         tabController.animateTo(4);
-                        widget.onOpen(1);
+                        widget.onOpen(4);
                       },onDoubleTap:(){}),
                       PokerShanglaItem(index:5,pokers: widget.pokers,height:con.maxHeight,onClose: (){
                         // widget.onClose();
