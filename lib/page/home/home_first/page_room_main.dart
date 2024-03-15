@@ -234,19 +234,19 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            clickBack = true;
-                                          });
-                                          exitRoom();
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                clickBack = true;
+                                              });
+                                              exitRoom();
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
+                                              child: Row(
                                                 children: [
                                                   SizedBox(
                                                     width: 30,
@@ -263,24 +263,24 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                                   ),
                                                 ],
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: 15, top: 10),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: 5.0),
-                                                      child: Text(
-                                                        '房间号：' + widget.roomId.toString(),
-                                                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 10, top: 10,right: 20),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                                  child: Text(
+                                                    '房间号：' + widget.roomId.toString(),
+                                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -308,11 +308,21 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                                   height: 120,
                                                   child: Center(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(bottom: 5.0),
-                                                      // child: Text(
-                                                      //   '启动',
-                                                      //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                      // ),
+                                                      padding: const EdgeInsets.only(bottom: 20.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            '启',
+                                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xccffffff)),
+                                                          ),
+                                                          SizedBox(width: 10,),
+                                                          Text(
+                                                            '动',
+                                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xccffffff)),
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -322,26 +332,26 @@ class _PageRoomMainState extends State<PageRoomMain> {
                                         ):Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                            // DecoratedBox(
-                                            //   decoration: BoxDecoration(
-                                            //     // image: DecorationImage(image: AssetImage("assets/images/yuanyuan.png"), fit: BoxFit.cover),
-                                            //     // borderRadius: BorderRadius.all(Radius.circular(60)),
-                                            //     // boxShadow: [BoxShadow(color: Color(0xff000000), blurRadius: 33, offset: Offset(0, 0))],
-                                            //   ),
-                                            //   child: SizedBox(
-                                            //     width: 220,
-                                            //     height: 120,
-                                            //     child: Center(
-                                            //       child: Padding(
-                                            //         padding: const EdgeInsets.only(bottom: 5.0),
-                                            //         child: Text(
-                                            //           '等待房主开始',
-                                            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                            // ),
+                                            DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(image: AssetImage("assets/images/yuanyuan.png"), fit: BoxFit.cover),
+                                                borderRadius: BorderRadius.all(Radius.circular(60)),
+                                                boxShadow: [BoxShadow(color: Color(0xff000000), blurRadius: 33, offset: Offset(0, 0))],
+                                              ),
+                                              child: SizedBox(
+                                                width: 220,
+                                                height: 120,
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(bottom: 15.0),
+                                                    child: Text(
+                                                      '等待房主开始',
+                                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xccffffff)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                         Container(

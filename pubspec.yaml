@@ -71,7 +71,8 @@ dependencies:
   flutter_svg: 1.0.3
 
   extended_image: 6.4.1
-
+  flutter_shaders: 0.1.2
+  scratcher: 2.3.0
 
 dev_dependencies:
   flutter_test:
