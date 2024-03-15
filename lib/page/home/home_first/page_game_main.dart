@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/game_set_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container_guakai.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container_shangla.dart';
 import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
@@ -1798,6 +1799,19 @@ class _PageGameMainState extends State<PageGameMain> {
       }else if(getCuopaiType()==2){
         return LookPokerBuild(
           pokers: pokers,
+          onClose: () {
+            showMyPoker(6);
+          },
+          onDoubleTap: () {
+            vipDoubleTap();
+          },
+        );
+      }else if(getCuopaiType()==3){
+        return LookPokerBuildShangla(
+          pokers: pokers,
+          onOpen: (num) {
+            showMyPoker(num);
+          },
           onClose: () {
             showMyPoker(6);
           },

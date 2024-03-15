@@ -6,6 +6,7 @@ import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/full_card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/button_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/card_3d/project_card.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container_shangla.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
@@ -46,6 +47,8 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
 
   var versionInfo = null;
 
+  bool showTextBuild = false;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +58,11 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
       DeviceOrientation.portraitUp
       // DeviceOrientation.landscapeLeft
     ]);
+    // Future.delayed(Duration(milliseconds: 1),(){
+    //   setState(() {
+    //     showTextBuild = true;
+    //   });
+    // });
 
     ///TODO  测试
     // controller1.addListener(ScrollListener1);
@@ -166,10 +174,12 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   bool showNum = false;
   ///TODO   测试组件
   getTestBuild() {
-    // return SizedBox();
-    return Center(
-      // child: getPokerBox(),
-    );
+    // if(showTextBuild){
+    //   return Center(
+    //     child: getPokerBox(),
+    //   );
+    // }
+    return SizedBox();
   }
 
   getPokerBox(){
@@ -177,27 +187,19 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     var height = MediaQuery.of(context).size.height;
     var pokerWidth = height / 8.7 * 5.7 - 50;
     // return SizedBox();
+    var pokers = [{'hua_se':1,'poker_number':2,},{'hua_se':1,'poker_number':2,},{'hua_se':1,'poker_number':2,}
+    ,{'hua_se':1,'poker_number':2,},{'hua_se':1,'poker_number':2,}];
     return SizedBox(
         width: width,
         height: height,
-      child: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          child: Scratcher(
-            brushSize: 30,
-            threshold: 50,
-            image: Image.asset('assets/images/cardback.png',fit: BoxFit.fill,),
-            onChange: (value) {
-              if(value>=60){
-                setState(() {
-                  showNum = true;
-                });
-              }
-            },
-            onThreshold: () => print("Threshold reached, you won!"),
-            child: getFullCardBuild(4, 10, width: pokerWidth, showNum: showNum),
-          ),
-        ),
+      child: LookPokerBuildShangla(
+        pokers: pokers,
+        onOpen: (num) {
+        },
+        onClose: () {
+        },
+        onDoubleTap: () {
+        },
       ),
     );
   }

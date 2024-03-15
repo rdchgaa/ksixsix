@@ -211,7 +211,31 @@ class _GameSetContainerState extends State<GameSetContainer> with TickerProvider
                                         height: 60,
                                         child: Center(
                                           child: Text(
-                                            '滑动',
+                                            '左滑',
+                                            style: TextStyle(fontSize: 12, color: Color(0xffffffff)),
+                                          ),
+                                        ))),
+                              ),
+                              SizedBox(width: 20,),
+                              InkWell(
+                                onTap: (){
+                                  setCuopaiType(3);
+                                },
+                                child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: getCuopaiType()==3?[Color(0xffe1fdee), Color(0xff00a72a),Color(0xfff33caa)]:[Color(0xccffffff), Color(0xcc000000)],
+                                      ),
+                                    ),
+                                    child: SizedBox(
+                                        width: 60,
+                                        height: 60,
+                                        child: Center(
+                                          child: Text(
+                                            '搓角',
                                             style: TextStyle(fontSize: 12, color: Color(0xffffffff)),
                                           ),
                                         ))),
