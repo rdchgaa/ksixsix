@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}) {
+Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0,bool showNum = true}) {
 
   //花色校正
   Color textColor = Color(0xff000000);
@@ -64,7 +64,7 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
     }
 
     child = DecoratedBox(
-      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
+      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(width/15))),
       child: SizedBox(
         width: width,
         height: height,
@@ -110,7 +110,7 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
                     padding: EdgeInsets.only(top: marginTop, left: 0.5),
                     child: SizedBox(
                       width: fontSize,
-                      child: Column(
+                      child: !showNum?SizedBox():Column(
                         children: [
                           Text(
                             value,
@@ -133,23 +133,26 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
                   alignment: Alignment.bottomRight,
                   child: Padding(
                     padding: EdgeInsets.only(bottom: marginTop, right: 0.5),
-                    child: Transform.rotate(
-                      angle: 180 * math.pi / 180,
-                      child: Column(
-                        children: [
-                          Text(
-                            value,
-                            style: TextStyle(fontSize: fontSize, color: textColor),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 0),
-                            child: Image.asset(
-                              image,
-                              width: numButtonIconWidth,
-                              height: numButtonIconWidth,
+                    child: SizedBox(
+                      width: fontSize,
+                      child: !showNum?SizedBox():Transform.rotate(
+                        angle: 180 * math.pi / 180,
+                        child: Column(
+                          children: [
+                            Text(
+                              value,
+                              style: TextStyle(fontSize: fontSize, color: textColor),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: EdgeInsets.only(top: 0),
+                              child: Image.asset(
+                                image,
+                                width: numButtonIconWidth,
+                                height: numButtonIconWidth,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -849,7 +852,7 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
     }
 
     child = DecoratedBox(
-      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
+      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(width/15))),
       child: SizedBox(
         width: width,
         height: height,
@@ -860,33 +863,9 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
               alignment: Alignment.topLeft,
               child: Padding(
                 padding: EdgeInsets.only(top: marginTop+2.0, left: 2),
-                child: Column(
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(fontSize: fontSize, color: textColor),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 0),
-                      child: Image.asset(
-                        image,
-                        width: numButtonIconWidth,
-                        height: numButtonIconWidth,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-                child: picture),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: marginTop+2.0, right: 2),
-                child: Transform.rotate(
-                  angle: 180 * math.pi / 180,
-                  child: Column(
+                child: SizedBox(
+                  width: fontSize*1.2,
+                  child: !showNum?SizedBox():Column(
                     children: [
                       Text(
                         value,
@@ -901,6 +880,36 @@ Widget getFullCardBuild(int type, int num,{Function onDoubleTap,double width = 5
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+                child: picture),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: marginTop+2.0, right: 2),
+                child: SizedBox(
+                  width: fontSize*1.2,
+                  child: !showNum?SizedBox():Transform.rotate(
+                    angle: 180 * math.pi / 180,
+                    child: Column(
+                      children: [
+                        Text(
+                          value,
+                          style: TextStyle(fontSize: fontSize, color: textColor),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 0),
+                          child: Image.asset(
+                            image,
+                            width: numButtonIconWidth,
+                            height: numButtonIconWidth,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

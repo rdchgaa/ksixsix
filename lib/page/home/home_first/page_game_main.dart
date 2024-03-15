@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/game_set_container.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/look_poker_container_guakai.dart';
 import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_rule.dart';
@@ -106,6 +108,9 @@ class _PageGameMainState extends State<PageGameMain> {
 
   ///挂
   bool showChangePokerBuild = false;
+
+
+  bool showSet = false;
 
   @override
   void initState() {
@@ -578,30 +583,49 @@ class _PageGameMainState extends State<PageGameMain> {
 
   endGame() async {
     ///TODO 结束游戏  调取接口
-    var value = await showAlertDialog(
-      context,
-      title: '您确定要结束游戏吗?',
-      content: '游戏结束，所有玩家将退出房间',
-      buttonCancel: '否',
-      buttonOk: '结束',
-    );
-    if (true == value) {
-      var res = await LoadingCall.of(context).call((state, controller) async {
-        return await NetWork.dissolutionRoom(context, getUserId(), widget.roomId);
-      }, isShowLoading: false);
+    var user = context.read<SerUser>();
+    var value = false;
+    if(user.isRoomMaster){
+      value = await showAlertDialog(
+        context,
+        title: '您确定要结束游戏吗?',
+        content: '游戏结束，所有玩家将退出房间',
+        buttonCancel: '否',
+        buttonOk: '结束',
+      );
+      if (true == value) {
+        var res = await LoadingCall.of(context).call((state, controller) async {
+          return await NetWork.dissolutionRoom(context, getUserId(), widget.roomId);
+        }, isShowLoading: false);
 
-      if (res != null && res != 1) {
-        //结束成功
-        roomTimer.cancel();
-        roomTimer = null;
-        Navigator.pop(context);
-      } else {
-        ///TODO
+        if (res != null && res != 1) {
+          //结束成功
+          roomTimer.cancel();
+          roomTimer = null;
+          Navigator.pop(context);
+        } else {
+          ///TODO
+          roomTimer.cancel();
+          roomTimer = null;
+          Navigator.pop(context);
+        }
+      }
+    }else {
+      value = await showAlertDialog(
+        context,
+        title: '您确定要退出游戏吗?',
+        content: '本局游戏会持续到房主结束游戏，每回合默认投注1,重新输入当前房号会进入游戏',
+        buttonCancel: '否',
+        buttonOk: '退出',
+      );
+      if (true == value) {
+
         roomTimer.cancel();
         roomTimer = null;
         Navigator.pop(context);
       }
-    } else {}
+    }
+
   }
 
   @override
@@ -667,11 +691,12 @@ class _PageGameMainState extends State<PageGameMain> {
                               ],
                             ),
                           ),
-                          Positioned(bottom: 5, left: 60, child: getSelfInfoItemBuild()), //底部个人信息
+                          Positioned(bottom: 5, left: 20, child: getSelfInfoItemBuild()), //底部个人信息
                           Positioned(top: 0, child: getMyCardBuild()), //顶部我的排
                           Positioned(bottom: 0, right: 0, child: getReadyBuild()), //准备 、开始按钮
                           Positioned(child: getCenterInfoBuild()), //中间 游戏中 提示按钮信息
                           Positioned(child: getChangePokerBuild()), // 变牌
+                          Positioned(child: getSetBuild()),//设置页面
                         ],
                       ),
                     ),
@@ -683,6 +708,21 @@ class _PageGameMainState extends State<PageGameMain> {
     );
   }
 
+  getSetBuild(){
+    if (showSet) {
+      return GameSetContainer(
+        onClose: () {
+          setState(() {
+            showSet = false;
+          });
+        },
+        onExit: (){
+          endGame();
+        },
+      );
+    }
+    return SizedBox();
+  }
   getChangePokerBuild() {
     if (showChangePokerBuild) {
       return ChangePokerBuild(
@@ -919,29 +959,29 @@ class _PageGameMainState extends State<PageGameMain> {
               ),
             ),
           ),
-          (user.isRoomMaster && (readying || qiangZhuanging || resulting || waitPushPoker))
-              ? Padding(
-                  padding: EdgeInsets.only(top: 0, left: 10),
-                  child: InkWell(
-                    onTap: () async {
-                      endGame();
-                    },
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                            width: 60,
-                            height: 40,
-                            child: MyButton.gradient(
-                                backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
-                                child: Text('结束', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Color(0xffffffff)))))
-                      ],
-                    ),
-                  ),
-                )
-              : SizedBox(
-                  width: 70,
-                ),
+          // (user.isRoomMaster && (readying || qiangZhuanging || resulting || waitPushPoker))
+          //     ? Padding(
+          //         padding: EdgeInsets.only(top: 0, left: 10),
+          //         child: InkWell(
+          //           onTap: () async {
+          //             endGame();
+          //           },
+          //           child: Stack(
+          //             alignment: Alignment.center,
+          //             children: [
+          //               SizedBox(
+          //                   width: 60,
+          //                   height: 40,
+          //                   child: MyButton.gradient(
+          //                       backgroundColor: [Color(0xff918ea9), Color(0xff21143f)],
+          //                       child: Text('结束', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: Color(0xffffffff)))))
+          //             ],
+          //           ),
+          //         ),
+          //       )
+          //     : SizedBox(
+          //         width: 70,
+          //       ),
         ],
       ),
     );
@@ -1212,9 +1252,9 @@ class _PageGameMainState extends State<PageGameMain> {
     }
     for (var i = 0; i < list.length; i++) {
       listBuild.add(SizedBox(
-        width: imageWidth+2,
+        width: imageWidth + 2,
         child: Padding(
-          padding: EdgeInsets.only(left: 2,bottom: 2),
+          padding: EdgeInsets.only(left: 2, bottom: 2),
           child: Center(
             child: getChoumaItemBuild(list[i], imageWidth: imageWidth, padding: EdgeInsets.only(left: 0)),
           ),
@@ -1476,62 +1516,95 @@ class _PageGameMainState extends State<PageGameMain> {
         fen = scoreboard[i]['score'];
       }
     }
-    return SizedBox(
-      // width: peopleWidth,
-      // height: peopleHeight,
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: imageWidth,
-                height: imageWidth,
-                decoration: BoxDecoration(
-                  color: Color(0xffffffff),
-                  borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
-                  boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
-                ),
-                child: Center(
-                  child: HeadImage.network(
-                    user.avatarUrl,
-                    width: imageWidth - 2,
-                    height: imageWidth - 2,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(color: Color(0xaaffffff), borderRadius: BorderRadius.all(Radius.circular(30))),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  showSet = true;
+                });
+              },
+              child: Center(
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Image.asset(
+                    'assets/images/set.png',
+                    width: 30,
+                    height: 30,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: SizedBox(
+            // width: peopleWidth,
+            // height: peopleHeight,
+            child: Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        user.nickname,
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: imageWidth,
+                      height: imageWidth,
+                      decoration: BoxDecoration(
+                        color: Color(0xffffffff),
+                        borderRadius: BorderRadius.all(Radius.circular(imageWidth / 2)),
+                        boxShadow: [BoxShadow(color: roomMasterColor, blurRadius: 33, offset: Offset(0, 0))],
                       ),
-                      if (user.isRoomMaster)
-                        Text(
-                          '(房主)',
-                          style: TextStyle(fontSize: 10, color: Color(0xff0ac940), fontWeight: FontWeight.bold),
-                        )
+                      child: Center(
+                        child: HeadImage.network(
+                          user.avatarUrl,
+                          width: imageWidth - 2,
+                          height: imageWidth - 2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              user.nickname,
+                              maxLines: 1,
+                              style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                            ),
+                            if (user.isRoomMaster)
+                              Text(
+                                '(房主)',
+                                style: TextStyle(fontSize: 10, color: Color(0xff0ac940), fontWeight: FontWeight.bold),
+                              )
+                          ],
+                        ),
+                      ),
+                      getJifenBuild(fen),
                     ],
                   ),
                 ),
-                getJifenBuild(fen),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -1708,8 +1781,36 @@ class _PageGameMainState extends State<PageGameMain> {
         return SizedBox();
       }
       var pokers = myPoker['poker'];
-      return LookPokerBuild(
+
+      if(getCuopaiType()==1){
+        return LookPokerBuildGuakai(
+          pokers: pokers,
+          onOpen: (num) {
+            showMyPoker(num);
+          },
+          onClose: () {
+            showMyPoker(6);
+          },
+          onDoubleTap: () {
+            vipDoubleTap();
+          },
+        );
+      }else if(getCuopaiType()==2){
+        return LookPokerBuild(
+          pokers: pokers,
+          onClose: () {
+            showMyPoker(6);
+          },
+          onDoubleTap: () {
+            vipDoubleTap();
+          },
+        );
+      }
+      return LookPokerBuildGuakai(
         pokers: pokers,
+        onOpen: (num) {
+          showMyPoker(num);
+        },
         onClose: () {
           showMyPoker(6);
         },

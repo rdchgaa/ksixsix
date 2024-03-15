@@ -28,6 +28,9 @@ const userName = "user_name";
 
 const password = "password";
 
+const cuopaiTypeKey = "cuopaiType";
+
+
 SharedPreferences _sharedPreferences;
 
 Future<void> initSharedPreferences() async {
@@ -275,4 +278,21 @@ void setPassword(String value) {
 
 String getPassword() {
   return _sharedPreferences.getString(password);
+}
+
+
+int getCuopaiType() {
+  var val = _sharedPreferences.getInt(cuopaiTypeKey);
+  if (null == val) {
+    return 1;
+  }
+  return val;
+}
+
+void setCuopaiType(int id) {
+  if (null == id) {
+    _sharedPreferences.remove(cuopaiTypeKey);
+  } else {
+    _sharedPreferences.setInt(cuopaiTypeKey, id);
+  }
 }

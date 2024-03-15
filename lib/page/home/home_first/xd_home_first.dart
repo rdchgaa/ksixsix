@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
 import 'package:ima2_habeesjobs/net/network.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/full_card_build.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/button_container.dart';
+import 'package:ima2_habeesjobs/page/home/home_first/game/card_3d/project_card.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/page_game_container.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/page_room_main.dart';
 import 'package:ima2_habeesjobs/page/login/page_login.dart';
@@ -18,6 +20,7 @@ import 'package:ima2_habeesjobs/widget/app_content.dart';
 import 'package:ima2_habeesjobs/widget/my_image.dart';
 import 'package:ima2_habeesjobs/widget/refresh_loading_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:scratcher/scratcher.dart';
 import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -50,6 +53,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     SystemChrome.setPreferredOrientations([
       // 强制竖屏
       DeviceOrientation.portraitUp
+      // DeviceOrientation.landscapeLeft
     ]);
 
     ///TODO  测试
@@ -62,7 +66,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     super.dispose();
   }
 
-  getVersionInfo() async{
+  getVersionInfo() async {
     var info = await PackageInfo.fromPlatform();
     var res = await LoadingCall.of(context).call((state, controller) async {
       return await NetWork.getVersionInfo(context, info.version);
@@ -107,7 +111,6 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   goRoom(int roomId) async {
     hideTextInput();
 
-
     AudioPlayerUtilTaikong.playSound();
 
     // AudioPlayerUtilZuoqiu.playSound();
@@ -118,7 +121,6 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     //
     // AudioPlayerUtilChe.playSound();
     // AudioPlayerUtilBoli.playSound();
-
 
     await PageRoomMain(
       roomId: roomId,
@@ -146,7 +148,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   bool checkCanUse() {
-    if (versionInfo!=null) {
+    if (versionInfo != null) {
       toUpdate(context);
       return false;
     }
@@ -160,119 +162,82 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     return true;
   }
 
+
+  bool showNum = false;
   ///TODO   测试组件
-  var pokerWidth = 110.0;
-  var pokerHeight = 110.0 / 5.7 * 8.7;
-
-  ScrollController controller1 = ScrollController();
-  bool zhedang1 = true;
-
-  ScrollListener1() async {
-    if (controller1.offset >= (pokerWidth / 2)) {
-      // controller1.removeListener(ScrollListener1());
-      await controller1.animateTo(controller1.position.maxScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.linear);
-      zhedang1 = false;
-      setState(() {});
-    }
-  }
-
   getTestBuild() {
-    return SizedBox();
+    // return SizedBox();
     return Center(
-      child: getPokerBox(1),
+      // child: getPokerBox(),
     );
   }
 
-  getPokerBox(int num) {
-    return Padding(
-      padding: EdgeInsets.only(left: 10, top: 10, bottom: 10),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xcc0f7357), Color(0xcc011713)],
-            ),
-            // color: Color(0xcc555555),
-            boxShadow: [BoxShadow(color: Color(0xffeeb202), blurRadius: 33, offset: Offset(0, 0))],
-            borderRadius: BorderRadius.all(Radius.circular(6)),
-            border: Border.all(color: Color(0xffb68a08), width: 2)),
-        child: SizedBox(
-          width: pokerWidth,
-          height: pokerHeight + 0,
-          // child: getCardBuild(0,1,width: itemWidth),
-          child: getPoker1(),
+  getPokerBox(){
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    var pokerWidth = height / 8.7 * 5.7 - 50;
+    // return SizedBox();
+    return SizedBox(
+        width: width,
+        height: height,
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: Scratcher(
+            brushSize: 30,
+            threshold: 50,
+            image: Image.asset('assets/images/cardback.png',fit: BoxFit.fill,),
+            onChange: (value) {
+              if(value>=60){
+                setState(() {
+                  showNum = true;
+                });
+              }
+            },
+            onThreshold: () => print("Threshold reached, you won!"),
+            child: getFullCardBuild(4, 10, width: pokerWidth, showNum: showNum),
+          ),
         ),
       ),
     );
   }
 
-  getPoker1() {
-    return ListView(
-      controller: controller1,
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(left: 0),
-      children: [
-        getPokerNullBoxBuild(),
-        Center(
-            child: Stack(
-          children: [
-            getFullCardBuild(4, 10, width: pokerWidth),
-            if (zhedang1)
-              Positioned(
-                  top: 6,
-                  left: 0,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
-                    child: SizedBox(
-                      width: 15,
-                      height: 40,
-                    ),
-                  )),
-            if (zhedang1)
-              Positioned(
-                  right: 0,
-                  bottom: 6,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1)),
-                    child: SizedBox(
-                      width: 15,
-                      height: 40,
-                    ),
-                  )),
-          ],
-        ))
-      ],
-    );
-  }
 
-  getPokerNullBoxBuild() {
-    return Row(
-      children: [
-        SizedBox(
-          width: pokerWidth,
-          height: pokerHeight,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+  getPokerBox3d(int num) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    var pokerWidth = height / 8.7 * 5.7 - 50;
+    var pokerHeight = pokerWidth / 5.7 * 8.7;
+    return SizedBox(
+      width: width - 20,
+      height: height,
+      // child: getCardBuild(0,1,width: itemWidth),
+      child: ProjectCard(
+        width: width - 20,
+        height: height,
+        onOpen: () {
+          setState(() {
+            showNum = true;
+          });
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          clipBehavior: Clip.hardEdge,
+          child: Stack(
             children: [
-              Image.asset(
-                'assets/images/zuola.png',
-                width: 40,
-                height: 40,
-                fit: BoxFit.contain,
-              ),
-              Text(
-                '拉出扑克',
-                style: TextStyle(fontSize: 16, color: Color(0xffe19b4b)),
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: getFullCardBuild(4, 10, width: pokerWidth, showNum: showNum),
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        SizedBox(
-          width: 10,
-          height: pokerHeight,
-        )
-      ],
+      ),
     );
   }
 
@@ -387,7 +352,9 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                                   InkWell(
                                                     onTap: () async {
                                                       // AudioPlayerUtilBackGround.playSound();
-                                                      await PageSetUp(versionInfo: versionInfo,).push(context);
+                                                      await PageSetUp(
+                                                        versionInfo: versionInfo,
+                                                      ).push(context);
                                                       // AudioPlayerUtilBackGround.stopSound();
                                                     },
                                                     child: Row(
@@ -424,7 +391,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                               children: [
                                                 SizedBox(
                                                   height: 40,
-                                                  width: 110,
+                                                  width: 130,
                                                   child: TextFormField(
                                                     autofocus: false,
                                                     onChanged: (val) {},
@@ -441,7 +408,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                                       ),
                                                       // prefixIconConstraints: BoxConstraints(),
                                                       // prefix: Text('+91 ',style: TextStyle(fontSize: 14,color: Color(0xff999999)),),
-                                                      hintText: '输入房间号',
+                                                      hintText: '输入房间号-进入房间',
                                                       hintStyle: TextStyle(color: Color(0xFFdddddd), fontSize: 11),
                                                       enabledBorder: OutlineInputBorder(
                                                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -510,40 +477,81 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                           ),
                                           Padding(
                                             padding: EdgeInsets.only(top: 30),
-                                            child: InkWell(
-                                              onTap: () async {
-                                                if (!checkLogin()) {
-                                                  PageLogin().push(context);
-                                                  return;
-                                                }
-                                                creatRoom();
-                                              },
-                                              child: Stack(
-                                                alignment: Alignment.topLeft,
-                                                children: [
-                                                  EnterButtonBuild(width: 120,),
-                                                  DecoratedBox(
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(image: AssetImage("assets/images/button4.png"), fit: BoxFit.cover),
-                                                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                                                      // boxShadow: [BoxShadow(color: Color(0xffeeb202), blurRadius: 33, offset: Offset(0, 0))],
-                                                    ),
-                                                    child: SizedBox(
-                                                      width: 120,
-                                                      height: 120,
-                                                      child: Center(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(bottom: 5.0),
-                                                          // child: Text(
-                                                          //   '启动',
-                                                          //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                                                          // ),
-                                                          // child: EnterButtonBuild(),
-                                                        ),
+                                            child: SizedBox(
+                                              width: 120,
+                                              height: 120,
+                                              child: Center(
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    if (!checkLogin()) {
+                                                      PageLogin().push(context);
+                                                      return;
+                                                    }
+                                                    creatRoom();
+                                                  },
+                                                  child: Stack(
+                                                    alignment: Alignment.topLeft,
+                                                    children: [
+                                                      EnterButtonBuild(
+                                                        width: 120,
                                                       ),
-                                                    ),
+                                                      Stack(
+                                                        alignment: Alignment.center,
+                                                        children: [
+                                                          DecoratedBox(
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(image: AssetImage("assets/images/button4.png"), fit: BoxFit.cover),
+                                                              borderRadius: BorderRadius.all(Radius.circular(60)),
+                                                              // boxShadow: [BoxShadow(color: Color(0xffeeb202), blurRadius: 33, offset: Offset(0, 0))],
+                                                            ),
+                                                            child: SizedBox(
+                                                              width: 120,
+                                                              height: 120,
+                                                              child: Center(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                                                  // child: Text(
+                                                                  //   '启动',
+                                                                  //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                                                                  // ),
+                                                                  // child: EnterButtonBuild(),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Text('创',style: TextStyle(fontSize: 14,color: Color(0xddffffff)),),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(top: 15.0),
+                                                                    child: Text('房',style: TextStyle(fontSize: 14,color: Color(0xddffffff)),),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(left: 15.0),
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Text('建',style: TextStyle(fontSize: 14,color: Color(0xddffffff)),),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 15.0),
+                                                                      child: Text('间',style: TextStyle(fontSize: 14,color: Color(0xddffffff)),),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              )
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -560,7 +568,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                         ],
                       ),
                     ),
-                    // getTestBuild(),
+                    getTestBuild(),
                   ],
                 ),
               );
@@ -573,7 +581,7 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     if (showRecord && finalResultData != null) {
       return FinalResultBuild(
         finalResultData: finalResultData,
-        onClose: () async{
+        onClose: () async {
           SystemChrome.setPreferredOrientations([
             // 强制竖屏
             DeviceOrientation.portraitUp
@@ -619,8 +627,14 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/paiming.png',width: 25,height: 25,),
-                      SizedBox(width: 5,),
+                      Image.asset(
+                        'assets/images/paiming.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text(
                         '战绩',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
@@ -684,8 +698,13 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 10,),
-                                      Text('先战斗一场',style: TextStyle(fontSize: 12,color: Color(0xffdddddd)),)
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        '先战斗一场',
+                                        style: TextStyle(fontSize: 12, color: Color(0xffdddddd)),
+                                      )
                                     ],
                                   ),
                                 ),

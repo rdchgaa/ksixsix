@@ -63,7 +63,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
     }
 
     child = DecoratedBox(
-      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
+      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(width/15))),
       child: SizedBox(
         width: width,
         height: height,
@@ -136,7 +136,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
     );
   }else{
     child = DecoratedBox(
-      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(6))),
+      decoration: BoxDecoration(color: Color.fromRGBO(246, 246, 246, 1), borderRadius: BorderRadius.all(Radius.circular(width/15))),
       child: SizedBox(
         width: width,
         height: height,
@@ -193,8 +193,8 @@ Widget getCardBackBuild({Function onTap,Function onDoubleTap,double width = 50.0
     child: DecoratedBox(
       decoration: BoxDecoration(
         // color: Color.fromRGBO(246, 246, 246, 1),
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        image: DecorationImage(image: AssetImage("assets/images/cardback.png"), fit: BoxFit.cover),
+        borderRadius: BorderRadius.all(Radius.circular(width/9)),
+        image: DecorationImage(image: AssetImage("assets/images/cardback.png"), fit: BoxFit.fill),
 
       ),
       child: SizedBox(
