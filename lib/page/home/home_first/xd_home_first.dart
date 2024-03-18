@@ -1,3 +1,4 @@
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
@@ -67,11 +68,17 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
     ///TODO  测试
     // controller1.addListener(ScrollListener1);
     getVersionInfo();
+    initData();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  initData() async{
+    final AudioSession session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.music());
   }
 
   getVersionInfo() async {
