@@ -995,7 +995,7 @@ class _PageGameMainState extends State<PageGameMain> {
     if (betting || looking) {
       return getBetButtonBuild();
     }
-    return SizedBox();
+    return SizedBox(height: 80,);
   }
 
   getBetButtonBuild() {
