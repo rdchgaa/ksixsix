@@ -117,62 +117,57 @@ class _LookPokerBuildGuakaiState extends State<LookPokerBuildGuakai> with Ticker
         offset: _animation.value,
         child: Center(
           child: LayoutBuilder(builder: (context, con) {
-            return InkWell(
-              onTap: () {
-                // onClose();
-              },
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Color(0x55000000),
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: tabController,
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onDoubleTap: widget.onDoubleTap,
-                            child: getPokerBox(1),
-                          ),
-                          getPokerBox(2),
-                          getPokerBox(3),
-                          getPokerBox(4),
-                          getPokerBox(5),
-                        ],
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: Color(0x55000000),
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: tabController,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onDoubleTap: widget.onDoubleTap,
+                          child: getPokerBox(1),
+                        ),
+                        getPokerBox(2),
+                        getPokerBox(3),
+                        getPokerBox(4),
+                        getPokerBox(5),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    right: 20,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0, right: 20),
+                      child: InkWell(
+                        onTap: () {
+                          onClose();
+                        },
+                        child: Text(
+                          '立即查看' + '\n' + lookingCountdown.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                        // child: SizedBox(
+                        //   width: 35,
+                        //   height: 35,
+                        //   child: Icon(
+                        //     Icons.close,
+                        //     size: 20,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 10,
-                      right: 20,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0, right: 20),
-                        child: InkWell(
-                          onTap: () {
-                            onClose();
-                          },
-                          child: Text(
-                            '立即查看' + '\n' + lookingCountdown.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          // child: SizedBox(
-                          //   width: 35,
-                          //   height: 35,
-                          //   child: Icon(
-                          //     Icons.close,
-                          //     size: 20,
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             );
           }),
@@ -226,40 +221,6 @@ class _LookPokerBuildGuakaiState extends State<LookPokerBuildGuakai> with Ticker
                   ],
                 ),
               ),
-              // child: (num <= 1)
-              //     ? SizedBox()
-              //     : InkWell(
-              //         onTap: () {
-              //           var index = 0;
-              //           if (num == 3) {
-              //             index = 1;
-              //           } else if (num == 4) {
-              //             index = 2;
-              //           } else if (num == 5) {
-              //             index = 3;
-              //           }
-              //           tabController.animateTo(index);
-              //         },
-              //         child: SizedBox(
-              //           width: 100,
-              //           child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             children: [
-              //               Image.asset(
-              //                 'assets/images/turn_left.png',
-              //                 width: 25,
-              //                 height: 25,
-              //                 fit: BoxFit.contain,
-              //                 color: Color(0xff00c2c9),
-              //               ),
-              //               Text(
-              //                 '上一张',
-              //                 style: TextStyle(fontSize: 14, color: Color(0xff00c2c9)),
-              //               ),
-              //             ],
-              //           ),
-              //         ),
-              //       ),
             ),
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),

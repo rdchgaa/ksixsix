@@ -178,7 +178,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
     );
   }
 
-  return InkWell(
+  return GestureDetector(
     onDoubleTap: onDoubleTap,
     child: child,
   );
@@ -187,7 +187,7 @@ Widget getCardBuild(int type, int num,{Function onDoubleTap,double width = 50.0}
 Widget getCardBackBuild({Function onTap,Function onDoubleTap,double width = 50.0}) {
   var height = width / 5.7 * 8.7;
 
-  return InkWell(
+  return GestureDetector(
     onTap: onTap,
     onDoubleTap: onDoubleTap,
     child: DecoratedBox(

@@ -170,57 +170,52 @@ class _LookPokerBuildState extends State<LookPokerBuild> with TickerProviderStat
         offset: _animation.value,
         child: Center(
           child: LayoutBuilder(builder: (context, con) {
-            return InkWell(
-              onTap: () {
-                // onClose();
-              },
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Color(0x55000000),
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          getPokerBox(1),
-                          getPokerBox(2),
-                          getPokerBox(3),
-                          getPokerBox(4),
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: Color(0x55000000),
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        getPokerBox(1),
+                        getPokerBox(2),
+                        getPokerBox(3),
+                        getPokerBox(4),
 
-                          InkWell(
-                            onDoubleTap: widget.onDoubleTap,
-                            child: getPokerBox(5),
-                          ),
-                        ],
+                        GestureDetector(
+                          onDoubleTap: widget.onDoubleTap,
+                          child: getPokerBox(5),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 10,right: 20,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0, right: 20),
+                      child: InkWell(
+                        onTap: () {
+                          onClose();
+                        },
+                        child: Text('立即翻开'+'\n'+lookingCountdown.toString(),textAlign:TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 14),),
+                        // child: SizedBox(
+                        //   width: 35,
+                        //   height: 35,
+                        //   child: Icon(
+                        //     Icons.close,
+                        //     size: 20,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
                       ),
                     ),
-
-                    Positioned(
-                      bottom: 10,right: 20,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0, right: 20),
-                        child: InkWell(
-                          onTap: () {
-                            onClose();
-                          },
-                          child: Text('立即翻开'+'\n'+lookingCountdown.toString(),textAlign:TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 14),),
-                          // child: SizedBox(
-                          //   width: 35,
-                          //   height: 35,
-                          //   child: Icon(
-                          //     Icons.close,
-                          //     size: 20,
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             );
           }),

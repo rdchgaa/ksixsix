@@ -436,35 +436,25 @@ class _PokerShanglaItemState extends State<PokerShanglaItem> with TickerProvider
                     return SizedBox(
                       width: 100,
                       child: (num >= 5 || zhedang)
-                          ? InkWell(
-                        onTap: (){
-                          var height = MediaQuery.of(context).size.height;
-                          _animationPoker.value = h1;
-                          _animationPokerRotation.value = 5 ;
-                          setState(() {
-
-                          });
-                        },
-                            child: SizedBox(
+                          ? SizedBox(
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '请',
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                              ),
-                              Text(
-                                '斜拉',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: roomMasterColor),
-                              ),
-                              Text(
-                                '扑克',
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
-                              ),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '请',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                            ),
+                            Text(
+                              '斜拉',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: roomMasterColor),
+                            ),
+                            Text(
+                              '扑克',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xffeeeeee)),
+                            ),
+                          ],
                         ),
-                      ),
-                          )
+                      )
                           : InkWell(
                         onTap: () {
                           widget.onClose();

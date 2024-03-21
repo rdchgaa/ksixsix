@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/card_build.dart';
 import 'package:ima2_habeesjobs/service/preferences.dart';
@@ -562,7 +563,7 @@ class _FinalResultBuildState extends State<FinalResultBuild> with TickerProvider
                           children: [
                             SizedBox(
                               width: con.maxWidth * 0.85,
-                              height: Platform.isIOS?con.maxHeight * 0.90:con.maxHeight * 0.85,
+                              height: kIsWeb?con.maxHeight * 0.90:Platform.isIOS?con.maxHeight * 0.90:con.maxHeight * 0.85,
                               child: DefaultTabController(
                                 initialIndex: 0,
                                 length: 11,

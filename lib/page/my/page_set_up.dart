@@ -121,7 +121,7 @@ class _PageSetUpState extends State<PageSetUp> {
                           const Divider(height: 1,color: Color(0x99000000),),
                         ],
                       ),
-                    UiLayoutTextAndIconItem(
+                    if(!kIsWeb)UiLayoutTextAndIconItem(
                       style: layoutItemStyle2,
                       title: '清除缓存',
                       leftIcon: Padding(

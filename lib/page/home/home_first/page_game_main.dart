@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ima2_habeesjobs/page/home/home_first/game/game_set_container.dart';
@@ -121,6 +122,9 @@ class _PageGameMainState extends State<PageGameMain> {
       // 强制竖屏
       DeviceOrientation.landscapeLeft
     ]);
+    if(kIsWeb){
+      showToast(context, '请横屏进行游戏');
+    }
   }
 
   Future<void> playSound() async {
