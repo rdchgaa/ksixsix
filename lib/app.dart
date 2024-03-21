@@ -378,9 +378,6 @@ class _AppState extends State<App> {
   }
 
   String _getFontFamily() {
-    if (Platform.isWindows) {
-      return "Microsoft Yahei";
-    }
 
     return null;
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -120,7 +121,7 @@ class _PageSetUpState extends State<PageSetUp> {
                           const Divider(height: 1,color: Color(0x99000000),),
                         ],
                       ),
-                    UiLayoutTextAndIconItem(
+                    if(!kIsWeb)UiLayoutTextAndIconItem(
                       style: layoutItemStyle2,
                       title: '清除缓存',
                       leftIcon: Padding(
@@ -166,8 +167,8 @@ class _PageSetUpState extends State<PageSetUp> {
                         await PageUserAboutUs().push(context);
                       },
                     ),
-                    const Divider(height: 1,color: Color(0x99000000)),
-                    UiLayoutTextAndIconItem(
+                    if(!kIsWeb)const Divider(height: 1,color: Color(0x99000000)),
+                    if(!kIsWeb)UiLayoutTextAndIconItem(
                       style: layoutItemStyle2,
                       title: '版本更新',
                       leftIcon: Padding(
