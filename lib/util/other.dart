@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xxc_flutter_utils/xxc_flutter_utils.dart';
@@ -13,18 +14,7 @@ import 'package:image/image.dart' as img;
 import 'package:provider/src/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-int getOsType() {
-  if (Platform.isAndroid) {
-    return 1;
-  } else if (Platform.isIOS) {
-    return 2;
-  } else if (Platform.isWindows) {
-    return 3;
-  } else if (Platform.isMacOS) {
-    return 5;
-  }
-  return 0;
-}
+
 
 String getOnlineText(BuildContext context, bool isOnline, DateTime time) {
   if (true == isOnline) {
@@ -149,6 +139,9 @@ Future<void> appLaunch(BuildContext context, String url, { String title}) async 
 }
 
 toUpdate(BuildContext context){
+  if(kIsWeb){
+    return;
+  }
   if(Platform.isIOS){
     Clipboard.setData(ClipboardData(text: 'itms-services:///?action=download-manifest&url=https://gitcode.net/xxcapp/ksixsix/-/raw/master/X.plist'));
     showToast(context, '下载链接已复制到剪切板，请在Safari浏览器中打开');

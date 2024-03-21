@@ -1,4 +1,5 @@
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ima2_habeesjobs/dialog/alert_dialog_update.dart';
@@ -163,6 +164,9 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   bool checkCanUse() {
+    if(kIsWeb){
+      return true;
+    }
     if (versionInfo != null) {
       toUpdate(context);
       return false;

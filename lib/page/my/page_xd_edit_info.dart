@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:adobe_xd/pinned.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -201,6 +202,10 @@ class _PageXdEditInfoState extends State<PageXdEditInfo> {
                 padding: EdgeInsets.only(right: 0),
                 child: InkWell(
                   onTap: (){
+                    if(kIsWeb){
+                      showToast(context, '请下载炫牛APP修改头像和更多功能');
+                      return ;
+                    }
                     onEditHeadImage(context, user);
                   },
                   child: Column(

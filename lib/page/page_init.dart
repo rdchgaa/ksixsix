@@ -40,11 +40,6 @@ class ControlInit extends RouterDataNotifier {
         var token = getToken();
         if (null == token) {
           guestLogin(context);
-          // if ((Platform.isAndroid || Platform.isIOS) && (getBeforeVersion() ?? -1) < (int.tryParse(info.buildNumber) ?? 0)) {
-          //   gotoLoginPage(context);
-          // } else {
-          //   gotoLoginPage(context);
-          // }
           return true;
         } else {
           if(needLogin){

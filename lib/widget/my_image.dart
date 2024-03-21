@@ -133,15 +133,23 @@ class _HeadImageState extends State<HeadImage> with WidgetsBindingObserver {
     } else if (widget._url != null) {
       var url = (widget._url) ?? '';
       // url = url.replaceAll('http:/192', 'http://192');
-      child = ImageUtil.networkImage(
-          url: url,
-          // errorWidget: (Image.asset('assets/images2/icon-touxiang.webp',width: widget.width,height: widget.height,)));
-          errorWidget: (Image.asset(
-            'assets/images/default_head.png',
-            width: widget.width,
-            height: widget.height,
-            fit: widget.fit,
-          )),fit: widget.fit);
+      child = Image.network(url,errorBuilder: (content,obj,st){
+        return Image.asset(
+          'assets/images/default_head.png',
+          width: widget.width,
+          height: widget.height,
+          fit: widget.fit,
+        );
+      },fit: widget.fit);
+      // child = ImageUtil.networkImage(
+      //     url: url,
+      //     // errorWidget: (Image.asset('assets/images2/icon-touxiang.webp',width: widget.width,height: widget.height,)));
+      //     errorWidget: (Image.asset(
+      //       'assets/images/default_head.png',
+      //       width: widget.width,
+      //       height: widget.height,
+      //       fit: widget.fit,
+      //     )),fit: widget.fit);
     }
     child = ClipRRect(
       borderRadius: widget.borderRadius,
