@@ -37,6 +37,7 @@ class DioUtils {
       // baseUrl: 'https://api.pub.flutter-io.cn/'
       //   baseUrl: 'http://192.168.6.117:12345/',//本地
       baseUrl:'http://47.97.250.198:12345/',//阿里
+      // baseUrl:'http://127.0.0.1:12345/',//网页
 //      contentType: ContentType('application', 'x-www-form-urlencoded', charset: 'utf-8'),
     );
     _dio = Dio(options);
