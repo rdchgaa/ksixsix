@@ -28,17 +28,16 @@ class Win32Window {
   Win32Window();
   virtual ~Win32Window();
 
-  // Creates and shows a win32 window with |title| and position and size using
+  // Creates a win32 window with |title| that is positioned and sized using
   // |origin| and |size|. New windows are created on the default monitor. Window
   // sizes are specified to the OS in physical pixels, hence to ensure a
-  // consistent size to will treat the width height passed in to this function
-  // as logical pixels and scale to appropriate for the default monitor. Returns
-  // true if the window was created successfully.
-  bool CreateAndShow(const std::wstring& title,
-                     const Point& origin,
-                     const Size& size);
+  // consistent size this function will scale the inputted width and height as
+  // as appropriate for the default monitor. The window is invisible until
+  // |Show| is called. Returns true if the window was created successfully.
+  bool Create(const std::wstring& title, const Point& origin, const Size& size);
 
-  void TwinkleNotify(HWND hWND);
+  // Show the current window. Returns true if the window was successfully shown.
+  bool Show();
 
   // Release OS resources associated with window.
   void Destroy();
@@ -65,15 +64,6 @@ class Win32Window {
                                  WPARAM const wparam,
                                  LPARAM const lparam) noexcept;
 
-  void HideWindow(HWND hWND);
-
-  void ShowWindow(HWND hWND);
-
-
-  void CreateNotifyMenu(HWND hWND);
-
-  void CreateNotify(HWND hWND);
-
   // Called when CreateAndShow is called, allowing subclass window-related
   // setup. Subclasses should return false if setup fails.
   virtual bool OnCreate();
@@ -81,9 +71,6 @@ class Win32Window {
   // Called when Destroy is called.
   virtual void OnDestroy();
 
-  void SetNotify(bool status);
-
-  void SetNotifyName(std::wstring name);
  private:
   friend class WindowClassRegistrar;
 
@@ -100,6 +87,9 @@ class Win32Window {
   // Retrieves a class instance pointer for |window|
   static Win32Window* GetThisFromHandle(HWND const window) noexcept;
 
+  // Update the window frame's theme to match the system theme.
+  static void UpdateTheme(HWND const window);
+
   bool quit_on_close_ = false;
 
   // window handle for top level window.
@@ -107,12 +97,6 @@ class Win32Window {
 
   // window handle for hosted content.
   HWND child_content_ = nullptr;
-
-  NOTIFYICONDATA m_notify;
-
-  HICON m_notify_icon;
-
-  bool  m_notify_status = false;
 };
 
 #endif  // RUNNER_WIN32_WINDOW_H_

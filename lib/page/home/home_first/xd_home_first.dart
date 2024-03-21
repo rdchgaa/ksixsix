@@ -1,4 +1,3 @@
-import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,8 +77,6 @@ class _XdHomeFirstState extends State<XdHomeFirst> {
   }
 
   initData() async{
-    final AudioSession session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.music());
   }
 
   getVersionInfo() async {

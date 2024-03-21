@@ -1,6 +1,6 @@
 {
-    "name": "im_client",
-    "short_name": "im_client",
+    "name": "product",
+    "short_name": "product",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
