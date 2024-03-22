@@ -284,7 +284,7 @@ String getPassword() {
 int getCuopaiType() {
   var val = _sharedPreferences.getInt(cuopaiTypeKey);
   if (null == val) {
-    return 1;
+    return 3;
   }
   return val;
 }
